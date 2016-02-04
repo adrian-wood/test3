@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Locked servers</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="MetDB Locked server display">
+		<meta name="author" content="sheila.needham">
+
+		<!--Bootstrap core CSS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+		<!--Sorttable library from http://www.kryogenix.org/code/browser/sorttable/sorttable.js -->
+		<script type="text/javascript" src="sorttable.js"></script>
+		<style type="text/css">
+			table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+     			content: " \25B4\25BE" 
+			}
+		</style>	
+	</head>
+	<body>
+		<div class="container">
+			<h2>{{count}} locked servers @ {{now}}</h2>
+			<table class="table table-bordered sortable" >
+				<tr>
+					<th>Userid</th>
+					<th>Number</th>
+					<th>Time</th>
+					<th>Server Output</th>
+				</tr>
+
+				{% for r in row %}
+
+				<tr>
+					<td> {{ r[0] }} </td>
+					<td> {{ r[2] }} </td>
+					<td> {{ r[3] }} </td>
+					<td><a href="http://mdbapus-prod/cgi-bin/moods/rpclistdir.pl?timestamp={{r[5]}}&serverout=1&broker=1&servererr=1&submit=Search" target="_blank">{{ r[5] }}</a></td>
+				</tr>
+
+				{% endfor %}
+			</table>
+
+			<p>
+				Users with RPC client version 5.2 or higher can use the MetDBKill.sh script to unlock their servers.
+				See <a href="https://metnet2.metoffice.gov.uk/content/metdb-technote-10-mdb-users-guide-remote-procedure-calls-rpc#metdbkill">Technote 10</a> for
+				details.
+			</p>
+			<p>
+				OPS users can find the script in <code>fcm_make_ops/build/bin/kill-server</code>.
+			</p>
+			<p>
+				Otherwise, contact <a href="mailto:metdb@metoffice.gov.uk">MetDB Support </a> and ask for <code>rpc_clear_servers.sh -u &lt;userid&gt; </code> to be run.
+			</p>
+		</div>
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+	</body>
+</html>
