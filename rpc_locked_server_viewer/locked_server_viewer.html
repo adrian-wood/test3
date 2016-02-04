@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MOODS RPC Locked Servers</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="MetDB Locked server display">
+		<meta name="author" content="sheila.needham">
+
+		<!--Bootstrap core CSS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<h2>MOODS RPC Locked Server Viewer</h2>
+
+			<p>
+				RPC servers are locked for access if your program does not issue a "killserver"
+				call or your program fails before reaching that call (see
+				<a href="https://metnet2.metoffice.gov.uk/content/metdb-technote-10-mdb-users-guide-remote-procedure-calls-rpc#killing_the_server">TN10</a> for details). Each user can lock up to 20 servers after which there will be an error message:
+			</p>
+			<div class="bg-warning">
+				<pre>
+                  -------------------------------------------------------
+                  RPC CAN'T CONTINUE - FATAL!  
+                  info: ErrorFirstNoProgNum  
+                  Program Number PortDetails-&gt; ProgNum returned from  
+                  Remote Procedure INITIAL (RPC broker) = 0. There  
+                  was a problem assigning a program number for  
+                  MSRPC_CALL_MDB. There were probably no available program  
+                  numbers. Contact MetDB team.     
+                  Returning to user with ISTAT=99     
+                  ------------------------------------------------------
+                  </pre>
+			</div>
+			<p>
+				Enter your userid below to find out if you have locked all your servers.
+			</p>
+
+			<form class="form-horizontal" role="form" action="http://www-metdb/moods/viewers/list_locked_servers.py" method="get">
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="userid">Userid:</label>
+				 <div class="col-sm-2">
+					<input class="form-control" name="userid" type="text" id="userid" value="">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Check</button>
+			</div>
+			</div>
+			</form>
+
+		</div>
+				
+				
+				<!-- Bootstrap core JavaScript
+				================================================== -->
+				<!-- Placed at the end of the document so the pages load faster -->
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+				<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	</body>
+</html>
+
