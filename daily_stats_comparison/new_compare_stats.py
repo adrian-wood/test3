@@ -25,7 +25,7 @@ import datetime as dt
  
 prodURL=r"http://mdbdb-prod/moods/new_stats/"
 prepURL=r"http://mdbdb-preprod/moods/new_stats/"
-baseDir=r"/var/www/html/moods/misc/compare_stats_archive"
+baseDir=r"/home/h01/usmdb/public_html/moods/misc/compare_stats_archive"
  
 #-----------------------------------------------------------------------
 # Function to read a daily stats summary page and return a dictionary
@@ -186,13 +186,13 @@ if preValues and prodValues:
 
   html_end = """
   </table>
-  <p  class="text-center">Created by script """ + sys.argv[0] + """ on """ + os.environ['MACHINE'] + """</p>
+  <p  class="text-center">Created by script """ + sys.argv[0] + """ running as user """ + os.getenv('USER') + """ on """ + os.uname()[1] + """</p>
   </div> <!-- /.container -->
   </body>
   </html>\n"""
   oput.write(html_end)
 
 # Recreate the symlink to today's file
-  os.unlink("/var/www/html/moods/misc/new_compare_stats.html")
-  os.symlink(outFile,"/var/www/html/moods/misc/new_compare_stats.html")
+  os.unlink("/home/h01/usmdb/public_html/moods/misc/new_compare_stats.html")
+  os.symlink(outFile,"/home/h01/usmdb/public_html/moods/misc/new_compare_stats.html")
   oput.close()
