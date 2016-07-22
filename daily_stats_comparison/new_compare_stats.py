@@ -7,6 +7,10 @@
 #                 left-hand frames and analyses the stats, producing a page
 #                 of differences etc. A summary is at the top for pasting
 #                 into the Twiki 
+#-----------------------------------------------------------------------
+# Log
+# July 2016: Stan Kellett added check for no prod data and there 
+#            being pre-prod data
 #
 #-----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2016 - MET OFFICE. All Rights Reserved.
@@ -104,8 +108,15 @@ for dataType in allTypes:
         str3 = str(preValues[dataType])
         str4 = 'warning'
         diff = preValues[dataType] - prodValues[dataType]
-        pct = (float(diff)/prodValues[dataType])
-        moreOnPre.append(dataType + ' (' + str(diff) + ', ' + "{0:.2f}".format((pct)*100) + '%)')
+	
+# add check to make sure that prodValues[dataType] includes data
+	if prodValues[dataType] == 0:
+	  pct = 0.0   
+          moreOnPre.append(dataType + ' (' + str(diff) + ', ' + 'No data on prod)')
+	else:
+          pct = (float(diff)/prodValues[dataType]) 	   
+          moreOnPre.append(dataType + ' (' + str(diff) + ', ' + "{0:.2f}".format((pct)*100) + '%)')
+	  
       else:
         str3 = str(preValues[dataType])
         str4 = 'warning'
