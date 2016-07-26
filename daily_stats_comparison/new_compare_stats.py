@@ -110,10 +110,10 @@ for dataType in allTypes:
         diff = preValues[dataType] - prodValues[dataType]
 	
 # add check to make sure that prodValues[dataType] includes data
-	if prodValues[dataType] == 0:
-	  pct = 0.0   
+        if prodValues[dataType] == 0:
+          pct = 0.0   
           moreOnPre.append(dataType + ' (' + str(diff) + ', ' + 'No data on prod)')
-	else:
+        else:
           pct = (float(diff)/prodValues[dataType]) 	   
           moreOnPre.append(dataType + ' (' + str(diff) + ', ' + "{0:.2f}".format((pct)*100) + '%)')
 	  
