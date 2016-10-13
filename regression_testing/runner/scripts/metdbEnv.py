@@ -1,9 +1,12 @@
 import re,os
 
 def setEnv(file):
+# Use the file in the current directory to set up environment variables
   envars={}
+  FH = None
+  env=os.path.dirname(os.path.realpath(__file__))+'/'+file
   try:
-    FH = open(file,'r')
+    FH = open(env,'r')
     lines = FH.readlines()
     for line in lines:
       if line.find('#') == -1 :
@@ -15,6 +18,7 @@ def setEnv(file):
           envars[varName] = varVal
   except:
 # Handle errors but do nothing
+    print "Error opening ",env
     pass
   finally:
     if FH: FH.close()

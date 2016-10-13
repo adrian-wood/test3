@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MetDB Test Plan Viewer</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="MetDB Test Plan Viewer">
+		<meta name="author" content="sheila.needham">
+
+		<!--Bootstrap core CSS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+		<!--Sorttable library from http://www.kryogenix.org/code/browser/sorttable/sorttable.js -->
+		<script type="text/javascript" src="sorttable.js"></script>
+		<style type="text/css">
+			table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+     			content: " \25B4\25BE" 
+			}
+			.popover { max-width: 600px; }
+		</style>	
+	</head>
+	<body>
+		<div class="container">
+		        <h2>MetDB Regression Tests {{sys1}} vs. {{sys2}} </h2>
+			<div class="row">
+			  <div class="col-md-3">
+			    <div class="alert alert-info">Tests - {{count}}</div>
+			  </div>
+			  <div class="col-md-3">
+			    <div class="alert alert-success">Pass - {{pass}}</div>
+			  </div>
+			  <div class="col-md-3">
+			    <div class="alert alert-danger">Fail - {{fail}}</div>
+			  </div>  
+			  <div class="col-md-3">
+			    <div class="alert alert-warning">Bonus - {{bonus}}</div>
+			  </div>  
+			</div>
+			<div class="row">
+			  <div class="col-md-12">
+ 		            <div class="well well-sm">Run started: {{t1}}         Run ended: {{t2}}</div>
+			  </div>  
+			</div>  
+			<div class="row">
+			  <div class="col-md-12">
+			    <div class="well well-sm"><a href="http://www-metdb/moods/misc/new_compare_stats.html">Daily storage stats comparison</a>
+			    </div>
+			  </div>
+			</div>  
+			<div class="row">
+			  <div class="col-md-12">
+			    <table class="table table-striped" >
+				<tr>
+					<th>#</th>
+					<th>Command</th>
+					<th>Input</th>
+					<th>Description</th>
+					<th>Result</th>
+				</tr>
+
+				{% for r in row %}
+                                {% if r[5] == "pass" %}
+				<tr class="success">
+				{% elif "# TODO" in r[4] %}
+				<tr class="warning">
+				{% else %}
+				<tr class="danger">
+				{% endif %}
+					<td> {{ r[0] }} </td>
+					<td> {{ r[1] }} </td>
+					<td><a href="#" title="input" data-toggle="popover" data-trigger="focus" 
+					       data-html="true" 
+					       data-content="<pre>{{r[3]}}</pre>"> {{ r[2] }}</a> </td>
+					<td> {{ r[4] }} </td>
+					<td><a href="http://www-metdb/moods/regression/scripts/OutputDisplay.py?infile={{r[2]}}&dateDir={{dateDir}}"> {{ r[5] }} </a></td>
+				</tr>
+
+				{% endfor %}
+			    </table>
+			  </div>
+			</div>
+			<div class="row">
+			  <div class="col-md-12">
+			    <div class="well well-sm"><a href="http://{{webLink}}">Archive</a></div>
+			  </div>
+			</div>  
+
+		</div>
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+                <script>
+                  $(document).ready(function(){
+                  $('[data-toggle="popover"]').popover();   
+                  });
+                </script>
+	</body>
+</html>

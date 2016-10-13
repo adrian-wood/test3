@@ -1,6 +1,7 @@
 #!/usr/local/sci/bin/python2.7
 import sys
 import os
+import getopt
 sys.path.append('/home/h01/usmdb/public_html/moods/regression/scripts')
 from TestDisplay import testDisplay
 import subprocess
@@ -9,8 +10,8 @@ from datetime import datetime
 
 #====================================================================================    
 class TestPlan:
-   'Class representing a complete test plan as a dictionary. Key is the test number \
-      and value is a test instance'
+   '''Class representing a complete test plan as a dictionary. Key is the test number 
+      and value is a test instance'''
         
 #------------------------------------------------------------------------------------    
    def __init__(self,filename):
@@ -62,7 +63,7 @@ class TestPlan:
          
 #===================================================================================
 class Test:
-   'Class representing one test'
+   '''Class representing one test'''
 #------------------------------------------------------------------------------------    
    def __init__(self, number, command, description):
       self.number = number
@@ -100,7 +101,7 @@ class Test:
  
 #------------------------------------------------------------------------------------    
    def run(self):
-      'Runs the test script, collects the output and checks if it worked or not'
+      '''Runs the test script, collects the output and checks if it worked or not'''
 
       rc=0
 # Need to substitute values for variables on the command line because subprocess does 
@@ -132,13 +133,14 @@ class Test:
       
 #===================================================================================
 class Tap:
-   'Test Anything Protocol functions'
+   '''Test Anything Protocol functions'''
    
 #------------------------------------------------------------------------------------    
    def __init__(self,filename):
       'Open dataset for writing'
       try:
          self.fo=open(filename,"w+")
+	 self.filename = filename
       except IOError:
          print "Error opening TAP output -",filename
          os._exit(1)
@@ -175,11 +177,41 @@ class Tap:
    def close(self):
       self.fo.close()
       self.fo=None
- 
+#-----------------------------------------------------------------------------------
+   def delete(self):
+      os.remove(self.filename)
+#-----------------------------------------------------------------------------------
+def getargs(argv):
+  try:
+    opts, args = getopt.getopt(argv, "e:t:")
+  except getopt.GetoptError as err:
+# print help information and exit:
+    print str(err)  # will print something like "option -a not recognized"
+    os._exit(1)
+  envFile =  None
+  testNo = None
+  for o, a in opts:
+    if o == "-e":
+      envFile = a
+    elif o == "-t":
+      testNo = a
+    else:
+      print "unhandled option ",o
+  
+  if not testNo:
+    print "Required argument -t <test_number>"
+    os._exit(2)
+  return (envFile,testNo)
+  
 #===================================================================================
-def main():
+def main(argv):
+# Get command line arguments 
+   (envFile,testNo)=getargs(argv)
+   if not envFile:
+     envFile='SetEnv.txt'
+
 # set up environment
-   metdbEnv.setEnv('SetEnv.txt')
+   metdbEnv.setEnv(envFile)
 
 # create and initialise test plan
    TESTPLAN=os.environ.get('TESTPLAN')
@@ -188,34 +220,32 @@ def main():
      os._exit(1)
    plan = TestPlan(TESTPLAN)     
 
-   plan.displayPlan()
- 
 # Set up TAP output
-   TESTRESULTS=os.environ.get('TESTRESULTS','TestResults.txt')
+   TESTRESULTS='dummy.txt'
    tap=Tap(TESTRESULTS)
-   tap.output("1.."+ str(plan.testCount))
+   tap.output("1..1")
    now=datetime.utcnow().strftime('%a %d %b @ %H:%M:%S')+'Z'
    tap.output("# START "+now)
  
 # Run the testplan
-   for n in range(1,plan.testCount+1):
-      test=plan.getTest(n)
-      try:
-         if test:
-            test.setResult(test.run())
-            tap.resultLine(test)
-               
-      except FailTest:
-         test.setResult(False)
-         tap.resultLine(test)
+   print "Running test ",testNo
+   test=plan.getTest(int(testNo))
+   try:
+     if test:
+       test.displayTest()
+       test.setResult(test.run())
+       tap.resultLine(test)
+             
+   except FailTest:
+     test.setResult(False)
+     tap.resultLine(test)
          
    now=datetime.utcnow().strftime('%a %d %b @ %H:%M:%S')+'Z'
    tap.output("# END "+now)
    tap.printTap()   
    tap.close()
-# Prduce web page summary
-   testDisplay()
+   tap.delete()
    
 if __name__ == "__main__":
-   main()
+   main(sys.argv[1:])
 

@@ -1,12 +1,14 @@
 # environment variables for integration testing - must be full paths 
 
-BASE=/home/h01/ussn/new_integration
+BASE=/home/h01/usmdb/regression
 SYS1=mdbap-preprod
 SYS2=mdbapus-prod
-TESTPLAN=/home/h01/ussn/new_integration/scripts/TestPlan.txt
-TESTRESULTS=/home/h01/ussn/new_integration/scripts/TestResults.txt
-SCRIPTS=/home/h01/ussn/new_integration/scripts
-INDIR=/home/h01/ussn/new_integration/input
-OUTDIR=/home/h01/ussn/new_integration/output
-BINDIR=/home/h01/ussn/new_integration/bin
-WEBROOT=/home/h01/usmdb/public_html/moods/test_viewers
+TESTPLAN=/home/h01/usmdb/regression/TestPlan.txt   
+TESTRESULTS=/home/h01/usmdb/regression/TestResults.txt
+SCRIPTS=/home/h01/usmdb/regression/scripts
+INDIR=/home/h01/usmdb/regression/input
+OUTDIR=/home/h01/usmdb/public_html/moods/regression/output
+BINDIR=/home/h01/usmdb/regression/bin
+WEBROOT=/home/h01/usmdb/public_html/moods/regression/html
+WEBLINK=/www-metdb/moods/regression/archive
+ARCHIVEDIR=/home/h01/usmdb/public_html/moods/regression/archive
