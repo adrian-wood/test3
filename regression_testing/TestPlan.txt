@@ -1,0 +1,5 @@
+1   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0001 $SYS1 $SYS2   : $INDIR/mdb0001 : AIRSL              
+2   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0002 $SYS1 $SYS2   : $INDIR/mdb0002 : AIRSWF                   
+3   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0003 $SYS1 $SYS2   : $INDIR/mdb0003 : AMSUB                       
+4   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0004 $SYS1 $SYS2   : $INDIR/mdb0004 : ASCAT                      
+5   : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0005 $SYS1 $SYS2   : $INDIR/mdb0005 : ASCATHR                

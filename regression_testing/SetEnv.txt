@@ -1,0 +1,12 @@
+# environment variables for integration testing - must be full paths 
+
+BASE=/home/h01/ussn/new_integration
+SYS1=mdbap-preprod
+SYS2=mdbapus-prod
+TESTPLAN=/home/h01/ussn/new_integration/scripts/TestPlan.txt
+TESTRESULTS=/home/h01/ussn/new_integration/scripts/TestResults.txt
+SCRIPTS=/home/h01/ussn/new_integration/scripts
+INDIR=/home/h01/ussn/new_integration/input
+OUTDIR=/home/h01/ussn/new_integration/output
+BINDIR=/home/h01/ussn/new_integration/bin
+WEBROOT=/home/h01/usmdb/public_html/moods/test_viewers
