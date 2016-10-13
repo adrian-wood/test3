@@ -13,8 +13,9 @@ def render(directory, template_name, **kwargs):
   loader = FileSystemLoader(directory)
   env = Environment(loader=loader)
   template = env.get_template(template_name)
-  output= "Content-Type: text/html;charset=utf-8\n\n" + template.render(**kwargs)
+  output= template.render(**kwargs)
   return output
+
 #===================================================================================
 class TAP:
   'Class representing a complete TAP file'
@@ -55,8 +56,7 @@ class TAP:
   def addTest(self,test):
     key=test.getNumber()
     if key in self.tests:
-      err= "Error - duplicate test number - "+ key
-      errorExit(err)
+      pass                                              
     else:
       self.tests[key]=test
       self.testCount += 1
@@ -129,19 +129,11 @@ class Test:
 #---------------------------------------------------------------------------
 def readData(filename):
   inp=None
-
   inp=open(filename,'r')
   lines=inp.readlines() 
   inp.close()   
   return lines
  
-#-------------------------------------------------------------------------
-def getResult(testnum,results):
-  if testnum in results:
-    return results[testnum]
-  else:
-    return 'fail'
-
 #--------------------------------------------------------------------------
 def parseData(table,results):
   rows=[]
@@ -164,34 +156,56 @@ def readInp(infile):
   content=readData(fullname)
   return ''.join(content)
 
+def archive(webRoot,baseDir,page):
+  now=datetime.now()
+  outDir=baseDir + now.strftime("/%Y/%m")
+  if not os.path.exists(outDir):
+    os.makedirs(outDir)
+
+  outFile=outDir + now.strftime("/%d") + ".html"
+  outp=None
+  try:
+    outp=open(outFile,"w")
+    outp.write(page)
+# Recreate the symlink to the latest file
+    os.unlink(webRoot+"/latest_regression_tests.html")
+    os.symlink(outFile,webRoot+"/latest_regression_tests.html")
+    outp.close()
+  except IOError:
+    print "IOError opening: "+ outFile
+    os._exit(1)
+
 #--------------------------------------------------------------------------
-def main():
-#  testPlan=r"/home/h01/ussn/new_integration/scripts/TestPlan.txt"
-#  testResults=r"/home/h01/ussn/new_integration/scripts/TestResults.txt"
-#  webRoot=r"/home/h01/usmdb/public_html/moods/test_viewers/"
+def testDisplay():
   viewer=r"testplan_template.html"
   error=r"testplan_error.html"
-  now=datetime.utcnow().strftime('%a %d %b @ %H:%M:%S')+'Z'
+  dateDir=datetime.utcnow().strftime('%Y/%m/%d')
 
-  metdbEnv.setEnv('/home/h01/ussn/new_integration/scripts/SetEnv.txt')
+  metdbEnv.setEnv('SetEnv.txt')
   webRoot=os.environ.get('WEBROOT','.')
+  archiveDir=os.environ.get('ARCHIVEDIR')
+  webLink=os.environ.get('WEBLINK')
   testPlan=os.environ.get('TESTPLAN')
   testResults=os.environ.get('TESTRESULTS')
+# Read the test plan  
   try:
     table=readData(testPlan)
-  except IOError as err:
-    templateVars={"errorMsg" : err }
-    print render(webRoot,error,**templateVars)
+  except Exception as err:
+    print "Error reading testPlan: ",err
     sys.exit(1)
-  
+# read the test results  
   try:
     tap=TAP(testResults)
-  except IOError as err:
-    templateVars={"errorMsg" : err }
-    print render(webRoot, error, **templateVars)
+  except Exception as err:
+    print "Error reading testResults: ",err
+    sys.exit(1)
+# set up rows to be output on web page
+  try:
+    rows=parseData(table,tap)
+  except Exception as err:
+    print "Error parsing data: ",err
     sys.exit(1)
 
-  rows=parseData(table,tap)
   sys1=os.environ.get('SYS1')
   sys2=os.environ.get('SYS2')
   templateVars={"row" : rows, 
@@ -202,10 +216,14 @@ def main():
 		"t1" : tap.getT1(),
 		"t2" : tap.getT2(),
 		"sys1" : sys1,
-		"sys2" : sys2}
-  print render(webRoot,viewer,**templateVars)
+		"sys2" : sys2,
+		"dateDir" : dateDir,
+		"webLink" : webLink}
+  htmlout=render(webRoot,viewer,**templateVars)
+  archive(webRoot,archiveDir,htmlout)
+
 
 #--------------------------------------------------------------------------
 if __name__ == "__main__":
-   main()
+   testDisplay()
 

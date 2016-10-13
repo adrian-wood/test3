@@ -3,6 +3,8 @@ import cgi
 import cgitb; cgitb.enable()
 import sys
 import os,os.path
+import difflib
+import pygments
 import metdbEnv
 from jinja2 import FileSystemLoader, Environment
 
@@ -30,22 +32,24 @@ def readInp(infile):
 def main():
   viewer=r"output_template.html"
   error=r"testplan_error.html"
-  metdbEnv.setEnv('/home/h01/ussn/new_integration/scripts/SetEnv.txt')
+  metdbEnv.setEnv('SetEnv.txt')
   webRoot=os.environ.get('WEBROOT','.')
   form = cgi.FieldStorage()
   infile=form.getvalue('infile')
+  dateDir=form.getvalue('dateDir')
   # only need last part of infile location
   fullpath=metdbEnv.subEnv(infile)
   file=os.path.basename(fullpath)
   sys1=os.environ.get('SYS1')
   sys2=os.environ.get('SYS2')
   outdir=os.environ.get('OUTDIR')
-  out1=readInp(outdir+'/'+sys1+'/'+file+'.out')
-  out2=readInp(outdir+'/'+sys2+'/'+file+'.out')
-  log1=readInp(outdir+'/'+sys1+'/'+file+'.log')
-  log2=readInp(outdir+'/'+sys2+'/'+file+'.log')
-  templateVars={"out1" : out1, 
-                "out2" : out2,
+  out1=readData(outdir+'/'+sys1+'/'+dateDir+'/'+file+'.out')
+  out2=readData(outdir+'/'+sys2+'/'+dateDir+'/'+file+'.out')
+  d=difflib.HtmlDiff()
+  out3=d.make_table(out1,out2,fromdesc=sys1,todesc=sys2)
+  log1=readInp(outdir+'/'+sys1+'/'+dateDir+'/'+file+'.log')
+  log2=readInp(outdir+'/'+sys2+'/'+dateDir+'/'+file+'.log')
+  templateVars={"out3" : out3, 
          		"log1" : log1,
 		        "log2" : log2,
 		        "sys1" : sys1,

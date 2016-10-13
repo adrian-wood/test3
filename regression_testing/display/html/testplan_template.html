@@ -45,6 +45,12 @@
 			</div>  
 			<div class="row">
 			  <div class="col-md-12">
+			    <div class="well well-sm"><a href="http://www-metdb/moods/misc/new_compare_stats.html">Daily storage stats comparison</a>
+			    </div>
+			  </div>
+			</div>  
+			<div class="row">
+			  <div class="col-md-12">
 			    <table class="table table-striped" >
 				<tr>
 					<th>#</th>
@@ -68,13 +74,18 @@
 					       data-html="true" 
 					       data-content="<pre>{{r[3]}}</pre>"> {{ r[2] }}</a> </td>
 					<td> {{ r[4] }} </td>
-					<td><a href="http://www-metdb/moods/test_viewers/OutputDisplay.py?infile={{r[2]}}"> {{ r[5] }} </a></td>
+					<td><a href="http://www-metdb/moods/regression/scripts/OutputDisplay.py?infile={{r[2]}}&dateDir={{dateDir}}"> {{ r[5] }} </a></td>
 				</tr>
 
 				{% endfor %}
 			    </table>
 			  </div>
 			</div>
+			<div class="row">
+			  <div class="col-md-12">
+			    <div class="well well-sm"><a href="http://{{webLink}}">Archive</a></div>
+			  </div>
+			</div>  
 
 		</div>
 		<!-- Bootstrap core JavaScript

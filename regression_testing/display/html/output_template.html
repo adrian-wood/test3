@@ -11,34 +11,39 @@
 		<!--Bootstrap core CSS -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
 	</head>
 	<body>
-      <div class="container-fluid">
+        <div class="container-fluid">
 	    <div class="row">
-           <div class="col-md-6" id="left">
-    	      <h2>{{sys1}} output</h2>
+                 <div class="col-md-9" >
+    	             <h2>diff output</h2>
+	             <p>Differences marked in first column: t-top, f-first difference, n-next difference<br/>
+	                t in the first row indicates no differences.</p>
+	         </div>
+	      <div class="col-md-3" >
+	       <br/>
+	          <a href="http://www-metdb/moods/regression/html/latest_regression_tests.html" class="btn btn-info" role="button">Back to results summary</a>
+		  <br/>
+              </div>
+           </div>
+	   <div class="row">
+               <div class="col-md-12" id="left">
 	         <pre class="pre-scrollable">
-{{out1}}
+{{out3}}
 </pre>
               </div>   
 
-              <div class="col-md-6" id="right">
-	      <h2>{{sys2}} output</h2>
-                 <pre class="pre-scrollable">
-{{out2}}
-</pre>
-	      </div>
-	    </div>
-	    <div class="row">
-              <div class="col-md-6" id="left">
+          </div>
+	  
+	  <div class="row">
+             <div class="col-md-6" id="left">
 	      <h2>{{sys1}} job-log</h2>
 	         <pre class="pre-scrollable"> 
 {{log1}}
 </pre>
-              </div>   
+             </div>   
 
-              <div class="col-md-6" id="right">
+             <div class="col-md-6" id="right">
 	      <h2>{{sys2}} job-log</h2>
                  <pre class="pre-scrollable">
 {{log2}}
