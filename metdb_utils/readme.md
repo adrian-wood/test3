@@ -1,5 +1,4 @@
-## metdb_utils folder
-=====================
+## metdb_utils
 
 Put any useful or common functions, modules or packages in here.
 
