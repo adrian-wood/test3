@@ -7,7 +7,7 @@
     Scrapes the output from these jobs and produces a summary page, using a
     Jinja template.
     Can be run anytime but usually will be run by cron once per day in the
-  morning.
+    morning.
 """
 
 import sys
