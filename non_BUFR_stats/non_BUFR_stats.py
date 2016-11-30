@@ -35,14 +35,15 @@ def parse_storedf(jobname, stdout_files, server_url):
     received any data.
 
     Args:
-      jobname: name of the job to look for e.g. MDBBDF1
-      stdout_files: a list of stdout files to examine
-      server_url: which server to get the info from, e.g. mdbdb-prod
+        jobname: name of the job to look for e.g. MDBBDF1
+        stdout_files: a list of stdout files to examine
+        server_url: which server to get the info from, e.g. mdbdb-prod
 
     Returns:
-      a_result: a dictionary of text, popover values, status etc to be used by the Jinja template.
+        a_result: a dictionary of text, popover values, status etc to be used
+        by the Jinja template.
     """
-    logging.debug('Parsing storedf for job ' + jobname + ', files = ' + str(stdout_files))
+    logging.debug('storedf job: ' + jobname + ', files: ' + str(stdout_files))
     popover_title = "Start time, counts:"
     job_status = "success"  # default
     job_text = "OK"  # default
@@ -54,7 +55,8 @@ def parse_storedf(jobname, stdout_files, server_url):
         ts = a_file.split('_')[2][8:14]
         timestamp = ts[0:2] + ":" + ts[2:4] + ":" + ts[4:6]
         stdout = ''.join(["http://", server_url,
-                          "/cgi-bin/moods/printfile.pl?fullname=/var/moods/logs/",
+                          "/cgi-bin/moods/printfile.pl?",
+                          "fullname=/var/moods/logs/",
                           jobname, "/", a_file])
         response = urllib2.urlopen(stdout)
         s = response.read()
@@ -64,12 +66,16 @@ def parse_storedf(jobname, stdout_files, server_url):
         end = 'DETAILS OF SCHEMAS'
         startup = s[s.find(start)+len(start):s.rfind(end)].rstrip()
         # get a list of all the daatypes this jobs is handling
-        datatypes = startup.split()[1::3]  # every 3rd word starting with the 2nd is a datatype :-)
+        # every 3rd word starting with the 2nd is a datatype :-)
+        datatypes = startup.split()[1::3]
         if popover_text:
             popover_text.append('\n' + timestamp)
         else:
             popover_text.append(timestamp)
-        popover_text.append('\t'.join(['datatype', 'read', 'stored', 'rejected']))
+        popover_text.append('\t'.join(['datatype',
+                                       'read',
+                                       'stored',
+                                       'rejected']))
 
         # process shutdown text
         shutdown_text = 'SUMMARY OF MESSAGES PROCESSED'
@@ -83,15 +89,19 @@ def parse_storedf(jobname, stdout_files, server_url):
 
             for x in output.split('\n'):
                 if x and '----' not in x:  # we've got a line to parse
-                    datatype_counts[x.split()[0]] = (x.split()[1], x.split()[2], x.split()[3])
+                    datatype_counts[x.split()[0]] = (x.split()[1],
+                                                     x.split()[2],
+                                                     x.split()[3])
 
             for datatype in datatypes:
                 if datatype in datatype_counts:
                     counts = datatype_counts[datatype]
                     logging.debug('counts = ' + ' '.join(counts))
-                    popover_text.append('\t'.join([datatype.ljust(8), '\t'.join(counts)]))
+                    popover_text.append('\t'.join([datatype.ljust(8),
+                                        '\t'.join(counts)]))
                 else:  # not found in results
-                    popover_text.append('\t'.join([datatype.ljust(8), "Missing"]))
+                    popover_text.append('\t'.join([datatype.ljust(8),
+                                                   "Missing"]))
                     job_text = "Types Missing"
                     job_status = "warning"
 
@@ -109,8 +119,8 @@ def parse_storedf(jobname, stdout_files, server_url):
 def parse_gribdat(jobname, stdout_files, expected, server_url):
     """Check the output of a list of gribdat job(s).
 
-    Obtain the output from each of the stdout files supplied in stdout_files for
-    the supplied jobname from the supplied server.
+    Obtain the output from each of the stdout files supplied in stdout_files
+    for the supplied jobname from the supplied server.
     The criteria for success or otherwise is that the total of files
     processed in the day (which might be > 1 job) should match the number
     supplied in the 'expected' parameter, and that number should have
@@ -122,13 +132,14 @@ def parse_gribdat(jobname, stdout_files, expected, server_url):
         jobname: name of the job to look for e.g. MDBBDF1
         stdout_files: a list of stdout files to examine
         expected: the expected count of files processed in one day
-        server_url: which server to get the info from, e.g. mdbdb-prod, mdbdb-preprod
+        server_url: which server to get the info from, e.g. mdbdb-prod
 
     Returns:
-        a_result: a dictionary of text, popover values, status etc used by the Jinja template.
+        a_result: a dictionary of text, popover values, status etc to be used
+        by the Jinja template.
     """
 
-    logging.debug('Parsing gribdat for job ' + jobname + ', files = ' + str(stdout_files))
+    logging.debug('gribdat job: ' + jobname + ', files: ' + str(stdout_files))
     popover_title = "Start time - read / copied"
     total_gribs_read = 0
     total_gribs_copied = 0
@@ -140,13 +151,14 @@ def parse_gribdat(jobname, stdout_files, expected, server_url):
         ts = a_file.split('_')[2][8:14]
         timestamp = ts[0:2] + ":" + ts[2:4] + ":" + ts[4:6]
         stdout = ''.join(["http://", server_url,
-                          "/cgi-bin/moods/printfile.pl?fullname=/var/moods/logs/",
+                          "/cgi-bin/moods/printfile.pl?",
+                          "fullname=/var/moods/logs/",
                           jobname, "/", a_file])
         response = urllib2.urlopen(stdout)
         s = response.read()
 
-        # We are looking for the last line of output for the "nn GRIB DATASETS READ and nn COPIED",
-        # which is actually the 4th last line of the HTML response.
+        # We are looking for the last line of output for the "nn GRIB DATASETS
+        # READ and nn COPIED", which is the 4th last line of the HTML response.
         lines = s.split('\n')  # split the output on the new line char
         output = lines[len(lines) - 4]
 
@@ -154,10 +166,14 @@ def parse_gribdat(jobname, stdout_files, expected, server_url):
             logging.debug('Found something in ' + a_file)
             gribs_read = output.split()[0]
             gribs_copied = output.split()[6]
-            popover_text.append(timestamp + ' - ' + gribs_read + ' / ' + gribs_copied)
+            popover_text.append(timestamp
+                                + ' - '
+                                + gribs_read
+                                + ' / '
+                                + gribs_copied)
             total_gribs_read += int(gribs_read)
             total_gribs_copied += int(gribs_copied)
-        else:       # this file does not have normal shutdown messages, so must have aborted.
+        else:       # this file doesn't have shutdown messages, so aborted.
             popover_text.append(timestamp + ' - no counts')
             job_status = "danger"
 
@@ -181,15 +197,17 @@ def get_stdout_matches(jobname, dates, server_url):
     For the supplied jobname, use listlogdir.pl to obtain all the available
     output, and use the lxml toolkit to parse the html returned. Match the
     resulting stdout files with each of the supplied date(s).
-    Return a dictionary keyed on date with values of the matching stdout filenames.
+    Return a dictionary keyed on date with values of the matching stdout
+    filenames.
 
     Args:
         jobname: name of the job to look for e.g. MDBBDF1
         dates: list of dates we're interested in
-        server_url: which server to get the info from, e.g. mdbdb-prod, mdbdb-preprod
+        server_url: which server to get the info from, e.g. mdbdb-prod
 
     Returns:
-        stdout_matches: a dictionary keyed on date with values of matching stdout files.
+        stdout_matches: a dictionary keyed on date with values of matching
+        stdout files.
   """
 
     import lxml
@@ -213,7 +231,7 @@ def get_stdout_matches(jobname, dates, server_url):
 
     # now match the files with dates...
     for date in dates:
-        date = date.translate(None, '/')  # stdout file name has date in a different format
+        date = date.translate(None, '/')  # stdout file name date is different
         matches = [s for s in stdout_files if date in s]
         logging.debug(" ".join(['matches for', date, 'are', str(matches)]))
         stdout_matches[date] = matches
@@ -274,7 +292,10 @@ def main():
     datestr = now.strftime("%H:%M %d-%m-%Y")
     yesterday = now - timedelta(days=1)
     yesterdaysPage = ''.join(["/moods/misc/non_BUFR_stats_archive/",
-                             server, "/", yesterday.strftime("%Y/%m/%d"), ".html"])
+                              server,
+                              "/",
+                              yesterday.strftime("%Y/%m/%d"),
+                              ".html"])
 
     # Create a list of date strings for web page, starting from yesterday
     dates = []
@@ -284,7 +305,8 @@ def main():
     sections = []  # list for Jinja2
 
     # Process each 'Section' in the configuration file
-    conf_sections = [x.strip() for x in Config.get('Layout', 'Sections').split(',')]
+    conf_sections = [x.strip()
+                     for x in Config.get('Layout', 'Sections').split(',')]
 
     for conf_section in conf_sections:
         jobs = []
@@ -304,15 +326,20 @@ def main():
                 job = dict(job_name=job_name)
                 results = []
                 stdouts = get_stdout_matches(job_name, dates, server_url)
-                logging.debug(" ".join(['stdouts for', job_name, 'are', str(stdouts)]))
+                logging.debug(" ".join(['stdouts for', job_name,
+                                        'are', str(stdouts)]))
 
                 for date, match_list in sorted(stdouts.iteritems()):
                     if match_list:
                         if jobtype == 'gribdat':
-                            a_result = parse_gribdat(job_name, match_list,
-                                                     expected_count, server_url)
+                            a_result = parse_gribdat(job_name,
+                                                     match_list,
+                                                     expected_count,
+                                                     server_url)
                         elif jobtype == 'storedf':
-                            a_result = parse_storedf(job_name, match_list, server_url)
+                            a_result = parse_storedf(job_name,
+                                                     match_list,
+                                                     server_url)
                     else:  # need an empty "result"
                         a_result = dict(job_status="", popover_title="",
                                         popover_text="", job_text="")
@@ -328,7 +355,10 @@ def main():
         sections.append(a_section)
 
     # get the current MONITOR.errorlog output
-    monerr = r"http://" + server_url + "/cgi-bin/moods/printfile.pl?fullname=/var/moods/logs/MONITOR.errorlog"
+    monerr = ''.join(["http://",
+                      server_url,
+                      "/cgi-bin/moods/printfile.pl?",
+                      "fullname=/var/moods/logs/MONITOR.errorlog"])
     response = urllib2.urlopen(monerr)
     s = response.read()
     start = '<pre>'  # we want everything between the <pre> and </pre> tags
