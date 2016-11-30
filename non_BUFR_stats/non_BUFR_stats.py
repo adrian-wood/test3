@@ -1,12 +1,12 @@
 #!/usr/local/sci/bin/python2.7
 """Produce a summary page of daily stats for GRIB, NetCDF, HDF5 and XML jobs.
 
-  (c) Crown copyright 2016, the Met Office.
-  Reads a configuration file containing details of which MetDB jobs to check
-  and what the criteria for success is, where appropriate.
-  Scrapes the output from these jobs and produces a summary page, using a
-  Jinja template.
-  Can be run anytime but usually will be run by cron once per day in the
+    (c) Crown copyright 2016, the Met Office.
+    Reads a configuration file containing details of which MetDB jobs to check
+    and what the criteria for success is, where appropriate.
+    Scrapes the output from these jobs and produces a summary page, using a
+    Jinja template.
+    Can be run anytime but usually will be run by cron once per day in the
   morning.
 """
 
