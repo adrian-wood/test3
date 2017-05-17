@@ -152,7 +152,7 @@ plt.legend(loc='best')
 ax.set_title(title)
 
 outfile = HTML + latest + '.png'
-backup = HTML + 'archive/' + filename + '.png'
+backup = HTML + 'archive/' + output + '.png'
 
 logging.debug('output at ' + outfile)
 
