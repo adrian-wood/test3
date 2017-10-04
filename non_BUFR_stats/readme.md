@@ -36,7 +36,7 @@ The script must be supplied with a configuration file by running it with the `-c
    1. Danger (red) - the expected number of datasets have not been "copied", *and* the expected number of datasets have not been received.
 
 ### Running the Script
-This is how the script is being run, locations etc. The sscript is running on the Linux Server `els030` as the `usmdb` account.
+This is how the script is being run, locations etc. The script is running on the Linux Server `els030` as the `usmdb` account.
 1. The script itself and both the `prod.cfg` and `preprod.cfg` files are in the directory `~usmdb/non_BUFR_stats`.
 1. The `non_BUFR_stats_template.html` Jinja2 template is in the directory `~usmdb/public_html/moods/misc`.
 1. The base "archive" directory `~usmdb/public_html/moods/misc/non_BUFR_stats_archive/` was created, with subdirectories of `prod` and `preprod`.

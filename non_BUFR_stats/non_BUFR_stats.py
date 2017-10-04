@@ -82,7 +82,7 @@ def parse_storedf(jobname, stdout_files, server_url):
         if shutdown_text in s:
 
             # we've shutdown successfully; extract and process the counts
-            start = '---------    ------  ------  ------'
+            start = '---------    '
             end = 'TOTALS:'
             output = s[s.find(start)+len(start):s.rfind(end)].rstrip()
             datatype_counts = {}
