@@ -33,16 +33,15 @@ where the year and month are the previous month, i.e. the start of the period be
 This should be submitted after the PDFs have been downloaded.  It has no arguments.
 
 #### create_summary.py
-
+```
 Usage: create_summary.py [options]
-
 Description: creates monthly summary html.
-
 Options:
+
   -h, --help            show this help message and exit
   -b BASE               Base directory.
   -t TEMPLATE           Template HTML file relative to BASE dir.
   -d DATE               date of image files yyyymmdd.
   -o OUTFILE, --outfile=OUTFILE output file relative to BASE dir.
-
-This uses the template in html/summary_template.html to produce the final monthly summary page. 
+```  
+This uses the template in html/summary_template.html to produce the final monthly summary page and is called from metdb_monthly_report.py. 
