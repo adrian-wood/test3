@@ -19,8 +19,11 @@ The directory structure is straightforward:
 
 Nagios XI reports and graph pages are e-mailed to the MetDB inbox on the 1st of the month.  The attached PDF documents must be saved in the /archive
 folder using the standard naming convention:
+
    yyyymm01_sla.pdf
+   
    yyyymm01_graphs.pdf
+   
 where the year and month are the previous month, i.e. the start of the period being reported.
 
 ### Scripts
