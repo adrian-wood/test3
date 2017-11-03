@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MetDB Monthly Report</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="description" content="MetDB Monthly Report">
+  <meta name="keywords" content="MOODS MetDB metrics">
+<!-- scripts and css -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+  <body>
+    <div class="container">
+    
+      <h2>MetDB Monthly Summary - {{ report_month }} </h2>
+      <a href="../archive/">Previous reports</a>
+    	
+<!--- SLA Report -->		
+      <div class="embed-responsive embed-responsive-4by3">
+        <object data="{{ sla }}#view=FitB" type="application/pdf">
+          <p>Your browser does not support embedded PDF files.<br>
+            <a href="{{ sla }}">Click here to download the PDF file.</a>
+          </p>
+        </object> 
+      </div>
+
+	  <hr/>
+	 
+<!--- Performance graphs -->
+      <div class="embed-responsive embed-responsive-4by3">
+        <object data="{{ graphs }}#view=FitB" type="application/pdf">
+          <p>Your browser does not support embedded PDF files.<br>
+            <a href="{{ graphs }}">Click here to download the PDF file.</a>
+          </p>
+        </object>
+      </div> 
+	  
+     <hr/>
+     
+     <p  class="text-center">Created by script {{creator}} running as user {{runner}} on {{where}}</p>
+     <p> Maintained by: <a href="mailto:metdb@metoffice.gov.uk">MetDB Team </a></p>
+     
+    </div>
+  </body>
+</html>
