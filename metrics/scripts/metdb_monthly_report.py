@@ -12,10 +12,9 @@
 #
 # REVISION INFO :
 #
-# $Workfile: $ $Folder: $
-# $Revision: $ $Date: $
-#
 # $Log:
+# MB-1608: Version for Nagios XI graphs, based on code previously held
+#          in metdb-apps/metrics.                                  SN
 # $
 # -----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2013- MET OFFICE. All Rights Reserved.
