@@ -7,7 +7,7 @@ This version replaces one previously held in the metdb-apps repository which als
 
 ### Code Location
 
-The system runs on els030 via cron from /home/h01/usmdb/public_html/moods/sla_stats as user usmdb. This keeps it separate from the MOODS environment and outside the MOODS configuration management process so that changes can be made as and when required. It also allows the system to take advantages of Python packages not available on the MOODS systems (e.g.jinja2).
+The system runs from /home/h01/usmdb/public_html/moods/sla_stats as user usmdb. This keeps it separate from the MOODS environment and outside the MOODS configuration management process so that changes can be made as and when required. It also allows the system to take advantages of Python packages not available on the MOODS systems (e.g.jinja2).
 
 The directory structure is straightforward:
 
