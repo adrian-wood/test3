@@ -34,16 +34,7 @@ import copy
 #  
 #                   output
 #                   c12_read - dict of lists.                       
-#
-#                   read_in_tableb => Read the WMO (txt) version of BUFR tableB. Output to a dict of lists
-#                   input => BUFR TableB filename (.txt)  
-#
-#                   output => dseq      - Dict of lists   
-#
-#
-#
-#
-                  
+#                   
 ##############################################################################################################################################################################################################
 #
 # subroutine : 	    ind_read
@@ -61,15 +52,12 @@ import copy
 ##############################################################################################################################################################################################################
 #
 def ind_read(S1):
- odict={}
  tlist=[]
- strchek=0
  n=-1
  B1='BUFR SEQUENCES'
  I1='INDEX' 
  lenS1=len(S1)-1
  n=0
- slist1=[]
  slist=[]
  flist=[]
  plist=[]
@@ -114,7 +102,6 @@ def ind_read(S1):
 #	            S1      -  full filename of the MHSR file.
 # 	            c11_d   -  filename common code table C11
 #                   c12_d   -  filename common code table C12
-#                   tdtable -  BUFR TableD containing fully expanded sequences 
 #                   errq    -  Error dictionary 
 #
 #                   output => sum_dict - dict containing Decoded (bin - ascii) data 
@@ -126,24 +113,13 @@ def ind_read(S1):
 #
 ##############################################################################################################################################################################################################
 #
-def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
+def sum_bin(hf,dtp,S1,c11_d,c12_d,errq):
  with open(S1,'rb') as fp:                                                        # open bufr and read as binary  
-    list_bin=[]
-    pointl=[]
     fdict={} 
     sum_dict={}
-    sum_list=[]
-    sum_list2=[]
     bst='xxxx'
     td=['X','X']
     obn=1
-    errout={}  
-    errd=[]
-    errh=[]
-    errm=[]
-    errnds=[]
-    errcls=[]
-    errfxy=[]
 #   hdef = Hex equivalents of - ASCII
 #             'I' 'E'     'I'  'N'     I   'O'   'I '  'P'   'I' ,'S'     'I'  'T'    'I','U'  
     hdef = [['49','45'],['49','4e'],['49','4f'],['49','50'],['49','53'],['49','54'],['49','55']]
@@ -234,9 +210,7 @@ def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
       idlfj=tlist[7:8]                                                        # join ocets 7:8 and convert hex => int. BUFR Edition.
       bedi=int(idlfj[0],16)
       if int(bedi) == 4:                                                      # assume and read as read BUFR edition 4
-         s1len = int(''.join(tlist[8:11]),16)                                 # section 1 length 
-        # if s1len == 22:
-       #     tlist.insert(31,'00')                                             # If length of section 1 is 22 add extra octet to make len 23  
+         s1len = int(''.join(tlist[8:11]),16)                                 # section 1 length                                             # If length of section 1 is 22 add extra octet to make len 23  
          bmt = int(tlist[11:12][0],16)                                        # ocets 11:12 convert hex => int. BUFR Master Table. 
          idgc = int(''.join(tlist[12:14]),16)                                 # ocets 12:14 convert hex => int. ID Generating centre.      
          idgc2=str(idgc)             
@@ -358,11 +332,8 @@ def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
             s3stpt = 8 + s1len + s2len                     
             s3len = int(''.join(tlist[s3stpt:s3stpt+3]),16)                   # assuming no section 2 octets 31:34 will give the length of section 3 
             s3lhex = tlist[s3stpt:s3stpt+3]
-        #    print "s3lhex - int ",s3lhex,"\n"  
-         #   print "s3len - int ",s3len,"\n"
              
             if s3len >=  tlen or s3len == 0:                                  # id len section 3 == 0 capture error   
-          #      print "tlist ",tlist,"\n"  
                 
                 ero = errq['Incorrectly encoded value for section 3 length (section 2 not present) - BUFR Edition 4']
                 key2=key.split('/')
@@ -377,20 +348,11 @@ def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
                 errq['Incorrectly encoded value for section 3 length (section 2 not present) - BUFR Edition 4'] = ero
                 break   
             s3ds =  tlist[s3stpt+7:s3stpt + s3len]                            # bulletin encoding sequence
-        #    print "s3ds ",s3ds,"\n" 
-        #    print "======\n"   
-   #         print "s3ds ",s3ds,"\n"
-        #    print "s3stpt ",s3stpt,"\n"
-       #     print "s3len ",s3len,"\n"
-       #     print "======\n" 
          else:                                                                # assuming section 2 present 
         #    s2len = int(''.join(tlist[32:34]),16)                             # octets 31:34 will give the length of section 2 
             s2stpt = 8 + s1len
             s2len = int(''.join(tlist[s2stpt:s2stpt+3]),16)        
-            s3stpt = 8 + s1len + s2len    
-         #   print "s1len ",s1len,"\n"
-        #    print "s2len ",s2len,"\n" 
-         #   print "s3stpt ",s3stpt,"\n"  
+            s3stpt = 8 + s1len + s2len     
             s3len = int(''.join(tlist[s3stpt:s3stpt+3]),16)                   # section 3 length  
             if s3len >=  tlen or s3len == 0 :
                 ero = errq['Incorrectly encoded value for section 3 length (section 2 present) - BUFR Edition 4'] 
@@ -405,9 +367,7 @@ def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
                 ero.append(erot) 
                 errq['Incorrectly encoded value for section 3 length (section 2 present) - BUFR Edition 4'] = ero
                 break   
-            s3ds =  tlist[s3stpt+7:s3stpt + s3len]                            # bulletin encoding sequence
-         #   print "s3ds ",s3ds,"\n"
-         #   print "======\n"   
+            s3ds =  tlist[s3stpt+7:s3stpt + s3len]                            # bulletin encoding sequence 
       elif int(bedi) == 3:                                                    # read as BUFR edition 3
          s1len = int(''.join(tlist[8:11]),16)                                 # read and convert ocets 8:11 => for section 1 length    
          if s1len == 17:
@@ -581,39 +541,7 @@ def sum_bin(hf,dtp,S1,c11_d,c12_d,tdtable,errq):
       list_temp.append(s3ind)
       if key not in sum_dict.keys():
            sum_dict[key]=list_temp
-   #        print "sum_bin sum_dict[key] ",key," ",sum_dict[key],"\n"
  return(sum_dict,errq,uttc) 
-#
-##############################################################################################################################################################################################################
-#
-# subroutine : 	    jconv_bin
-# 
-# purpose:          return integer converted from hex value(s) supplied as a list.
-# 
-# parameters: 
-#                   input =>    	
-#	            lenr   - list of hex values
-#  
-#                   output =>  
-#                   cnvent - integer    
-#
-#
-#
-##############################################################################################################################################################################################################
-#  
-def jconv_bin(lenr):
-   len1=len(lenr)
-   numb=8
-   scale=16 
-   binl=[]
-   for x in range(0,len1):
-     mhex=lenr[x]
-     cnv=bin(int(mhex,scale))[2:].zfill(numb)                                     # convert list entries to bin     
-     binl.append(cnv)                                                             # append entries into listf
-   jent=''.join(binl)                                                             # when complete 'join' entries together 
-   cnvent=int(jent,2)                                                             # convert concatenated entry to integer     
-   return(cnvent)   
-#   
 #
 ##############################################################################################################################################################################################################
 #
@@ -635,7 +563,7 @@ def jconv_bin(lenr):
 ##############################################################################################################################################################################################################
 #
 def bit_anal(spval,bitp,fxy):
-   sp=0 
+#   sp=0 
    numb=8
    scale=16 
    olist=[]
@@ -785,367 +713,12 @@ def read_c12(file_in2):
    return(c12_read)
 #
 ##############################################################################################################################################################################################################
-# subroutine name: rep_d2
-#
-# purpose:         Expand all D sequences, replacing nested D sequences with full listings of B Descriptors
-#
-# input:           odictn     -  Dict of D Sequences.
-#                  tdtable    -  Expanded D sequences from BUFR Table D 
-#
-# output:          odictf     -  Dictionary containing expanded D sequence.
-#                    
-#
-##############################################################################################################################################################################################################
-#
-def rep_d2(odictn,tdtable,switch):
- odictf={}
- for key in odictn.keys():
-   ilistd=[]
-   if switch == "1":
-      ilistd=odictn[key][2:]
-   elif switch == "2":
-      nkey=key.split("-")
-      nkey2=nkey[1]
-      nkey3=nkey[0]
-      ilistd=odictn[key]    
-   D_test="True"
-   while D_test:         # this loop will repeat until no 3 descriptors are found
-         restart = False
-         n=0
-         xylen=len(ilistd)
-         for i in range (0,xylen):
-             ts = ilistd[i][0] 
-             tsf = ilistd[i]
-             if ts == "3":  
-                try:  
-                   nv=tdtable[tsf][2:]                              # Tdtable is of the form ['Description', 'No of elements', Decsriptor1, Descriptor2, ...] 
-                   ilistd[i]=nv                                     # insert at a specific point in the list                 
-                   if n == xylen: 
-                      restart = False
-                   else:
-                      restart = True
-                      ilistdo=[]
-                      for i in ilistd:
-                          try:
-                              i2=int(i) 
-                              ilistdo.append(i)
-                          except:
-                              for j in i:
-                                 ilistdo.append(j) 
-                      ilistd=ilistdo
-                      break    
-                except:
-                   err_text="Rep-D2 :D Sequence expansion error Element Index - "+nkey3+" D sequence "+nkey2+"\n"  
-                   break
-         if not restart:  
-            odictf[nkey2] = ilistd   
-            break  
- return(odictf)
-#
-##############################################################################################################################################################################################################
-# subroutine name: flatten
-#
-# purpose:         flatten list of lists(irregular)
-#
-# input:           x     -  list possibly containing nested lists
-#
-# output:          j  -     flattened list .
-#                    
-#
-##############################################################################################################################################################################################################
-#
-def flatten(x):
-  try:
-      it = iter(x)
-  except TypeError:
-      yield x
-  else:
-      for i in it:
-          for j in flatten(i):
-              yield j
-#
-##############################################################################################################################################################################################################
-# subroutine name: rep_d
-#
-# purpose:         Expand all D sequences, replacing nested D sequences with full listings of B Descriptors
-#
-# input:           odictn     -  Dict of D Sequences.
-#
-# output:          odictf  -   Dictionary containing expanded D sequence.
-#                    
-#
-##############################################################################################################################################################################################################
-#
-def rep_d(odictn):
-# expand sequence and 
-# replace table D - "3" descriptors with full listings
- odictf={}
- for key in odictn.keys(): 
-   ilistd=[]
-   ilistd=odictn[key][2:]
-   D_test="True"
-   while D_test:         # this loop will repeat until no 3 descriptors are found
-         restart = False
-         n=0
-         xylen=len(ilistd)
-         for i in range (0,xylen):
-             n=i
-             ts = ilistd[i][0]
-             tsf = ilistd[i]
-             if ts == "3":
-                tsfi=tsf
-                nv=odictn[tsfi][2:]
-                ilistd[i]=nv                                     #       insert at a specific point in the list                 
-                if n == xylen: 
-                   restart = False
-                else:
-                   restart = True
-                   ilistdo=list(flatten(ilistd)) 
-                   ilistd=ilistdo
-                   break
-         if not restart:  
-            odictf[key]=ilistd   
-            break  
-
- return(odictf)
-#  
-##############################################################################################################################################################################################################
-#
-# subroutine name:read_in_tableb
-#
-# purpose:        Read in the current (operational) tableB to a dict.       
-#
-# input:          Tablename  -  BUFR TableB filename (.txt)  
-#                               format of TableB -
-#                               [FXY]=[[Descriptor Revision, description, Unit(s), BUFR unit, BUFR Scale, BUFR Ref, BUFR data width, CREX unit, CREX  Scale, CREX Ref]]
-#
-# output:         Master     - Dict of lists of the form -
-#                              dict[010114][[rev(1),Descr,unit,scale,ref val,data width],[rev(2),Descr,unit,scale,ref val,data width]]   
-#                 rev_ukmo   - table B revision Number
-#                 
-#                  
-#
-##############################################################################################################################################################################################################
-def read_in_tableb(tablename):
- rev="WMO Version"
- second=0
- drow=[]
- master={}
- local={}
- with open (tablename,'r') as fb:                               
-    for line in fb:
-      if rev not in line:                                       
-        test=line[0:6]
-        if test.isdigit() and second == 0:                     
-	  ident=str(line[0:6]) 
-	  ident=ident.strip(' \t\n\r')  
-	  gident=int(ident[0:3])
-	  lident=int(ident[3:6])                              
-	  desc=line[7:61]                                       
-	  desc=desc.strip(' \t\n\r')
-          metrev=line[74:]
-	  metrev2=metrev.replace("+","")
-	  metrev=metrev2
-	  metrev=metrev.strip(' \t\n\r')
-	  second=1
-        elif second == 1: 
-	  drow=[]     
-          unit=line[1:13] 
-	  unit=unit.strip(' \t\n\r')                                   
-	  scale=line[26:29]                                    
-	  scale=scale.strip(' \t\n\r')
-	  ref=line[29:40]
-	  ref=ref.strip(' \t\n\r')
-	  dw=line[40:43]
-	  dw=dw.strip(' \t\n\r') 
-          cunit=line[44:67]
-	  cunit=cunit.strip(' \t\n\r')
-	  cscale=line[70:73]
-	  cscale=cscale.strip(' \t\n\r')
-          cdw=line[74:76]
-          cdw=cdw.strip(' \t\n\r') 
-	  drow.append(metrev) 
-	  drow.append(desc)                                   
-	  drow.append(unit)
-	  drow.append(scale)
-	  drow.append(ref)
-	  drow.append(dw)
-          drow.append(cunit)
-          drow.append(cscale)
-          drow.append(cdw)
-          if ident in master:                                   
-	     drowt=master[ident]
-	     drowt.append(drow)
-	     xl=len(master[ident])                              
-	     if xl > 1:                                         
-	       drowt.sort(key=itemgetter(0))                     
-	       master[ident]=drowt              # apend to existing entry in master dict                                                       
-          else:
-	     drowt=[]
-	     drowt.append(drow)
-	     drow=list(drowt)
-	     master[ident]=drow                 # add new entry to master dict
-          second=0     						 
-      else:
-         rev_line=line[0:] 
-	 point=rev_line.find(rev)
-	 rev_ukmo=rev_line[point+12:point+16]
- for key in sorted(master.keys()):
-     tempm=[]
-     tempm=master[key]
-     tempm.sort(key=itemgetter(0),reverse=True)
-     master[key]=tempm 	   					  
- 
- return master,rev_ukmo
-##############################################################################################################################################################################################################
-# subroutine name:read_in_tabled
-#
-# purpose:        Read in the current (operational) tableD to a dict.       
-#
-# input:          Tablename  -  BUFR TableD filename (.txt)  
-#
-# output:         dseq :- dict of lists of the format -  
-#                 dict[010114][[rev(1),Descr,unit,scale,ref val,data width],[rev(2),Descr,unit,scale,ref val,data width]]  
-#                 format of the oputput dictionary :  
-#                 
-#                 [FXY]=[[Descriptor Revision, description, Unit(s), BUFR unit, BUFR Scale, BUFR Ref, BUFR data width, CREX unit, CREX  Scale, CREX Ref]] 
-#
-#                 rev2 => BUFR table Revision No
-#                 
-#
-##############################################################################################################################################################################################################
-#
-def read_in_tableD(tableD):
- dseq={}
- # rev=False
- rev="WMO Version"
- rev2=""
- dline=[]
- n=0
- nseq=0
- fin=open(tableD,'r') #  
- for line in fin:                                                        # check for first line of file and extract version no
-     bc=line.rstrip(" ")
-     bc2=bc.lstrip(" ")
-     bc3=bc2.strip("\n")
-     bc4=bc3.strip("\r")
-     lbc=len(bc4)
-     if line.find(rev) != -1 :
-        rev2=line[15:19]
-	rev2.strip()                                          
-     else:
-        if lbc == 0:                                                    # check for blank line, this may indicate the start of a new sequence
-           nseq=0                                                       # re set switch to indicate start of a new sequence
-           title=""
-        elif nseq == 0 and lbc > 0:                                     # switch indicates the start of a new sequence
-          if bool(re.search('[a-zA-Z]',line)):                          # check for sequence title if found insert at index 0 in the list
-             title=""
-             title=line
-             title.lstrip()
-             title.rstrip()
-             titlef=title.replace("(","")
-             titlef2=titlef.replace(")","")
-             titlef2=re.sub( '\s+', ' ', titlef2 ).strip()
-             title=titlef2                                    
-          else:                                                         # numeric string found, assume 1st line of sequence
-             temp_l=re.sub( '\s+', ' ', line ).strip()                  # replace multiple whitespace in the line with single whitespace
-             templ=temp_l.split(" ")                                    # split string on single whitespace
-             if len(templ[0]) > 6:
-                key=templ[0][0:6]
-                count=templ[0][6:]
-             else:
-                key=templ[0]
-                count=templ[1] 
-             dline=templ[2:] 
-             dline.insert(0,title)
-             dline.insert(1,count)
-             nseq=nseq+1
-             dseq[key]= dline
-        elif lbc > 0 and nseq > 0:                                     # switch indicates the continuation of an existing sequence
-             temp_l=re.sub( '\s+', ' ', line ).strip()                 # replace multiple whitespace in the line with single whitespace
-             templ=temp_l.split(" ")                                   # split string on single whitespace
-             dline=dline+templ 
-             dseq[key]= dline	
-#
- if '301128' in dseq:
-     print "read_in_TableD dseq['301128'] ",dseq['301128'],"\n"
- return dseq,rev2
-#
-
-##############################################################################################################################################################################################################
-# subroutine name:read_loc
-#
-# purpose: Read and store local BUFR sequences 
-#          as a dictionary of lists                 
-#
-# input:   list_in : Location and name of local BUFR sequences =>         
-#
-# output:  ddict   : Will return a dict of lists for which the naming convention will be 
-#          datatype name - FXY (eg  amdars-311195)                            
-#
-##############################################################################################################################################################################################################
-#
-def read_loc(list_in):
-# 
-  n=1
-  ddict={}
-  tlist=[] 
-  flist=[]
-  lenil=len(list_in)
-  for x in range(0,lenil):
-        lineop=list_in[x] 
-        if re.search("@INDEX",lineop):
-              continue                                  # note this is a temporary fix
-        if re.search("JASON2",lineop):
-              continue                         
-        if re.search("mode-s",lineop):
-              continue
-        if re.search("blank",lineop):
-              continue  
-        lineop2="/var/moods/tests/tables/bufr_localseq/"+lineop            
-        with open(lineop2,'r') as vp:                     # open local sequence and read into a dict      
-          n=0
-          for line in vp: 
-             n=n+1  
-             linesp1=line.strip("\n") 
-             linesp2=re.sub( '\s+', ' ', linesp1 ).strip() 
-             tlen1=len(linesp2)  
-             linesp3=linesp2.replace(",","")
-             linesp4=linesp3.split(" ")   
-             tlen2=len(linesp4)  
-             if n == 1 and tlen2 > 0:
-                st=1
-                fn=0
-                scode=lineop+"-"+linesp4[0]
-                ddict[scode]=[]
-                vp.next()
-             elif n > 1 and st == 1 and fn == 0 and tlen1 > 0:   # body of sequence  
-                for x in range(0,tlen2):
-                   desc=linesp4[x] 
-                   len_desc=len(desc)
-                   l1list=ddict[scode]
-                   if desc.isdigit() and len_desc == 6:
-                      l1list.append(desc)
-                ddict[scode]=l1list
-                l1list=[]         
-             elif n > 1 and st == 1 and fn == 0 and tlen1 == 0:   # blank line may be the end of the sequence
-                st = 0
-                fn = 1      
-             elif n > 1 and st == 0 and fn == 1 and tlen1 > 0:   # start of a new sequence (which is not at the beginning of the Retrieval index)
-                st=1
-                fn=0
-                scode=lineop+"-"+linesp4[0]
-                ddict[scode]=[]    
-                vp.next()
-  return(ddict)
-#
-##############################################################################################################################################################################################################
 #
 # subroutine name:  listing_build
 #
 # purpose:          Construct listing of all files in the processed   
 #                   directory matching the criteria set out in the 
-#                   config file and time limited.                  
+#                   config file and according to the time limitations.                  
 #
 # input:           ah    :  Criteria set out in the configuration file_in
 #                           presented as a list
@@ -1179,52 +752,40 @@ def listing_build(ah,tsp1):
 # purpose:          1.  Decode and construct listing of sections 1, 2 & 3
 #                       of each MHSR* file listed by listing_build.   
 #                                
-#                  2.   Expand the BUFR Encoding D sequence from Section 3 
-#                       of the bulletin.
 # 
 # input:           indct    :  Dictionary of lists of the form :-
 #                              [['Datatype','storage_datasets','header file','elements_index','processed Directory',
 #                              [[element index 1[,]element index 2],[.....]],[MHSR file listing]]]   
-#                  tdfinal  :  Dictionary of TableD sequences including locally 
 #                              defined sequences.
 #                  c11_dict :  Dictionary of table C11 values
 #                  c12_dict :  Dictionary of table C12 values  
-#                  errpf    :  Dictionary of encoding / decoding errors  
-#                              presented as a list
+#                  errpf    :  Dictionary of encoding / decoding errors (presented as a list)
 #
-# calls:           sum_bin
-#                  exp_d_seq     
+# calls:           sum_bin 
 #                  
 # output:          brdict3 :  Dictionary of lists:- 
 #                             MHSR FILENAME - Bulletin-No{['TTAAii CCCC','BUFR Edition','BUFR Master Table No','Originating Centre','Originating Sub-Centre',
-#                                                           'Year','Month','Day','Hour','Minute','Second',['Encoding D Sequence'],[Encoding D sequence (Expanded to Table B descriptors)]]
+#                                                           'Year','Month','Day','Hour','Minute','Second',['Encoding D Sequence']]
 #                             example =>                                   
-#                             /var/moods/bulletins/processed/SNT1/MHSR.R2D17236.T091005.SNT1.s450-12   ['IOPK01 AMMC', 4, 0, 'Melbourne', 'N/A', 2017, 8, 8, 4, 40, 0, ['315003'], 
-#                             ['001087', '001085', '001086', '002036', '002148', '002149', '022055', '022056', '022067', '004001', '004002', '004003', '004004', '004005', '005001', 
-#                             '006001', '008080', '033050', '109000', '031002', '007065', '008080', '033050', '022045', '008080', '033050', '022064', '008080', '033050']]                            
+#                             /var/moods/bulletins/processed/SNT1/MHSR.R2D17236.T091005.SNT1.s450-12   ['IOPK01 AMMC', 4, 0, 'Melbourne', 'N/A', 2017, 8, 8, 4, 40, 0, ['315003']]                            
 #
 ##############################################################################################################################################################################################################
 #
-def fprocess(indct,tdfinal,c11_dict,c12_dict,errpf):
+def fprocess(indct,c11_dict,c12_dict,errpf):
 #  
-  file_out="results.txt"
-  ddir="/var/moods/bulletins/processed/"
-  data=[]
-  errdict={}
   brdict={}
   brdict2={}
   brdict3={}
-  brdictmp={}
   nm={}
   nrrf = -1 
   si=[0,1,4,6,7,8,9,10,12]
 # 
-  for key in indct.keys():                                          # listing of the MHSR input data  [datatype name,storage_datasets, headerfile, data directory,[MHSR filenames]]      
-     dty=indct[key][0][0]                              
+  for key in indct.keys():                                               
+     dty=indct[key][0][0]                                           # data type                              
      data=indct[key][0][8]                                          # last entry in the list will be a listing of the MHSR data associated with the header ranges etc.
-     hddata=indct[key][0][7]      
-     hfile=indct[key][0][1]
-     hrange=indct[key][0][6]
+     hddata=indct[key][0][7]                                        # header ranges in hex 
+     hfile=indct[key][0][1]                                         # header file 
+     hrange=indct[key][0][6]                                        # element index sequences 
      lend=len(data)
      n=0                                                            # seperate the list of MHSR data which has been appended to each entry 
      for y in range(0,lend):
@@ -1232,7 +793,7 @@ def fprocess(indct,tdfinal,c11_dict,c12_dict,errpf):
         if len((data[y].strip())) == 0:
            break 
         filein=data[y] 
-        (brdict,errpf,nrrf)=sum_bin(hfile,dty,filein,c11_dict,c12_dict,tabled_final,errpf)
+        (brdict,errpf,nrrf)=sum_bin(hfile,dty,filein,c11_dict,c12_dict,errpf)
         if nrrf > -1: 
            for key in brdict.keys():
                tlist = brdict[key]   
@@ -1325,141 +886,7 @@ def fprocess(indct,tdfinal,c11_dict,c12_dict,errpf):
             nm[key] = brdict3[key]
 #          
   return(nm,errpf)
-#     
-#
-##############################################################################################################################################################################################################
-#
-# subroutine name: exp_d_seq
-#
-# purpose:         Expand BUFR Sequence to constituent B Descriptors               
-#
-# input:           seqin    :  Sequence (List) to expand. Will contain both B descriptors 
-#                              and D sequences presented as a list                             
-#                  tdf      :  Dictionary of lists. Contains both Local and Global
-#                              expanded sequences. The dictionary key references the 
-#                              FXY of the original D sequence  
-#                  errpd    :  Dictionary passed to capture errors in decoding / 
-#                              processing. In this case the errors captured are limited to 
-#                              'Unidentified D sequence'
-#                  key      :  Directory path and name of the MHSR file to which the expanded 
-#                              D sequence applies  
-#                  fty      :  Indicates whether the call originates from a decode of the 
-#                              element index or from a file
-#                              fty = 1 - MHSR decode
-#                                  = 2 - decode of element index. 
-#                  dhfile   :  Name and location of the elements index for that data type       
-#                  
-# output:          seqinrt  :  List of fully expanded D sequence
-#                  errpd    :  Error dictionary with new entry for unrecognised D sequence
-#                  udds1    : Indicator of read error initial part of the subroutine
-#              
-#
-##############################################################################################################################################################################################################
-#
-def exp_d_seq(seqin,tdf,errpd,key,fty,dhfile):
-#
-  tloop=1
-  errds=[] 
-  seqinrt=seqin[:]
-  read = 1
-  udds = 1
-  for key in tdf.keys():
-     print "tdf[key] => key ",key," ",tdf[key],"\n"
-  print "exp_d_seq seqin ",seqin,"\n"
-  while tloop != -1:
-     ft=len(seqinrt) 
-     if read == -1:
-        seqinrt=[]
-        udds = -1
-        break
-     for x in range(0,ft):
-        ind=seqinrt[x] 
-        
-        if ind[0] == '3': 
-           try:
-              print "ind ",ind,"\n"                                                                      
-              rplt = tdf[ind]    
-              seqinrt[x]=rplt[:]            
-              sq2=[]
-            #  print "seqinrt - before flatten ",seqinrt,"\n" 
-              sq2=flatten(seqinrt)             
-              seqinrt = sq2  
-          #    print "seqinrt ",seqinrt,"\n" 
-              break
-           except:
-              if fty == 1:  
-                 elist=errpd['Unidentified D sequence in Decode of MHSR file'] 
-                 elist2=[]  
-                 fname=key.split('/')
-                 dfname=fname[-1:][0]
-                 df2=dfname.split('-')
-                 df3=df2[0]
-                 obn=df2[1]     
-                 elist2.append(df3)
-                 elist2.append(obn) 
-                 elist2.append(ind) 
-                 elist.append(elist2) 
-                 errpd['Unidentified D sequence in Decode of MHSR file']=elist 
-                 read = -1   
-              elif fty == 2:
-                 print "****** exp_d_seq seqin *******",ind ,"\n"
-                 elist=errpd['Unidentified D sequence in Decode of Element Index']
-                 elist2=[]  
-                 elist2.append(key)
-                 elist2.append(dhfile)
-                 elist2.append(seqinrt) 
-                 elist.append(elist2) 
-                 errpd['Unidentified D sequence in Decode of Element Index']=elist 
-                 read = -1  
-              break
-        elif x == ft -1 and ind[0] != '3':
-           tloop = -1
-           break
-  if udds != -1:  
-     trg = 0
-     ts="("
-     ts2=")" 
-     while trg != -1:
-       lng=len(seqinrt)
-       for q in range(0,lng):
-         sqtest=seqinrt[q]   
-         if ts in sqtest:
-            sqt2=sqtest.replace(ts,'')
-            sqtest=sqt2
-         if ts2 in sqtest:
-            sqt2=sqtest.replace(ts2,'')
-            sqtest=sqt2
-         if sqtest.isalpha() :
-            seqinrt.pop(q)
-         if q == lng-1:
-            trg = -1
-            break       
-  return(seqinrt,errpd,udds) 
-#   
-#############################################################################################################################################################################################################
-#
-# subroutine name: flatten
-#
-# purpose:         flatten LIST of D sequnces as produced by fprocess.               
-#
-# input:           items      Sequence (List) to expand. Will contain both B descriptors 
-#                              and D sequences 
-#                              presented as a list
-#                  seqtypes :  switch to ensure the safety of the sequence to be manipulated. 
-#
-# output:          items    :  List of fully expanded D sequence
-#              
-#  
-#############################################################################################################################################################################################################
-#
-def flatten(items, seqtypes=(list, tuple)):
-#   
-  for i, x in enumerate(items):
-        while i < len(items) and isinstance(items[i], seqtypes):
-            items[i:i+1] = items[i]
-  return(items)      
-
-#   
+#       
 #############################################################################################################################################################################################################
 #
 # subroutine name: read_config
@@ -1476,18 +903,12 @@ def flatten(items, seqtypes=(list, tuple)):
 #############################################################################################################################################################################################################
 #
 
-def read_config(cnfgin):
+def read_config(cnfgin,trigger):
  olist=[]
  fdict={}
  TFIG='NOW SERVING => '
  with open(cnfgin,'r') as fg:
-    for line in fg:     
-       if line.find(TFIG) >= 0:
-          trigger=line[14:].strip()                      
-          break
-#
     for line in fg:   
-   #    print "read_config - line ",line,"\n"   
        if line.find(trigger) >= 0:     
           line1=line.strip('\n')
           line2=line1.rstrip()
@@ -1510,7 +931,7 @@ def read_config(cnfgin):
           else:
              tlist = []
              tlist.append(line6)
-             fdict[keyf] = tlist    
+             fdict[keyf] = tlist  
     fg.close() 
 #
  return(fdict)   
@@ -1566,7 +987,6 @@ def web_dout(wcd1,wcd2):
                   fxw.write(('%s\n') % ("<tr width=\"100%\">")) 
              n = n+1
              linew=wcd1[key]
-       #      print "linew ",linew,"\n"
              tai = linew[1]     
              kout=key.split("/")             
              kf=kout[-1:][0]  
@@ -1574,7 +994,6 @@ def web_dout(wcd1,wcd2):
              obn=kf2[1]
              kff=kf2[0] 
              ens = " ".join(map(str,linew[12]))  
-     #        print "ens ",ens,"\n"
              ens2=ens+'<br>'                    
              mnf=str(linew[7])
              if len(mnf) < 2:
@@ -1785,16 +1204,16 @@ def read_hdr(def_file,sname):
 #############################################################################################################################################################################################################
 #
 #
-# cfin = sys.argv[-1]
-cfin='/home/richard.weedon/test_code/config_table_NEW.txt'
+cfin='config_table_NEW1.txt'
 #
-cnfg=read_config(cfin)  
+osin = os.environ['MACHINE']
+cnfg=read_config(cfin,osin)  
 #
-#
-xp=240
 elist=[]
 elist2=[]
 brdictxf={}
+#
+# errw => dictionary to capture decoding errors
 #
 errw={}
 errw['Unable to identify BUFR Edition']=[]
@@ -1811,127 +1230,59 @@ errw['Incorrectly encoded value for section 3 length (section 2 not present) - B
 errw['Incorrectly encoded value for section 3 length (section 2 present) - BUFR Edition 4']=[]
 errw['TTAAii not in prescibed header range ']=[]
 errw['Unable to find BUFR in message']=[]
-#   
-#  build from listing of files given in the config file
-#
-flist=['-','-','-','-','-']
-for key in cnfg.keys():   
-   tlist=cnfg[key]
-   for xn in range(0,len(tlist)):
-      dtype = tlist[xn][0]    
-      flist[0]=dtype  
-      if tlist[xn][2] != flist[2]:                                               # storage_datasets  
-         flist[1] = tlist[xn][2]    
-      if tlist[xn][1] != flist[1]:                                               # header file
-         flist[2] = tlist[xn][1]      
-      if tlist[xn][3] != flist[3]:                                               # element index
-         flist[3] = tlist[xn][3]     
-      if tlist[xn][5] != flist[4]:                                               # processed folder
-         flist[4] = tlist[xn][5] 
 #  
-td = flist[1].rfind('/')
-tdir = flist[1][:td+1]
+for key in cnfg.keys():    
+    tdir =cnfg[key][0][4]                                             # definition of the tables directory from the config file  
+    break                                                             # taken on first loop 
 #
-lcdir = tdir+"bufr_localseq"
-#
-lbdir = os.listdir(lcdir)                                                # build listing of bufr_localseq files     
-mldir = os.listdir(tdir)                                                 # build listing of tables directory 
-#                                                                                         
+mldir = os.listdir(tdir)                                              # listing of the tables dir (tdir)
+#                                                                                    
 lenml = len(mldir)
 #
 for x in range(0,lenml):                                             # establish location and name of common code tables C11 & C12  
-   if mldir[x].find("Common_C11") > -1:                              
+   if mldir[x].find("Common_C11") > -1:                              # these are required in decoding to identify issuing centres 
       c11_file=tdir+mldir[x]
       (c11_dict)=read_c11(c11_file)                                  # Read file C11 into dict  
    elif mldir[x].find("Common_C12") > -1:
       c12_file=tdir+mldir[x]
       (c12_dict)=read_c12(c12_file)                                  # Read file C12 into dict   
-   elif mldir[x].find("bufr_tableb") > -1:                           # establish location and name of BUFR tables B & D
-      btb_file=tdir+mldir[x] 
-      (tableb,revb)=read_in_tableb(btb_file)                         # read tableb into dict  
-   elif mldir[x].find("bufr_tabled") > -1:
-      btd_file=tdir+mldir[x]                                         # read tabled into dict
-      (tabled,revd)=read_in_tableD(btd_file)                                
-#
-(tabled_final)=rep_d(tabled)  
-#
-(loc_tab)=read_loc(lbdir)                                            # read in local BUFR sequences
-switch = "2"
-(tabledloc)=rep_d2(loc_tab,tabled,switch)                            # expand local D sequences   
-#
-tabled_final_local = tabledloc
-for key in tabled_final_local.keys():                                 # merge the expand Operational Table D sequences with local D sequences (
-                                                                       # where not already present)                                      
-    key2=key[-6:] 
-    if key2 not in tabled_final.keys():
-       tabled_final[key2]=tabled_final_local[key] 
-#    
-eldict={}
 #
 #
 #################################################################################################################  
 #
+xp=240                                                         # constant (in mins) used to calculate the 
+                                                               # time span of the data to be reviewed .
 plist=[]
 hdict={}
 #
-for key in cnfg.keys():  
-#                                           
+for key in cnfg.keys():                                             
    df = cnfg[key]
    ldf=len(df)
    for yx in range(0,ldf):                                      # compile listing of data in dir and header file in HEX     
       hdn=df[yx][1]
       din=df[yx]    
       sn = df[yx][0]
-      slist=listing_build(din,xp)     
+      slist=listing_build(din,xp)                               # take listing of the MHSR files fitting the date / time criteria
       plist=read_hdr(hdn,sn) 
       df[yx].append(plist)
-      df[yx].append(slist)                                      # add both to the cnfg entry
-   cnfg[key]=df        
-#
+      df[yx].append(slist)                                      
+   cnfg[key]=df                                                 # add header file ranges and MHSR listing to the cnfg entry
+#                                                               # for that data type
 for key in cnfg.keys():
    dfl=len(cnfg[key])
    for xv in range(0,dfl):
        ein = cnfg[key][xv] 
        dtype=cnfg[key][xv][0]
        elist=cnfg[key][xv][3]   
-       elout=ind_read(elist)                                        # read in retrieval index(s)    
-       ein.insert(6,elout) 
+       elout=ind_read(elist)                                        # read in retrieval index(s) for a specific data type   
+       ein.insert(6,elout)                                          # add entry to cnfg entry for that data type 
        cnfg[key][xv]=ein 
 #
-for key in cnfg.keys():                                             # read in sequences from retrieval indexes and expand usiing exp_d_seq       
-    lenfg=len(cnfg[key])
-    snfg=cnfg[key]
-    for xp in range(0,lenfg):
-       hfile =  cnfg[key][0][3]
-       sunfg=snfg[xp]
-       etl=sunfg[6] 
-       lends=len(etl)
-       lout=[] 
-       for xy in range(0,lends):            
-          etld=etl[xy]
-          did="99"         
-          ftype=2 
-          ltsx=len(etld)  
-          etsub=[x for x in etld if x.isalnum()]           
-          (exout,errwx,uddr)=exp_d_seq(etsub,tabled_final,errw,key,ftype,hfile)
-          if uddr > -1:
-             errw = errwx
-             lout.append(exout)
-          else:
-             break
-    eldict[key]=lout  
-#      
 eldict2={}
 #
-for key in eldict.keys():
-   tlist=eldict[key]
-   if key in cnfg.keys():
-      cnlist=cnfg[key]
-      cnfg[key]=cnlist
+(brdictxf,erryx)=fprocess(cnfg,c11_dict,c12_dict,errw)              # final processing of the data including decode of the MHSR data
 #
-(brdictxf,erryx)=fprocess(cnfg,tabled_final,c11_dict,c12_dict,errw)                  # final processing of the data including decode of the MHSR data
-#
-web_dout(brdictxf,erryx)
+web_dout(brdictxf,erryx)                                            
 #
 #    
 ##############################################################################################################################################################################################################
