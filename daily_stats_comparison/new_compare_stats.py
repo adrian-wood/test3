@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------
 #
 # PROGRAM       : new_compare_stats.py
@@ -29,7 +28,7 @@ import datetime as dt
  
 prodURL=r"http://mdbdb-prod/moods/new_stats/"
 prepURL=r"http://mdbdb-preprod/moods/new_stats/"
-baseDir=r"/home/h01/usmdb/public_html/moods/misc/compare_stats_archive"
+baseDir=r"/var/www/html/compare_stats_archive"
  
 #-----------------------------------------------------------------------
 # Function to read a daily stats summary page and return a dictionary
@@ -82,7 +81,7 @@ if not os.path.exists(outDir):
 outFile = outDir + now.strftime("%d") + ".html"
 
 yesterday = now - dt.timedelta(days=1)
-yesterdaysFile = "/moods/misc/compare_stats_archive/" + yesterday.strftime("%Y/%m/%d") + ".html"
+yesterdaysFile = "/compare_stats_archive/" + yesterday.strftime("%Y/%m/%d") + ".html"
 
 preValues = readdata(prepURL+summary)
 prodValues = readdata(prodURL+summary)
@@ -164,7 +163,7 @@ if preValues and prodValues:
       <div><a class="btn btn-success btn-lg btn-block" href=""" + yesterdaysFile + """ role="button">This page yesterday</a></div>
     </div>
     <div class="col-xs-3">
-      <div><a class="btn btn-info btn-lg btn-block" href="/moods/misc/compare_stats_archive" role="button">Archive of this page</a></div>
+      <div><a class="btn btn-info btn-lg btn-block" href="/compare_stats_archive" role="button">Archive of this page</a></div>
     </div>
   </div> <!-- /.row -->
   <hr>
@@ -204,6 +203,6 @@ if preValues and prodValues:
   oput.write(html_end)
 
 # Recreate the symlink to today's file
-  os.unlink("/home/h01/usmdb/public_html/moods/misc/new_compare_stats.html")
-  os.symlink(outFile,"/home/h01/usmdb/public_html/moods/misc/new_compare_stats.html")
+  os.unlink("/var/www/html/new_compare_stats.html")
+  os.symlink(outFile,"/var/www/html/new_compare_stats.html")
   oput.close()
