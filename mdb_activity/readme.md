@@ -10,7 +10,7 @@ For now we are just using `scp` ro copy the logfiles every night to a central lo
 1. The scripts run on the Linux Server `mdb-apps` as the `moodsf` account via `cron`.
 1. There are two scripts `get_data_access_logs.sh` and `get_moose_logs.sh`.
 1. The `get_data_access_logs.sh` script scps the file `/var/moods/logs/data_access_log.<today>` to a datestamp subdirectory under `/var/www/html/mdb_activity/data_access_logs` and creates a symlink to that file in the `$INCOMING` directory, to ease future processing.
-1. The reason for putting the data_access logs in `/var/www/html` is to make them browseable at [http://www-mdb-apps/mdb_activity/data_access_logs/] - NB each file can be quite large and can make your browser very slow.
+1. The reason for putting the data_access logs in `/var/www/html` is to make them browseable at http://www-mdb-apps/mdb_activity/data_access_logs/ - NB each file can be quite large and can make your browser very slow.
 1. The `get_moose_logs.sh` script scp's all yesterday's logfiles that have been created by Moose restores (named `MDBREST2.output.d<datestamp>` in the `/var/moods/tmp` directory) and zips them into a single file at `/var/moods/mdb_activity/data/moose_logs/incoming`.
 1. `cron` jobs are set up as follows:
 ```# mdb_activity suite...
