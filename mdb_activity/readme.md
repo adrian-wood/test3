@@ -4,7 +4,7 @@
 
 These two scripts collect the Data Access logfiles and the MOOSE logfiles. The reason for this is that we aim at some point to be able to feed these logs into a further tool (hopefully LASER/ELK) for analysis. This will reveal useful information on MetDB usage such as most popular datatypes, user activity etc.
 
-For now we are just using `scp` ro copy the logfiles every night to a central location for future analysis.
+For now we are just using `scp` to copy the logfiles every night to a central location for future analysis.
 
 ### Running the Scripts
 1. The scripts run on the Linux Server `mdb-apps` as the `moodsf` account via `cron`.
