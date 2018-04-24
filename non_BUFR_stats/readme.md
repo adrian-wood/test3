@@ -36,12 +36,12 @@ The script must be supplied with a configuration file by running it with the `-c
    1. Danger (red) - the expected number of datasets have not been "copied", *and* the expected number of datasets have not been received.
 
 ### Running the Script
-This is how the script is being run, locations etc. The script is running on the Linux Server `els030` as the `usmdb` account.
-1. The script itself and both the `prod.cfg` and `preprod.cfg` files are in the directory `~usmdb/non_BUFR_stats`.
-1. The `non_BUFR_stats_template.html` Jinja2 template is in the directory `~usmdb/public_html/moods/misc`.
-1. The base "archive" directory `~usmdb/public_html/moods/misc/non_BUFR_stats_archive/` was created, with subdirectories of `prod` and `preprod`.
+This is how the script is being run, locations etc. The script is running on the Linux Server `mdb-apps` as the `moodsf` account.
+1. The script itself, both the `prod.cfg` and `preprod.cfg` files and the `non_BUFR_stats_template.html` Jinja2 template are in the directory `/var/moods/non_BUFR_stats`.
+1. The base "archive" directory `/var/www/html/non_BUFR_stats_archive/` was created, with subdirectories of `prod` and `preprod`.
+1. A "wrapper" shell script `run_non_BUFR_stats.sh` was written to execute the Python script. *NB the Python code is currentl not compatible with the Scientific Software Stack due to the absence of the `lxml` package in the `scitools/production-os41-1` environment. This should be addressed in the next release, when the script could/should be amended to use the SSS.*
 1. `cron` jobs are set up as follows:
-```# GRIB, DF and XML stats
-55 06 * * * ~usmdb/non_BUFR_stats/non_BUFR_stats.py -c ~usmdb/non_BUFR_stats/prod.cfg >>/tmp/non_BUFR_stats_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
-58 06 * * * ~usmdb/non_BUFR_stats/non_BUFR_stats.py -c ~usmdb/non_BUFR_stats/preprod.cfg >>/tmp/non_BUFR_stats_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+```# non-BUFR stats pages...
+55 07 * * * /var/moods/non_BUFR_stats/run_non_BUFR_stats.sh -c /var/moods/non_BUFR_stats/prod.cfg >>/tmp/non_BUFR_stats_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+58 07 * * * /var/moods/non_BUFR_stats/run_non_BUFR_stats.sh -c /var/moods/non_BUFR_stats/preprod.cfg >>/tmp/non_BUFR_stats_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 ```

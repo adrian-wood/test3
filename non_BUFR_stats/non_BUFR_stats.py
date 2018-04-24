@@ -1,4 +1,3 @@
-#!/usr/local/sci/bin/python2.7
 """Produce a summary page of daily stats for GRIB, NetCDF, HDF5 and XML jobs.
 
     (c) Crown copyright 2016, the Met Office.
@@ -18,7 +17,7 @@ import getopt
 from ConfigParser import SafeConfigParser
 from datetime import datetime, timedelta
 
-sys.path.append('/home/h01/usmdb/metdb_utils/web')
+sys.path.append('/var/moods/metdb_utils/web')
 from jinja_render import jinja_render
 from daily_archive import daily_archive
 
@@ -283,15 +282,16 @@ def main():
     jobViewerURL = "http://" + server_url + "/moods/viewers/job_viewer.html"
     symLink = webBase + server + "/non_BUFR_stats.html"
     archiveDir = archiveBase + server
-    archive_url = "/moods/misc/non_BUFR_stats_archive/" + server
+    archive_url = "/non_BUFR_stats_archive/" + server
     number_of_days = 5  # how far to go back
     template_name = "non_BUFR_stats_template.html"
+    
 
     # Some date manipulation to get today and yesterday
     now = datetime.now()
     datestr = now.strftime("%H:%M %d-%m-%Y")
     yesterday = now - timedelta(days=1)
-    yesterdaysPage = ''.join(["/moods/misc/non_BUFR_stats_archive/",
+    yesterdaysPage = ''.join(["/non_BUFR_stats_archive/",
                               server,
                               "/",
                               yesterday.strftime("%Y/%m/%d"),
@@ -380,7 +380,7 @@ def main():
         }
 
     # Render the HTML from template, create a page and archive it
-    htmlout = jinja_render(webBase, template_name, **templateVars)
+    htmlout = jinja_render('/var/moods/non_BUFR_stats', template_name, **templateVars)
     daily_archive(symLink, archiveDir, htmlout)
 
 if __name__ == "__main__":
