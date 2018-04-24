@@ -39,7 +39,7 @@ The script must be supplied with a configuration file by running it with the `-c
 This is how the script is being run, locations etc. The script is running on the Linux Server `mdb-apps` as the `moodsf` account.
 1. The script itself, both the `prod.cfg` and `preprod.cfg` files and the `non_BUFR_stats_template.html` Jinja2 template are in the directory `/var/moods/non_BUFR_stats`.
 1. The base "archive" directory `/var/www/html/non_BUFR_stats_archive/` was created, with subdirectories of `prod` and `preprod`.
-1. A "wrapper" shell script `run_non_BUFR_stats.sh` was written to execute the Python script. *NB the Python code is currentl not compatible with the Scientific Software Stack due to the absence of the `lxml` package in the `scitools/production-os41-1` environment. This should be addressed in the next release, when the script could/should be amended to use the SSS.*
+1. A "wrapper" shell script `run_non_BUFR_stats.sh` was written to execute the Python script. *NB the Python code is currently (April 2018) not compatible with the Scientific Software Stack due to the absence of the `lxml` package in the `scitools/production-os41-1` environment. This should be addressed in the next SSS release, when the script could/should be amended to use the SSS.*
 1. `cron` jobs are set up as follows:
 ```# non-BUFR stats pages...
 55 07 * * * /var/moods/non_BUFR_stats/run_non_BUFR_stats.sh -c /var/moods/non_BUFR_stats/prod.cfg >>/tmp/non_BUFR_stats_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
