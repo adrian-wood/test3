@@ -1,0 +1,266 @@
+/* REXX --------------------------------------------------------------
+ *
+ * program     : RPCMON
+ *
+ * description : Started task to inquire the status of the MetDB
+ *             : multi-user RPC servers MDBOA, MDBOB, MDBOE and MDBOF.
+ *             : Each pair (i.e. MDBOA,MDBOB and MDBOE,MDBOF) is
+ *             : interregated in turn every 30 seconds to see that
+ *             : that they are still available for client requests.
+ *             : If not, console commands are submitted to restart
+ *             : the non-resonding server pair. If a server is not
+ *             : responding - a max of 10 retries (30 seconds apart)
+ *             : is attempted before a restart is issued. This is in
+ *             : case the server is genuinely busy actioning a client
+ *             : request.
+ *
+ *             : The MDBOA server is interregated 1st. If this is not
+ *             : Ok, both MDBOA and MDBOB are restarted. If MDBOA is
+ *             : Ok, the MDBOB server is interregated. If this is
+ *             : not Ok, both MDBOA and MDBOB are restarted. So if
+ *             : either server is not responding to requests, they
+ *             : will both be restarted.
+ *
+ *             : The same as above is then performed for the pair of
+ *             : servers MDBOE and MDBOF.
+ *
+ * author      : Simon Cox - MetDB Team 5/1/99
+ *
+ * $Log:
+ *  1    Met_DB_Project 1.0         28/02/2006 10:12:12    Sheila Needham  
+ * $
+ * Revision 1.4  2000/02/10  09:54:19  09:54:19  usmdb (Generic MDB account)
+ * Correct rpcinfo_retries and rpcinfo_sleep - S.Cox
+ *
+ * Revision 1.3  2000/02/10  09:35:00  09:35:00  usmdb (Generic MDB account)
+ * Addition of checks for RPC servers MDBOA and MDBOB. There
+ * are now 2 pairs of servers to interregate - S.Cox
+ *
+ * Revision 1.2  99/07/21  13:46:23  13:46:23  usmdb (Generic MDB account)
+ * Servers checked every 5.5 mins. Servers automatically restarted if a problem.
+ *
+ * Revision 1.1  99/01/14  15:58:16  15:58:16  usmdb (Generic MDB account)
+ * Initial revision
+ *
+ * $Source: /home/us0400/mdb/op/lib/RPC/server/IBM/RCS/rpcmon.rexx,v $
+ * $Revision: 1$
+ * $Date: 28/02/2006 10:12:12$
+ *
+ *--------------------------------------------------------------------*/
+
+datim = date('O') time('N')
+say datim 'MetDB RPC monitor job submitted'
+
+/*--------------------------------------------------------------------*/
+/* Allocate rpcinfo stdout and stderr output files.                   */
+/* Initialise global variables.                                       */
+/*--------------------------------------------------------------------*/
+
+"alloc FI(SYSPRINT) NEW DELETE"
+"alloc FI(SYSOUT) NEW DELETE"
+
+mdboa_prognum   = 33556338   /* MDBOA RPC program number */
+mdbob_prognum   = 33556339   /* MDBOB RPC program number */
+mdboe_prognum   = 33556608   /* MDBOE RPC program number */
+mdbof_prognum   = 33556609   /* MDBOF RPC program number */
+rpcinfo_retries = 10         /* rpcinfo retries before action taken */
+rpcinfo_sleep   = 30          /* sleep (secs) between rpcinfo retries */
+main_sleep      = 30         /* sleep (secs) between server checks */
+
+/*--------------------------------------------------------------------*/
+/* Loop forever. Check the status of the MDBOA server. If             */
+/* mdboa_okay = 1, server Okay - so go on to check the status of      */
+/* the MDBOB server.                                                  */
+/*--------------------------------------------------------------------*/
+
+do forever
+
+  call check_server MDBOA, mdboa_prognum
+  mdboa_okay = RESULT
+
+  if mdboa_okay = 1 then do
+    call check_server MDBOB, mdbob_prognum
+    mdbob_okay = RESULT
+  end
+
+/*--------------------------------------------------------------------*/
+/* If either server not responding - issue WTO.                       */
+/*--------------------------------------------------------------------*/
+
+  select
+  when mdboa_okay = 0 then do
+    server_down = "MDBOA"
+    call output_server_failure server_down, MDBOA, MDBOB
+    call CONSMSG "MDBOM01 For info: MDBOM is restarting MDBOA & MDBOB"
+    call restart_servers MDBOA, MDBOB
+  end
+  when mdbob_okay = 0 then do
+    server_down = "MDBOB"
+    call output_server_failure server_down, MDBOA, MDBOB
+    call CONSMSG "MDBOM01 For info: MDBOM is restarting MDBOA & MDBOB"
+    call restart_servers MDBOA, MDBOB
+  end
+  otherwise
+    datim = date('O') time('N')
+    say datim 'MDBOA, MDBOB Servers OK - no action necessary'
+  end
+
+/*--------------------------------------------------------------------*/
+/* Now check the status of the MDBOE server. If mdboe_okay = 1,       */
+/* server Okay - so go on to check the status of the MDBOF server.    */
+/*--------------------------------------------------------------------*/
+
+  call check_server MDBOE, mdboe_prognum
+  mdboe_okay = RESULT
+
+  if mdboe_okay = 1 then do
+    call check_server MDBOF, mdbof_prognum
+    mdbof_okay = RESULT
+  end
+
+/*--------------------------------------------------------------------*/
+/* If either server not responding - issue WTO.                       */
+/*--------------------------------------------------------------------*/
+
+  select
+  when mdboe_okay = 0 then do
+    server_down = "MDBOE"
+    call output_server_failure server_down, MDBOE, MDBOF
+    call CONSMSG "MDBOM01 For info: MDBOM is restarting MDBOE & MDBOF"
+    call restart_servers MDBOE, MDBOF
+  end
+  when mdbof_okay = 0 then do
+    server_down = "MDBOF"
+    call output_server_failure server_down, MDBOE, MDBOF
+    call CONSMSG "MDBOM01 For info: MDBOM is restarting MDBOE & MDBOF"
+    call restart_servers MDBOE, MDBOF
+  end
+  otherwise
+    datim = date('O') time('N')
+    say datim 'MDBOE, MDBOF Servers OK - no action necessary'
+  end
+
+/*--------------------------------------------------------------------*/
+/* sleep before returning to top of loop                              */
+/*--------------------------------------------------------------------*/
+
+  datim = date('O') time('N')
+  say datim 'main sleep - sleeping 'main_sleep' seconds'
+
+  "sleep "main_sleep""
+
+end
+
+"free FI(SYSPRINT)"
+"free FI(SYSOUT)"
+
+exit
+
+/*====================================================================*/
+/*                                                                    */
+/* perform rpcinfo of program number                                  */
+/*                                                                    */
+/*====================================================================*/
+
+prognum_status:
+
+parse arg prognum
+
+"rpcinfo -u ukmet "prognum""
+
+'execio * diskr SYSPRINT (stem info_sysprint. finis) '
+
+'execio * diskr SYSOUT (stem info_sysout. finis) '
+
+return
+
+/*====================================================================*/
+/*                                                                    */
+/* restart servers                                                    */
+/*                                                                    */
+/*====================================================================*/
+
+restart_servers:
+
+parse arg server1_name, server2_name
+
+say 'in restart_user_servers - consprof'
+"consprof soldisp(no) unsoldisp(no)"
+say 'in restart_user_servers - console activate'
+"console activate"
+
+say 'in restart_user_servers - C 'server1_name
+address console "C "server1_name""
+say 'in restart_user_servers - C 'server2_name
+address console "C "server2_name""
+say 'in restart_user_servers - sleep 20'
+"sleep 20"
+say 'in restart_user_servers - S 'server1_name
+address console "S "server1_name""
+say 'in restart_user_servers - S 'server2_name
+address console "S "server2_name""
+
+say 'in restart_user_servers - console deactivate'
+"console deactivate"
+say 'in restart_user_servers - return'
+
+return
+
+/*====================================================================*/
+/*                                                                    */
+/* output server failure                                              */
+/*                                                                    */
+/*====================================================================*/
+
+output_server_failure:
+
+parse arg server_down, server1_name, server2_name
+
+datim = date('O') time('N')
+say
+say '-------------------------------------------------------------'
+say datim 'RPCMON: 'server_down' not responding !!'
+say
+say info_sysprint.1
+say info_sysout.1
+say
+say 'Operator action = Nil'
+say
+say 'MDBOM will now restart 'server1_name' & 'server2_name
+say '-------------------------------------------------------------'
+say
+
+return
+
+/*====================================================================*/
+/*                                                                    */
+/* Check status of server                                             */
+/*                                                                    */
+/*====================================================================*/
+
+check_server:
+
+parse arg server_name, prognum
+
+datim = date('O') time('N')
+say datim 'checking 'server_name' server status'
+
+do loop = 0 to rpcinfo_retries
+  if loop > 0 then do
+    datim = date('O') time('N')
+    say datim 'server not responding - sleeping 'rpcinfo_sleep' seconds'
+    "sleep "rpcinfo_sleep""
+    datim = date('O') time('N')
+    say datim 'try to connect again - retry 'loop' of 'rpcinfo_retries
+  end
+  call prognum_status prognum
+  check_server_rc = 0
+  if wordpos('ready and waiting',info_sysprint.1) /= 0 then do
+    check_server_rc = 1
+    datim = date('O') time('N')
+    say datim server_name' server Okay'
+    leave
+  end
+end
+
+return check_server_rc

@@ -1,0 +1,28 @@
+//MDBGRIB3 PROC
+//*---------------------------------------------------------------------
+//*              CHECK FOR DUPLICATE JOB SUBMISSION.
+//*---------------------------------------------------------------------
+//DUPCHK  EXEC PGM=IKJEFT01,PARM='%CHKDUPLI'
+//SYSEXEC  DD  DSN=MET.EXECLIB,DISP=SHR
+//         DD  DSN=MET.EXECFLIB,DISP=SHR
+//SYSTSPRT DD  SYSOUT=Q
+//SYSTSIN  DD  DUMMY
+//*
+//*---------------------------------------------------------------------
+//*                  STORAGE FOR GRIB DATA SETS
+//*                  --------------------------
+//*
+//*      FT05F001:  NAMELIST INPUT FOR THIS JOB.
+//*      FT06F001:  OUTPUT MESSAGES.
+//*      HKEEP:     MET.D.B. HOUSEKEEPING DATA SET.
+//*      INDEX:     INDEX DATA SET FOR GRIB FILES.
+//*      SYSUDUMP:  OUTPUT FOR DUMP IF JOB ABENDS.
+//*---------------------------------------------------------------------
+//GRIB0   EXEC PGM=GRIBDTRD,REGION=2M,TIME=NOLIMIT,COND=(0,NE,DUPCHK)
+//STEPLIB  DD  DSN=MDB.LOADLIB,DISP=SHR
+//*
+//FT05F001 DD DSN=MDB.STORAGE.DATA(MDBGRIB3),LABEL=(,,,IN),DISP=SHR
+//FT06F001 DD SYSOUT=Q
+//HKEEP    DD DSN=MDB.HKDS,DISP=SHR
+//INDEX    DD DSN=MDB.RADRF.INDEX,DISP=SHR
+//SYSUDUMP DD SYSOUT=Q

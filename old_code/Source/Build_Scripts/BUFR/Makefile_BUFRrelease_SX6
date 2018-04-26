@@ -1,0 +1,139 @@
+#-----------------------------------------------------------------------
+# Makefile_BUFRrelease_SX6
+#
+# $Revision: 1$
+# $Date: 27/10/2006 09:58:46$
+# $Source: /home/us0400/mdb/op/lib/source/RCS/Makefile_BUFRrelease_SX6,v $
+#
+# $Log:
+#  1    Met_DB_Project 1.0         27/10/2006 09:58:46    Kudsia Gwangwaa 
+# $
+# Revision 2.2  2004/03/17 14:49:38  usmdb
+# Stan Kellett. 17th March 2004.
+# Brought upto date with current MetDB BUFR software.
+#
+# Revision 2.1  2003/06/06 11:34:49  usmdb
+# Removed sortn - S.Cox
+#
+# Revision 2.0  2003/04/10 09:56:56  usmdb
+# initial revision
+#
+#-----------------------------------------------------------------------
+# (C) CROWN COPYRIGHT 2004 - MET OFFICE. All Rights Reserved.
+#
+# Met Office, United Kingdom
+#
+# The use, duplication and disclosure of this code is strictly
+# prohibited without the permission of The Meteorological Database 
+# Team at the above address.
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------        
+# Define the compiler parameters for SX6 sxf90 compiler
+#-----------------------------------------------------------------------        
+# FFLAGS: -DBPATH (Bufr library), -ew (64 bit reals, integers)
+# CFLAGS: -DL64 (64 bit reals, integers), -DUNDERSCORE (underscore
+#          suffix for c routines)
+#-----------------------------------------------------------------------        
+
+FF          = sxf90
+CC          = sxc++
+
+FFLAGS      = -ew -DBPATH
+CFLAGS	    = -DL64 -DUNDERSCORE 
+
+#-----------------------------------------------------------------------        
+# User-added macros
+# (Add any other macros which are to be set through 'mkmf')
+#-----------------------------------------------------------------------        
+
+LIBRARY     = libbufr.a
+
+MAKEFILE    = Makefile_BUFRrelease_SX6
+
+F_SRCS      = bufd203.f \
+              bufd206.f \
+              bufdass.f \
+              bufdata.F \
+              bufdchr.F \
+              bufdelt.f \
+              bufdmap.f \
+              bufdrip.f \
+              bufdrpl.f \
+              bufdspl.f \
+              bufr207.f \
+              bufrpath.f \
+              bufrqel.f \
+              bufrqop.f \
+              bufrread.f \
+              bufrseq.f \
+              bufv2.f \
+              code.F \
+              debufr.f \
+              desfxy.f \
+              enbufr.f \
+              enbufv2.F \
+              encode.F \
+              ides.f \
+              locald.F \
+              readcf.f \
+              tableb.F \
+              tabled.F \
+              valout.F \
+              value.f
+
+C_SRCS	    = MetDB_c_utils.c
+
+F_OBJS      = bufd203.o \
+              bufd206.o \
+              bufdass.o \
+              bufdata.o \
+              bufdchr.o \
+              bufdelt.o \
+              bufdmap.o \
+              bufdrip.o \
+              bufdrpl.o \
+              bufdspl.o \
+              bufr207.o \
+              bufrpath.o \
+              bufrqel.o \
+              bufrqop.o \
+              bufrread.o \
+              bufrseq.o \
+              bufv2.o \
+              code.o \
+              debufr.o \
+              desfxy.o \
+              enbufv2.o \
+              enbufr.o \
+              encode.o \
+              ides.o \
+              locald.o \
+              readcf.o \
+              tableb.o \
+              tabled.o \
+              valout.o \
+              value.o
+
+C_OBJS	    = MetDB_c_utils.o
+
+#-----------------------------------------------------------------------        
+# Rule to build library
+#-----------------------------------------------------------------------        
+
+$(LIBRARY):	${F_OBJS} ${C_OBJS}
+		rm -f $@
+		sxar rv $@ ${F_OBJS} ${C_OBJS}
+		chmod 755 $@
+
+#-----------------------------------------------------------------------        
+# Rules to build object code
+#-----------------------------------------------------------------------        
+
+$(F_OBJS):	${MAKEFILE} ${F_SRCS}
+		${FF} ${FFLAGS} -c ${F_SRCS}
+
+$(C_OBJS):	${MAKEFILE} ${C_SRCS}
+		${CC} ${CFLAGS} -c ${C_SRCS}
+
+clean:;		@rm -f $(OBJS) core .Static.salf Static.sadb $(PTREPOSITORY)/*.o BLINK/* *_bld.stamp

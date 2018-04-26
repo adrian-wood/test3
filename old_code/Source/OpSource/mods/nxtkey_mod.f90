@@ -1,0 +1,13 @@
+MODULE NXTKEY_MOD
+INTERFACE
+LOGICAL FUNCTION NXTKEY(REQ,IPOS,ILEN)
+
+IMPLICIT NONE
+
+CHARACTER (LEN=*), INTENT(IN) ::  REQ    ! request string
+INTEGER,           INTENT(IN) ::  IPOS   ! position in request string
+INTEGER,           INTENT(IN) ::  ILEN   ! length of request string
+
+END FUNCTION NXTKEY
+END INTERFACE
+END MODULE NXTKEY_MOD

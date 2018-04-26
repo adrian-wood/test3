@@ -1,0 +1,31 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%----------------- STATION MASTER On-Line Help Display -------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
++
++       This panel is asking you to select the type of
++       station identifier you wish to enter and then enter
++       the identifier and whether the station you require is
++       current of historical.
++
++       The selection is from :-
++
++              WMO  ID - a five digit number
++              ICAO ID - a four character ID
++              DCNN ID - a four digit number
++              RAIN ID - a six digit number
++
++       Current means the latest entry for the selected ID
++       Historical means not the lastest entry for the selected ID
++
++
++
++              Press%END+to go back to selection
+)INIT
+     .CURSOR = ZCMD   .HELP = STNHLP2
+)PROC
+    &ZUP=STNHLP2
+)END

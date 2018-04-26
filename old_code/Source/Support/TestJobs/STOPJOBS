@@ -1,0 +1,11 @@
+//M12DBEND JOB (OP1,DB,WDS0BF),MDB.TEAM.6951,MSGCLASS=Q,PRTY=8
+//*---------------------------------------------------------------------
+//*  JOB TO TERMINATE MDB STORAGE AND MONITOR JOBS (USES 'TDS.HKDS').
+//*---------------------------------------------------------------------
+//STOPJOBS EXEC PGM=STOPJOBS
+//STEPLIB   DD  DSN=MCC3.DB.LOAD,DISP=SHR
+//FT01F001  DD  DSN=TDB.HKDS,DISP=SHR
+//FT05F001  DD  *
+STOP
+/*
+//

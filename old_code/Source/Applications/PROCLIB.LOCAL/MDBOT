@@ -1,0 +1,18 @@
+//MDBOT    PROC                                                         00001000
+//GENOP    EXEC PGM=IEBGENER                                            00002000
+//SYSPRINT DD SYSOUT=N                                                  00002100
+//*                                                                     00002200
+//* MDB general user MDB broker on BPRD                                 00002300
+//*                                                                     00002400
+//MDBROKER EXEC PGM=BPXBATCH,REGION=33M,                                00002500
+//  DYNAMNBR=50,TIME=NOLIMIT,COND=EVEN,                                 00002600
+//  PARM='SH /usr/local/mdb/rpc/bprd/user/bin/broker'                   00002700
+//SYSTSIN  DD DUMMY                                                     00002800
+//STDIN    DD DUMMY                                                     00002900
+//STDOUT   DD PATH='/tmp/mdb/mdbot.stdout',                             00003000
+//  PATHOPTS=(OWRONLY,OCREAT,OTRUNC),                                   00004000
+//  PATHMODE=(SIRUSR,SIWUSR,SIRGRP,SIWGRP,SIROTH,SIWOTH)                00005000
+//STDERR   DD PATH='/tmp/mdb/mdbot.stderr',                             00006000
+//  PATHOPTS=(OWRONLY,OCREAT,OTRUNC),                                   00007000
+//  PATHMODE=(SIRUSR,SIWUSR,SIRGRP,SIWGRP,SIROTH,SIWOTH)                00008000
+//                                                                      00009000

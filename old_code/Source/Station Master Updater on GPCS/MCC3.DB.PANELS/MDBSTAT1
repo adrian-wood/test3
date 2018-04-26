@@ -1,0 +1,24 @@
+)ATTR
+  %   TYPE(TEXT)  SKIP(ON) COLOR(WHITE)
+  +   TYPE(TEXT)  SKIP(ON) COLOR(BLUE)
+  _   TYPE(INPUT)          COLOR(RED)
+
+)BODY
+%TUTORIAL----------------+MDB STATISTICS REQUEST PANEL%---------------- TUTORIAL
+%COMMAND ===>_ZCMD                                                             +
++
++ Totals are generated five hours after the mini-suite is submitted (about
++ 4:30am).
++
++ If all the available dates are chosen for HOURLY totals, the dataset(s) can
++ be printed using ISPF option 3.6, or copied using option 3.3. The dataset
++ name appears on the top left hand corner when browsing the dataset.
++
++
++
++  Press END to terminate the tutorial.
++
+)PROC
+     &ZUP= &ZHTOP       /* specify this panel as 'top' */
+
+)END

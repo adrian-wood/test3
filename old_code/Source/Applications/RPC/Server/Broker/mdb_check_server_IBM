@@ -1,0 +1,91 @@
+/* REXX -------------------------------------------------------------*
+ *
+ * Program      : mdb_check_server (IBM version)
+ *
+ *              : NOTE: Revision name = mdb_check_server_IBM, but routine
+ *              :       must be renamed to mdb_check_server for usage.
+ *
+ * Language     : REXX
+ *
+ * Description  : routine run on the IBM to check if a main RPC server
+ *              : has started or not. It performs an orpcinfo on the 
+ *              : program number and checks the return. It will try 
+ *              : 30 times, sleeping 1 second between retries, then
+ *              : return to the caller if the server has not responded,
+ *              : assuming a problem as the server should start within
+ *              : 5 secs.
+ *
+ * Called by    : mdb_rpc_broker
+ *
+ * Calls        :
+ *
+ * Arguments    : prognum  (ip) : program number to orpcinfo on
+ *              : server   (ip) : server ip id e.g. ukmet, us0400
+ *              : 0 or 1   (op) : 1 = server ready, 0 = not
+ *
+ * $Revision: 2$
+ * $Date: 06/10/2009 11:35:53$
+ * $Source: /home/us0400/mdb/op/lib/RPC/server/broker/RCS/mdb_check_server_IBM,v $
+ *
+ * Changes      :
+ *
+ * $Log:
+ *  2    Met_DB_Project 1.1         06/10/2009 11:35:53    Sheila Needham
+ *       z/os1.08 backup before change to z/os 1.10
+ *  1    Met_DB_Project 1.0         11/10/2006 11:35:23    Kudsia Gwangwaa 
+ * $
+ * Revision 1.5  2001/01/09  13:44:28  13:44:28  usmdb (Generic MDB account)
+ * Simplified code by removing unused wait variable and associated
+ * coding. S.Cox
+ * 
+ * Revision 1.4  98/11/12  15:45:44  15:45:44  usmdb (Generic MDB account)
+ * 16-11-98 S.Cox
+ * Increase server start-up tolerance from 10 secs to 30 secs
+ * 
+ * Revision 1.3  98/08/10  14:52:04  14:52:04  usmdb (Generic MDB account)
+ * Increase server start-up wait time from 5 secs to 10 secs - S.Cox
+ * 
+ * Revision 1.2  1998/02/03 13:57:41  usmdb
+ * Add REXX in 1st comment line, otherwise it
+ * will not work
+ *
+ * Revision 1.1  1998/02/03 09:59:36  usmdb
+ * Initial revision
+ *
+ * 21-09-1998   : Increase server start-up wait time from 5 secs to
+ *              : 10 secs - S.Cox
+ *
+ * 02-02-1998   : Based on code by M.Catlow - S.Cox
+ *-------------------------------------------------------------------*/
+
+parse arg prognum server
+
+/*-------------------------------------------------------------------*
+ * use rpcinfo to check the status of the server. When message:
+ * EZA4328I program xxxxxx version 2 ready and waiting
+ * is returned the server has started!
+ *-------------------------------------------------------------------*/
+
+cmdtxt = "orpcinfo -u "||server" "||prognum
+retries = 30
+
+do count = 1 to retries
+  datim = DATE('O') TIME('N')
+  say datim 'mdb_check_server: check 'count' of 'retries' for server 'prognum' on 'server
+  x = shcmd(cmdtxt,,'sysout.','syserr.')
+
+  if wordpos('ready and waiting',sysout.1) /= 0 then
+  do
+    datim = DATE('O') TIME('N')
+    say datim 'mdb_check_server: server 'prognum' responds okay'
+    exit 1
+  end
+  else
+  do
+    datim = DATE('O') TIME('N')
+    say datim 'mdb_check_server: server 'prognum' not ready, sleeping...'
+    x = shcmd('sleep 1',,'sysout.','syserr.')
+  end
+end
+
+exit 0

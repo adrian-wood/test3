@@ -1,0 +1,69 @@
+#----------------------------------------------------------
+# Makefile to make executable tmo.exe
+#
+# This is used in the MetDB retrieval of 10 minute
+# observations.
+#
+# tmo.exe is invoked by cgi-bin script tmo.pl
+#
+# $Revision: 1$
+# $Date: 14/09/2006 15:44:49$
+# $Source: /home/us0400/httpd/cgi-bin/PortMetDB/tmo/RCS/Makefile,v $
+#
+# $Log:
+#  1    Met_DB_Project 1.0         14/09/2006 15:44:49    Stan Kellett    
+# $
+# Revision 1.2  2002/02/05 09:33:09  usmdb
+# Now f90 compiles. New library mdb.a - S.Cox
+#
+# Revision 1.1  2001/03/19 15:08:45  usmdb
+# Initial revision
+#
+#----------------------------------------------------------
+
+#----------------------------------------------------------
+# turn off default suffix rules:
+# Tell the compiler that .o's are dependent on .F's
+#----------------------------------------------------------
+
+.SUFFIXES:
+.SUFFIXES: .F .o
+
+FF      =       ifc
+
+FFLAGS          =  -nus -w -g -C
+
+BASE_DIR	= /home/us0400/mdb_new/op
+
+TARGET		= tmo.exe
+
+MAKEFILE	= Makefile_linux
+
+INCL_DIR 	= ${BASE_DIR}/include
+
+IFLAGS		= -I ${INCL_DIR}
+           
+SRCS		= tmo.F
+
+OBJS		= tmo.o
+
+LIBRARIES	= ${BASE_DIR}/lib/source/mdb.a
+
+$(TARGET): $(OBJS) $(MAKEFILE)
+	${FF} ${FFLAGS} ${OBJS} ${LIBRARIES} -o $@
+
+#----------------------------------------------------------
+# rule describes how to make a '.o' from a '.F'
+#----------------------------------------------------------
+
+.F.o:
+	$(FF) $(FFLAGS) $(IFLAGS) -c $<
+
+#----------------------------------------------------------
+#       Objects are dependent on the
+#       include files, the makefile and archive libraries
+#----------------------------------------------------------
+
+$(OBJS):        $(MAKEFILE) $(INCLUDE_FILES) $(LIBRARIES) 
+
+clean:;		@rm -f $(OBJS) core .Static.salf Static.sadb $(PTREPOSITORY)/*.o BLINK/* *_bld.stamp

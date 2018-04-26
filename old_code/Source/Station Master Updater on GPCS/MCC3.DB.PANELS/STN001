@@ -1,0 +1,31 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%-------------------STATION MASTER On-Line Display------------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
+%OPTION ===>!OPTION     +
++
++
++
+%     D+ (D)isplay current station details
++
++
++
+%     B+ (B)rowse Station List          - Normal browse facilities available.
++                                         Use to find station identifiers(s).
++                                         To display details revert to
++                                         option D for a formatted presentation.
++
++
++
++    Press%ENTER+to continue or%END+to exit STATION MASTER
+)INIT
+     .CURSOR = OPTION   &OPTION = &Z   .HELP = STNHLP1
+)PROC
+  &ACTION =  TRUNC(&OPTION,1)
+  &ACTION=TRANS(&ACTION,d,D,b,B,*,*)
+  VER(&OPTION,NONBLANK)
+  VER(&ACTION,NONBLANK,LIST,D,B)
+)END

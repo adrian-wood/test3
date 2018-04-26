@@ -1,0 +1,368 @@
+/*REXX----------------------------------------------------------------*/
+
+/* WARNING - changes to this file must be tested against 
+ * non-operational data. Failures in this routine can result in
+ * the contents of the stack being passed to the calling routine
+ * and executed. This includes the output to the SCRATCH files 
+ * which may result in the loss of opertaional data                   */
+
+/*--------------------------------------------------------------------*
+ * Initialisations.
+ *--------------------------------------------------------------------*/
+
+today_base = date('B')  /* todays date in BASE format (days since and
+                           including the base date, 1 January 0001) */
+
+totds   = 0   /* total number of standard ds to arch */
+totdsr  = 0   /* total number of RADOP ds to arch */
+totdst  = 0   /* total number of RADOP2 ds to arch */
+totdsf  = 0   /* total number of RADRF ds to arch */
+totdsd  = 0   /* total number of drwind ds to arch */
+
+details = 'DSCRDT2'  /* input to csilcat. Dataset creation date */
+
+/*--------------------------------------------------------------------*
+ * To add a new datatype to archive, increment datype.0 and add a
+ * new datype.x and a new daysold.x (relates to datype.x)
+ *--------------------------------------------------------------------*/
+
+datype.0 = 8                   /* number of datatypes         */
+datype.1 = 'MDB.DASEAICE.**'   /* SEAICE    dataset pattern   */
+datype.2 = 'MDB.DAOSEICE.**'   /* OSSSEAICE dataset pattern   */
+datype.3 = 'MDB.DAHSEICE.**'   /* HRSEAICE  dataset pattern   */
+datype.4 = 'MDB.DASNOW.**'     /* SNOW      dataset pattern   */
+datype.5 = 'MDB.DARADOP.**'    /* RADOP     dataset pattern   */
+datype.6 = 'MDB.DARADOP2.**'   /* RADOP2    dataset pattern   */
+datype.7 = 'MDB.DARADRF.**'    /* RADRF     dataset pattern   */
+datype.8 = 'MDB.DADRWIND.**'   /* DRWIND    dataset pattern   */
+
+daysold.1 = 3    /* archive dataset if created > 3 days ago   */
+daysold.2 = 3    /* archive dataset if created > 3 days ago   */
+daysold.3 = 3    /* archive dataset if created > 3 days ago   */
+daysold.4 = 3    /* archive dataset if created > 3 days ago   */
+daysold.5 = 5    /* archive dataset if created > 5 days ago   */
+daysold.6 = 2    /* archive dataset if created > 2 days ago   */
+daysold.7 = 1    /* archive dataset if created > 1 days ago   */
+daysold.8 = 2    /* archive dataset if created > 2 days ago   */
+
+say 'Start of GRIBARC. Current date = 'today_base
+say
+say 'Datasets to archive listed below:'
+
+/*----------------------------------------------------------*
+ *LIST STANDARD GRIB DATASETS
+ *
+ *----------------------------------------------------------*/
+
+do i = 1 to 4   /* loop over non radar datatypes */
+  ds = datype.i
+  parse value csilcat(ds,details,'A') with rc ',' dsn.0 ',' datasets
+  do j = 1 to dsn.0   /* loop over datasets returned */
+    parse var datasets dsn ';' dscrdt2 ',' datasets
+    crday = substr(dscrdt2,1,5)  /* dataset creation date yyddd */
+    ds_base=date(B,crday,'J')  /* convert to base date */
+     if (today_base-ds_base > daysold.i) then do
+       totds = totds + 1
+       arcfile.totds = dsn  /* add dataset name to arcfile array */
+     end
+  end
+end
+
+/*--------------------------------------------------------------------*
+ * If no datasets to archive, issue error and exit.
+ *--------------------------------------------------------------------*/
+
+if (totds = 0) then do
+  say 'GRIBARC: ERROR: No standard dsets to arch'
+  end
+else do
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to archive file for standard data types.
+ *--------------------------------------------------------------------*/
+
+ "newstack"    /* new stack */
+  say 'stack1'
+do i = 1 to totds
+  say arcfile.i
+  queue arcfile.i   /* add to stack */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.ARCHIVE1') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to scratch file.
+ *--------------------------------------------------------------------*/
+
+"newstack"    /* new stack */
+
+do i = 1 to totds
+  queue "   DELETE '"arcfile.i"'"        /* add to stack */
+/*  queue 'SELECT CATDSN='arcfile.i     previous version */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.SCRATCH1') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+end
+
+/*----------------------------------------------------------*
+ *LIST RADOP GRIB DATASETS
+ *
+ *----------------------------------------------------------*/
+  ds = datype.5
+  parse value csilcat(ds,details,'A') with rc ',' dsn.0 ',' datasets
+  do j = 1 to dsn.0   /* loop over datasets returned */
+    parse var datasets dsn ';' dscrdt2 ',' datasets
+    crday = substr(dscrdt2,1,5)  /* dataset creation date yyddd */
+    ds_base=date(B,crday,'J')  /* convert to base date */
+     if (today_base-ds_base > daysold.5) then do
+       totdsr = totdsr + 1
+       arcfile2.totdsr = dsn  /* add dataset name to arcfile2 array */
+     end
+  end
+
+
+/*--------------------------------------------------------------------*
+ * If no datasets to archive, issue error and exit.
+ *--------------------------------------------------------------------*/
+
+if (totdsr = 0) then do
+  say 'GRIBARC: ERROR: No RADOP dsets to arch'
+  end
+else do
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to archive file for standard data types.
+ *--------------------------------------------------------------------*/
+
+ "newstack"    /* new stack */
+ say 'stack2'
+do i = 1 to totdsr
+  say arcfile2.i
+  queue arcfile2.i   /* add to stack */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.ARCHIVE2') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to scratch file.
+ *--------------------------------------------------------------------*/
+
+"newstack"    /* new stack */
+
+do i = 1 to totdsr
+  queue "   DELETE '"arcfile2.i"'"        /* add to stack   */
+/*  queue 'SELECT CATDSN='arcfile.i     previous version    */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.SCRATCH2') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+end
+
+/*----------------------------------------------------------*
+ *LIST RADOP2 GRIB DATASETS
+ *
+ *----------------------------------------------------------*/
+  ds = datype.6
+  parse value csilcat(ds,details,'A') with rc ',' dsn.0 ',' datasets
+  do j = 1 to dsn.0   /* loop over datasets returned */
+    parse var datasets dsn ';' dscrdt2 ',' datasets
+    crday = substr(dscrdt2,1,5)  /* dataset creation date yyddd */
+    ds_base=date(B,crday,'J')  /* convert to base date */
+     if (today_base-ds_base > daysold.6) then do
+       totdst = totdst + 1
+       arcfile3.totdst = dsn  /* add dataset name to arcfile2 array */
+     end
+  end
+
+
+/*--------------------------------------------------------------------*
+ * If no datasets to archive, issue error and exit.
+ *--------------------------------------------------------------------*/
+
+if (totdst = 0) then do
+  say 'GRIBARC: ERROR: No RADOP2 dsets to arch'
+  end
+else do
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to archive file for standard data types.
+ *--------------------------------------------------------------------*/
+
+ "newstack"    /* new stack */
+ say 'stack2'
+do i = 1 to totdst
+  say arcfile3.i
+  queue arcfile3.i   /* add to stack */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.ARCHIVE3') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to scratch file.
+ *--------------------------------------------------------------------*/
+
+"newstack"    /* new stack */
+
+do i = 1 to totdst
+  queue "   DELETE '"arcfile3.i"'"        /* add to stack   */
+/*  queue 'SELECT CATDSN='arcfile.i     previous version    */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.SCRATCH3') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+end
+
+/*----------------------------------------------------------*
+ *LIST RADRF GRIB DATASETS
+ *
+ *----------------------------------------------------------*/
+  ds = datype.7
+  parse value csilcat(ds,details,'A') with rc ',' dsn.0 ',' datasets
+  do j = 1 to dsn.0   /* loop over datasets returned */
+    parse var datasets dsn ';' dscrdt2 ',' datasets
+    crday = substr(dscrdt2,1,5)  /* dataset creation date yyddd */
+    ds_base=date(B,crday,'J')  /* convert to base date */
+     if (today_base-ds_base >= daysold.7) then do
+       totdsf = totdsf + 1
+       arcfile4.totdsf = dsn  /* add dataset name to arcfile2 array */
+     end
+  end
+
+
+/*--------------------------------------------------------------------*
+ * If no datasets to archive, issue error and exit.
+ *--------------------------------------------------------------------*/
+
+if (totdsf = 0) then do
+  say 'GRIBARC: ERROR: No RADRF dsets to arch'
+  end
+else do
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to archive file for standard data types.
+ *--------------------------------------------------------------------*/
+
+ "newstack"    /* new stack */
+ say 'stack2'
+do i = 1 to totdsf
+  say arcfile4.i
+  queue arcfile4.i   /* add to stack */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.ARCHIVE4') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to scratch file.
+ *--------------------------------------------------------------------*/
+
+"newstack"    /* new stack */
+
+do i = 1 to totdsf
+  queue "   DELETE '"arcfile4.i"'"        /* add to stack   */
+/*  queue 'SELECT CATDSN='arcfile.i     previous version    */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.SCRATCH4') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+end
+
+/*----------------------------------------------------------*
+ *LIST DRWIND GRIB DATASETS
+ *
+ *----------------------------------------------------------*/
+  ds = datype.8
+  parse value csilcat(ds,details,'A') with rc ',' dsn.0 ',' datasets
+  do j = 1 to dsn.0   /* loop over datasets returned */
+    parse var datasets dsn ';' dscrdt2 ',' datasets
+    crday = substr(dscrdt2,1,5)  /* dataset creation date yyddd */
+    ds_base=date(B,crday,'J')  /* convert to base date */
+     if (today_base-ds_base >= daysold.7) then do
+       totdsd = totdsd + 1
+       arcfile5.totdsd = dsn  /* add dataset name to arcfile2 array */
+     end
+  end
+
+
+/*--------------------------------------------------------------------*
+ * If no datasets to archive, issue error and exit.
+ *--------------------------------------------------------------------*/
+
+if (totdsd = 0) then do
+  say 'GRIBARC: ERROR: No DRWIND dsets to arch'
+  end
+else do
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to archive file for standard data types.
+ *--------------------------------------------------------------------*/
+
+ "newstack"    /* new stack */
+ say 'stack2'
+do i = 1 to totdsd
+  say arcfile5.i
+  queue arcfile5.i   /* add to stack */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.ARCHIVE5') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+/*--------------------------------------------------------------------*
+ * Loop over datasets. write to scratch file.
+ *--------------------------------------------------------------------*/
+
+"newstack"    /* new stack */
+
+do i = 1 to totdsd
+  queue "   DELETE '"arcfile5.i"'"        /* add to stack   */
+/*  queue 'SELECT CATDSN='arcfile.i     previous version    */
+end
+
+"alloc fi(fileout) da('MDB.GRIBARC.SCRATCH5') shr"
+"execio * diskw fileout (FINIS"
+"free fi(fileout)"
+
+end
+/*--------------------------------------------------------------------*
+* submit jobs to archive standard and radar GRIB data
+*--------------------------------------------------------------------*/
+   if (totds > 0) then do
+      "submit 'MDB.JCL.CNTL(GRIBARC1)'"
+    end
+
+   if (totdsr > 0) then do
+      "submit 'MDB.JCL.CNTL(GRIBARC2)'"
+   end
+
+   if (totdst > 0) then do
+      "submit 'MDB.JCL.CNTL(GRIBARC3)'"
+   end
+
+   if (totdsf > 0) then do
+      "submit 'MDB.JCL.CNTL(GRIBARC4)'"
+    end
+
+   if (totdsd > 0) then do
+      "submit 'MDB.JCL.CNTL(GRIBARC5)'"
+   end
+
+exit 0
+
+

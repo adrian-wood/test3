@@ -1,0 +1,33 @@
+MODULE aircmd_mod
+  INTERFACE
+    SUBROUTINE AIRCMD(OLD_LAT,OLD_LONG,LAT,LONG,                  &
+     MID_LAT,MID_LONG,TIMEYY,TIMETH,TIMEDD,TIMEHH,TIMEMM,          &
+     REQ_YY,REQ_MTH,REQ_DD,REQ_HH,OLD_MINS,MID_YY,MID_MTH,MID_DD,  &
+     MID_HH,MID_MM)
+
+    IMPLICIT NONE
+
+    REAL,INTENT(IN)       :: OLD_LAT !(1)
+    REAL,INTENT(IN)       :: OLD_LONG !(2)
+    REAL,INTENT(IN)       :: LAT !(3)
+    REAL,INTENT(IN)       :: LONG !(4)
+    REAL,INTENT(OUT)      :: MID_LAT !(5)
+    REAL,INTENT(OUT)      :: MID_LONG !(6)
+    INTEGER,INTENT(IN)    :: TIMEYY !(7)
+    INTEGER,INTENT(IN)    :: TIMETH !(8)
+    REAL,INTENT(IN)       :: TIMEDD !(9)
+    REAL,INTENT(IN)       :: TIMEHH !(10)
+    REAL,INTENT(IN)       :: TIMEMM !(11)
+    INTEGER,INTENT(IN)    :: REQ_YY !(12)
+    INTEGER,INTENT(IN)    :: REQ_MTH !(13)
+    INTEGER,INTENT(IN)    :: REQ_DD !(14)
+    INTEGER,INTENT(IN)    :: REQ_HH    !(15)
+    INTEGER,INTENT(IN)    :: OLD_MINS !(16)
+    REAL,INTENT(OUT)      :: MID_YY !(17)
+    REAL,INTENT(OUT)      :: MID_MTH !(18)
+    REAL,INTENT(OUT)      :: MID_DD !(19)
+    REAL,INTENT(OUT)      :: MID_HH !(20)
+    REAL,INTENT(OUT)      :: MID_MM !(21)
+    END SUBROUTINE AIRCMD
+  END INTERFACE
+END MODULE aircmd_mod

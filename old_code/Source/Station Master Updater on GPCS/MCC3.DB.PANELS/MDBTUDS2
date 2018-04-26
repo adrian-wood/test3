@@ -1,0 +1,22 @@
+)ATTR
+  %   TYPE(TEXT)  SKIP(ON) COLOR(WHITE)
+  +   TYPE(TEXT)  SKIP(ON) COLOR(BLUE)
+  _   TYPE(INPUT)          COLOR(RED)
+
+)BODY
+%TUTORIAL-----------+DATASET DESTINATION SELECTION MENU%----------      TUTORIAL
+%COMMAND ===>_ZCMD                                                             +
++
++  If the user wants to print-off the dataset, enter 'Y' at the PRINT input
++ field and the destination of a local printer at the next input field, or leave
++ the printer destination blank in which case the dataset will be printed on a
++ COSMOS system printer.
++
++  Note that it is permissible to choose both the keep and print options.
++
++  Press END to terminate the tutorial.
++
+)PROC
+     &ZUP= &ZHTOP       /* specify this panel as 'top' */
+
+)END

@@ -1,0 +1,31 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%----------------- STATION MASTER On-Line Help Display -------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
++
++       This panel is asking you to make a selection about
++       the type of processing you would like to do the
++       station details.
++
++       The choices are :-
++
++       D - Display data from STATION MASTER
++       A - Amend station details from STATION MASTER
++       O - Open a new station in STATION MASTER
++       C - Close an old station in STATION MASTER
++       R - Reopen a station in STATION MASTER
++       N - reNumber a station in STATION MASTER
++       B - Display station list data store
++
++
++
++                Press%END+to go back to selection
+)INIT
+     .CURSOR = ZCMD
+)PROC
+    &ZUP=STNHLPU1
+ /* &ZCONT=STNHLP2 */
+)END

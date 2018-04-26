@@ -1,0 +1,31 @@
+//MDBFTP PROC
+//*---------------------------------------------------------------------
+//*              CHECK FOR DUPLICATE JOB SUBMISSION.
+//*---------------------------------------------------------------------
+//DUPCHK  EXEC PGM=IKJEFT01,PARM='%CHKDUPLI'
+//SYSEXEC  DD  DSN=MET.EXECLIB,DISP=SHR
+//         DD  DSN=MET.EXECFLIB,DISP=SHR
+//SYSTSPRT DD  SYSOUT=Q
+//SYSTSIN  DD  DUMMY
+//*
+//*---------------------------------------------------------------------
+//*                   MDB STORAGE MONITOR JOB
+//*                   -----------------------
+//*
+//*   FT05F001:  NAMELIST INPUT FOR THIS JOB.
+//*   FT06F001:  OUTPUT MESSAGES.
+//*   HEADERS:   LIST OF GTS HEADER RANGES FOR THIS JOB.
+//*   HKEEP:     MET.D.B. HOUSEKEEPING DATA SET.
+//*   DREGS:     DATA SET FOR DREGS MESSAGES.
+//*   SYSUDUMP:  OUTPUT FOR DUMP IF JOB ABENDS.
+//*---------------------------------------------------------------------
+//MONITOR EXEC PGM=MONITOR,REGION=4M,TIME=NOLIMIT,COND=(0,NE,DUPCHK)
+//STEPLIB  DD  DSN=MDB.LOADLIB,DISP=SHR
+//*
+//FT05F001 DD DSN=MDB.STORAGE.DATA(MDBFTP),LABEL=(,,,IN),DISP=SHR
+//FT06F001 DD SYSOUT=Q
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HKEEP    DD DSN=MDB.HKDS,DISP=SHR
+//DREGS    DD DSN=MDB.DREGS.MDBFTP,DISP=SHR
+//SYSUDUMP DD SYSOUT=Q
+//

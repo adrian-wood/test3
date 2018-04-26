@@ -1,0 +1,149 @@
+/* REXX ------------------------------------------------------
+ *
+ * program  : SERVOUT
+ *
+ * Description: To look through output on EJES
+ *              searching for a job containing the specified
+ *              string. If output is found it is written to a
+ *              dataset. The search continues with the next job
+ *              if pmatch=1, otherwise it stops.
+ * Parameters:  jobname prefix (pjob)
+ *              date           (pdate) DD-MM-YYYY
+ *              time           (ptime) HH:MM:SS
+ *              search string  (pstring)
+ *              match flag     (pmatch) 0= first match, 1=all
+ *
+ *              Parameters must be in a fixed format for EJES
+ *              filters and pattern matching.
+ *
+ * Author     : Sheila Needham
+ *
+ * $Workfile: SERVOUT$
+ * $Folder: REXX.EXEC$
+ * $Revision: 1$
+ * $Date: 02/11/2009 09:41:13$
+ *
+ * $Log:
+ *  1    Met_DB_Project 1.0         02/11/2009 09:41:13    Sheila Needham  REXX
+ *        EJES script to read MetDB server output 
+ * $
+ *-------------------------------------------------------- */
+
+ /* trace results */
+
+/* parameters are jobname prefix,date,time,search string and a flag
+   set to 0 for single match or 1 for all matches     */
+
+/* pjob='mdbbadc'        use
+  pdate='23-10-2009'   these
+  ptime='00:30:00'       for
+  pstring='job'         testing
+  pmatch='1' */
+
+  parse upper arg pjob pdate ptime pstring pmatch
+  say pjob' 'pdate' 'ptime' 'pstring' 'pmatch
+
+/* Queue the initial commands to send to ejes to setup the appropriate
+   status display and run the status display
+   Filters on date/time first (on a dummy job) to speed up selection
+   Doesn't seem to run any faster though!                            */
+
+  delstack
+  queue "jname=MDBDUMY"
+  queue "os"
+  queue "status"
+  queue "datefmt ddmmyyyy -"
+  queue "filter qdate="pdate" and"
+  queue "filter +qtime>"ptime
+  queue "update"
+  queue "END"
+  queue "jname="pjob
+  queue "status"
+  queue "update"
+  queue ""
+
+/* run ejes using the command stack as input and returning all
+   rows into variables beginning st_                           */
+
+  rc = ejesrexx("execapi * (prefix st_")
+
+/* process any errors and exit, or start processing jobs */
+  if rc>0 then do
+    do i=1 to st_msg.0
+      say st_msg.i
+    end
+    say "0 Jobs will be processed"
+    rc = ejesrexx('termapi')
+    exit 8
+  end
+  else do
+    say st_lines "Jobs will be processed"
+/* Setup a loop to process all of the jobs in the status display.
+   Looks for a matching client timestamp                          */
+
+    do row = 1 to st_lines
+      rc = ejesrexx("execapi 0 'locate "row "'")
+
+      if rc=0 then do
+        delstack
+        queue "FIND ' '"
+        queue ":t"
+        queue ":<><><><"pstring">"
+        queue "END"
+        queue ""
+
+        rc = ejesrexx("execapi * (PREFIX SR_")
+
+/* if it fails to find the pattern move on to the next job  */
+
+        if rc>0 then do
+          do i=1 to sr_msg.0
+            say sr_msg.i
+          end
+        end
+        else do
+
+/* otherwise, allocate and extract to dataset on EJESEXT  */
+
+          thetime = time('s')
+          theday = delstr(date('w'),4)
+          randnum = random()
+          extract_dsn='public.mdbrpc.'theday'.t'thetime'.r'randnum
+          say translate(extract_dsn)
+
+          "allocate file(ejesext) new catalog",
+          "da('"extract_dsn"')",
+          "storclas(scdatprk)",
+          "recfm(v b a) lrecl(140) blksize(27998)",
+          "space(300,300) tracks release",
+          "mgmtclas(MCSNC1)"
+
+          if rc>0 then do
+            say "allocate failed"
+            rc = ejesrexx('termapi')
+            exit 8
+          end
+
+          rc = ejesrexx("execapi 0 ':E'")
+
+          if rc>0 then do
+            do i=1 to ejes_msg.0
+              say ejes_msg.i
+            end
+            "FREE FILE(EJESEXT)"
+            rc = ejesrexx('TERMAPI')
+            exit
+          end
+          if pmatch='0' then do
+            "FREE FILE(EJESEXT)"
+            leave row
+          end
+          else do
+            "FREE FILE(EJESEXT)"
+          end
+        end  /* of string found block */
+      end  /* of row located block */
+    end  /* of loop over jobs */
+  end
+  rc = ejesrexx('termapi')
+  exit

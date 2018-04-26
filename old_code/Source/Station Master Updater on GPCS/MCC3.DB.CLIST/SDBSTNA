@@ -1,0 +1,12 @@
+CONTROL MSG                                                           
+ALLOC FI(FT06F001) DA(*) SHR                                 
+ALLOC FI(FT88F001) DA('MCC3.DBSTNMAS.MAINB') SHR      
+ALLOC FI(FT89F001) DA('MCC3.DBSTNMAS.INDEXB') SHR         
+ALLOC FI(FT13F001) DA('SDB.STNMAS.LOG') SHR                      
+ALLOC FI(FT16F001) DA('SDB.STNMAS.NAME') SHR INPUT                
+ISPEXEC LIBDEF ISPPLIB DATASET ID('MCC3.DB.PANELS')                 
+ISPEXEC LIBDEF ISPLLIB DATASET ID('SDB.LOADLIB')                      
+ISPEXEC SELECT PGM(STNADMIN)                                          
+FREE FI(FT88F001 FT89F001 FT13F001 FT16F001)                          
+ISPEXEC LIBDEF ISPPLIB                                                 
+ISPEXEC LIBDEF ISPLLIB                                                

@@ -1,0 +1,36 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%-------------------Station Master Data Display --------------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
++
++
++  Do you wish to add/update this record :-
++
++
++
++           : % !UP +    (Y for YES or N for NO)
++
++
++  Enter Change Details :-
++
++
++      SOURCE   : % !SOURCE              + (e.g. METNO/WWW)
++
++      NAME     : % !AUSER               + (e.g. P.McCarthy)
++
++
++           Press %ENTER+or%END+to continue
++
++
+)INIT
+     .CURSOR = UP   .HELP = STNHLP6  &UP = 'Y'
+ /*  &SOURCE = 'METNO/WWW'  &AUSER = 'PATRICK MCCARTHY' */
+)PROC
+    VER(&UP,NONBLANK,LIST,Y,y,N,n)
+    IF(&UP = 'Y')
+       VER(&SOURCE,NONBLANK)
+       VER(&AUSER,NONBLANK)
+)END

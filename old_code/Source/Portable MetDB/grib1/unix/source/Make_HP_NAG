@@ -1,0 +1,336 @@
+#########################################################################
+#
+# FILE NAME      : Make_HP
+#
+# TYPE           : Makefile
+#
+# PURPOSE        : used to make all the neccessary files for GRIB 
+#                  package.
+#
+# REVISION INFO  :
+#
+# $Revision: 1$
+# $Date: 27/02/2007 16:40:30$
+# $Source: /home/us0400/grib/source/RCS/Make_HP_NAG,v $
+#
+# CHANGE HISTORY :
+#
+# $Log:
+#  1    Met_DB_Project 1.0         27/02/2007 16:40:30    Stan Kellett    
+# $
+# Revision 1.2  2004/05/20 12:32:19  usmdb
+# 20 May 2004. Sheila Needham.
+# Comment out installation step to make the
+# script portable.
+#
+# Revision 1.1  2002/07/05 10:56:08  usmdb
+# Initial revision
+#
+#
+#########################################################################                                                                  
+#
+# Turn off default SUFFIX rules:
+# Tell compiler that .o's are dependent on .F's .f's and .c's
+
+.SUFFIXES:
+.SUFFIXES: .F .o
+.SUFFIXES: .f .o
+.SUFFIXES: .c .o
+
+CC           = cc 
+CFLAGS       =  -DHP_ANSI=1 -I'./.' -O 
+C_TO_F_FLAGS =  -DHP_ANSI=1 -I'./.' -O 
+FFLAGS       =  -DHP
+FC           = f95
+LIBDIR       = /usr/local/lib
+BINDIR       = /usr/local/bin
+# Name of library
+LIB = libgrib_NAG.a
+
+# Fortran source including pre-processor statements, *.F
+FSRCS        = analyse.F \
+               coder.F \
+ 	       decode.F \
+	       gbyte.F \
+	       gbytes.F \
+	       grib_edtn_1_dec.F \
+	       grib_edtn_1_enc.F \
+	       limited_extract.F \
+	       sbyte.F \
+	       sbytes.F
+# Fortran source not containing pre-processor statements, *.f
+fSRCES       = ceil_log2.f \
+	       prtbk1.f \
+	       prtbk2.f \
+               confp.f \
+	       decfp.f \
+	       find_mesgs.f \
+	       findbox.f \
+	       intarr_max.f \
+	       intarr_min.f \
+	       level_desc_dec.f \
+	       level_desc_enc.f \
+	       level_desc_table.f \
+	       offset.f \
+	       orig_centre_check.f \
+	       parameter_check.f \
+	       prbkn2.f \
+	       prtbin.f \
+	       range_check.f \
+	       realarr_max.f \
+	       realarr_min.f \
+	       time_range_dec.f \
+	       time_range_enc.f \
+	       time_range_table.f \
+	       time_unit_check.f
+# C source code *.c
+C_SOURCES    = degrib.c \
+               gd_free.c \
+	       gd_from_param_blocks.c\
+	       gd_new.c \
+	       gd_print.c \
+	       grib_chars_matched.c \
+	       grib_edtn_0_read.c \
+	       grib_free.c \
+	       grib_get_all.c \
+	       grib_handle_read_error.c \
+	       grib_insert_byte.c \
+	       grib_insert_byte.c \
+	       grib_new.c \
+	       grib_read.c \
+	       grib_read_block.c \
+	       grib_read_bytes.c \
+	       gribflags_to_flags.c \
+	       gribint_to_u_int.c \
+	       gribint_to_u_long.c \
+	       pd_free.c \
+	       pd_from_param_blocks.c \
+	       pd_new.c \
+	       pd_print.c \
+	       process_grib_file.c	       
+# define files for LIB objects
+LIBOBJ       = analyse.o \
+	       decode.o \
+	       prtbk1.o \
+	       prtbk2.o \
+               coder.o \
+	       gbyte.o \
+	       gbytes.o \
+	       grib_edtn_1_dec.o \
+	       grib_edtn_1_enc.o \
+	       limited_extract.o \
+	       sbyte.o \
+	       sbytes.o \
+	       ceil_log2.o \
+               confp.o \
+	       decfp.o \
+	       find_mesgs.o \
+	       findbox.o \
+	       intarr_max.o \
+	       intarr_min.o \
+	       level_desc_dec.o \
+	       level_desc_enc.o \
+	       level_desc_table.o \
+	       offset.o \
+	       orig_centre_check.o \
+	       parameter_check.o \
+	       prbkn2.o \
+	       prtbin.o \
+	       range_check.o \
+	       realarr_max.o \
+	       realarr_min.o \
+	       time_range_dec.o \
+	       time_range_enc.o \
+	       time_range_table.o \
+	       time_unit_check.o
+COBJ         = degrib.o \
+               gd_free.o \
+	       gd_from_param_blocks.o\
+	       gd_new.o \
+	       gd_print.o \
+	       grib_chars_matched.o \
+	       grib_edtn_0_read.o \
+	       grib_free.o \
+	       grib_get_all.o \
+	       grib_handle_read_error.o \
+	       grib_insert_byte.o \
+	       grib_insert_byte.o \
+	       grib_new.o \
+	       grib_read.o \
+	       grib_read_block.o \
+	       grib_read_bytes.o \
+	       gribflags_to_flags.o \
+	       gribint_to_u_int.o \
+	       gribint_to_u_long.o \
+	       pd_free.o \
+	       pd_from_param_blocks.o \
+	       pd_new.o \
+	       pd_print.o \
+	       process_grib_file.o
+
+
+# Name of decoding program
+DECODE_PROG = degrib
+
+DECODE_OBJS = degrib.o process_grib_file.o grib_read.o grib_edtn_0_read.o \
+              grib_read_block.o grib_read_bytes.o grib_handle_read_error.o \
+              gribint_to_u_int.o gribint_to_u_long.o gribflags_to_flags.o \
+              grib_free.o grib_new.o grib_chars_matched.o \
+              grib_insert_byte.o pd_from_param_blocks.o pd_print.o pd_free.o \
+              pd_new.o gd_from_param_blocks.o gd_print.o gd_free.o gd_new.o
+
+all:           $(LIB) $(DECODE_PROG)
+
+
+# Rule to make decoder program
+
+
+# Default rule, to make everything
+
+$(DECODE_PROG):  grib_get_all.o $(DECODE_OBJS) $(LIB)
+	$(FC) -C -o $(DECODE_PROG) $(DECODE_OBJS) grib_get_all.o $(LIB) 
+
+
+$(LIB): ${LIBOBJ}
+	rm -f $@
+	ar rv $@ ${LIBOBJ} 
+
+.F.o:	$(FSRCS)
+	$(FC) -f77 -C $(FFLAGS) -c $<
+
+.f.o:	$(fSRCES)
+	$(FC) -f77 -C -c $< 
+	
+.c.o:   ${C_SOURCES}
+	$(CC) $(CFLAGS) -c -o $*.o $*.c -I /opt/nag/lib/
+
+
+
+# Rule to update dependancy information
+
+
+depend:
+	makedepend -DMAKEDEPEND=1 -- $(CFLAGS) -- -o .o \
+            $(C_SOURCES)
+	@echo
+	@echo "Makefile updated. 
+	
+
+# Workaround for bug in gcc whereby using -O causes arguments to be passed to
+# Fortran routines incorrectly.
+
+grib_get_all.o: grib_get_all.c
+	$(CC) $(C_TO_F_FLAGS) -c -o grib_get_all.o grib_get_all.c -I /opt/nag/lib/
+
+# Rule to clean up
+
+clean:
+	rm -f *.o $(LIB) $(DECODE_PROG)
+
+# Rule to install software (probably need to be root to invoke this)
+
+# install:              all
+#	cpset $(LIB)         $(LIBDIR) 644 bin bin
+#	cpset $(DECODE_PROG) $(BINDIR) 755 bin bin
+
+# The following is generated by makedepend(1). Use 'make depend' to update.
+
+# DO NOT DELETE
+
+degrib.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+degrib.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+degrib.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+degrib.o: /usr/include/stdlib.h /usr/include/sys/_wchar_t.h
+degrib.o: /usr/include/errno.h /usr/include/sys/errno.h boolean.h
+degrib.o: stringterm.h
+gd_free.o: /usr/include/stdlib.h /usr/include/sys/types.h
+gd_free.o: /usr/include/sys/stdsyms.h /usr/include/sys/_inttypes.h
+gd_free.o: /usr/include/sys/_wchar_t.h grid_description.h minmax.h
+gd_free.o: portability.h
+gd_from_param_blocks.o: /usr/include/stdlib.h /usr/include/sys/types.h
+gd_from_param_blocks.o: /usr/include/sys/stdsyms.h
+gd_from_param_blocks.o: /usr/include/sys/_inttypes.h
+gd_from_param_blocks.o: /usr/include/sys/_wchar_t.h grid_description.h
+gd_from_param_blocks.o: minmax.h portability.h array.h
+gd_new.o: /usr/include/stdlib.h /usr/include/sys/types.h
+gd_new.o: /usr/include/sys/stdsyms.h /usr/include/sys/_inttypes.h
+gd_new.o: /usr/include/sys/_wchar_t.h grid_description.h minmax.h
+gd_new.o: portability.h
+gd_print.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+gd_print.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+gd_print.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+gd_print.o: grid_description.h minmax.h portability.h
+grib_edtn_0_read.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+grib_edtn_0_read.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+grib_edtn_0_read.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+grib_edtn_0_read.o: grib.h portability.h product_definition.h
+grib_edtn_0_read.o: grid_description.h minmax.h gribflags.h boolean.h array.h
+grib_free.o: /usr/include/stdlib.h /usr/include/sys/types.h
+grib_free.o: /usr/include/sys/stdsyms.h /usr/include/sys/_inttypes.h
+grib_free.o: /usr/include/sys/_wchar_t.h grib.h /usr/include/stdio.h
+grib_free.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+grib_free.o: portability.h product_definition.h grid_description.h minmax.h
+grib_get_all.o: /usr/include/math.h /usr/include/sys/stdsyms.h grib.h
+grib_get_all.o: /usr/include/stdio.h /usr/include/sys/types.h
+grib_get_all.o: /usr/include/sys/_inttypes.h /usr/include/sys/_null.h
+grib_get_all.o: /usr/include/sys/_size_t.h portability.h product_definition.h
+grib_get_all.o: grid_description.h minmax.h boolean.h
+grib_handle_read_error.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+grib_handle_read_error.o: /usr/include/sys/types.h
+grib_handle_read_error.o: /usr/include/sys/_inttypes.h
+grib_handle_read_error.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+grib_handle_read_error.o: grib.h portability.h product_definition.h
+grib_handle_read_error.o: grid_description.h minmax.h
+grib_insert_byte.o: /usr/include/math.h /usr/include/sys/stdsyms.h
+grib_insert_byte.o: /usr/include/stdlib.h /usr/include/sys/types.h
+grib_insert_byte.o: /usr/include/sys/_inttypes.h /usr/include/sys/_wchar_t.h
+grib_insert_byte.o: grib.h /usr/include/stdio.h /usr/include/sys/_null.h
+grib_insert_byte.o: /usr/include/sys/_size_t.h portability.h
+grib_insert_byte.o: product_definition.h grid_description.h minmax.h
+grib_insert_byte.o: boolean.h
+grib_insert_byte.o: /usr/include/math.h /usr/include/sys/stdsyms.h
+grib_insert_byte.o: /usr/include/stdlib.h /usr/include/sys/types.h
+grib_insert_byte.o: /usr/include/sys/_inttypes.h /usr/include/sys/_wchar_t.h
+grib_insert_byte.o: grib.h /usr/include/stdio.h /usr/include/sys/_null.h
+grib_insert_byte.o: /usr/include/sys/_size_t.h portability.h
+grib_insert_byte.o: product_definition.h grid_description.h minmax.h
+grib_insert_byte.o: boolean.h
+grib_new.o: /usr/include/math.h /usr/include/sys/stdsyms.h
+grib_new.o: /usr/include/stdlib.h /usr/include/sys/types.h
+grib_new.o: /usr/include/sys/_inttypes.h /usr/include/sys/_wchar_t.h grib.h
+grib_new.o: /usr/include/stdio.h /usr/include/sys/_null.h
+grib_new.o: /usr/include/sys/_size_t.h portability.h product_definition.h
+grib_new.o: grid_description.h minmax.h
+grib_read.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+grib_read.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+grib_read.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+grib_read.o: /usr/include/string.h grib.h portability.h product_definition.h
+grib_read.o: grid_description.h minmax.h gribint.h
+grib_read_block.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+grib_read_block.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+grib_read_block.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h grib.h
+grib_read_block.o: portability.h product_definition.h grid_description.h
+grib_read_block.o: minmax.h gribint.h
+grib_read_bytes.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+grib_read_bytes.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+grib_read_bytes.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h grib.h
+grib_read_bytes.o: portability.h product_definition.h grid_description.h
+grib_read_bytes.o: minmax.h
+gribflags_to_flags.o: gribflags.h boolean.h
+gribint_to_u_int.o: gribint.h
+gribint_to_u_long.o: gribint.h
+pd_free.o: /usr/include/stdlib.h /usr/include/sys/types.h
+pd_free.o: /usr/include/sys/stdsyms.h /usr/include/sys/_inttypes.h
+pd_free.o: /usr/include/sys/_wchar_t.h product_definition.h portability.h
+pd_from_param_blocks.o: product_definition.h portability.h array.h
+pd_new.o: /usr/include/stdlib.h /usr/include/sys/types.h
+pd_new.o: /usr/include/sys/stdsyms.h /usr/include/sys/_inttypes.h
+pd_new.o: /usr/include/sys/_wchar_t.h product_definition.h portability.h
+pd_print.o: product_definition.h portability.h
+process_grib_file.o: /usr/include/stdio.h /usr/include/sys/stdsyms.h
+process_grib_file.o: /usr/include/sys/types.h /usr/include/sys/_inttypes.h
+process_grib_file.o: /usr/include/sys/_null.h /usr/include/sys/_size_t.h
+process_grib_file.o: /usr/include/stdlib.h /usr/include/sys/_wchar_t.h
+process_grib_file.o: /usr/include/errno.h /usr/include/sys/errno.h
+process_grib_file.o: /usr/include/string.h boolean.h grib.h portability.h
+process_grib_file.o: product_definition.h grid_description.h minmax.h

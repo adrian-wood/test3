@@ -1,0 +1,13 @@
+//MDBOM    PROC                                                         00000103
+//GENOP    EXEC PGM=IEBGENER                                            00000203
+//SYSPRINT DD SYSOUT=N                                                  00000303
+//*                                                                     00000403
+//* MDB RPC BROKER MONITOR JOB                                          00000503
+//*                                                                     00000603
+//RPCMON EXEC PGM=IKJEFT01,DYNAMNBR=30,TIME=NOLIMIT,                    00000703
+//    PARM='RPCMONM'                                                    00000804
+//SYSEXEC  DD DSN=MDB.REXX.EXEC,DISP=SHR                                00000903
+//         DD DSN=MET.EXECFLIB,DISP=SHR                                 00001003
+//SYSTSPRT DD SYSOUT=Q                                                  00002003
+//SYSTSIN  DD DUMMY                                                     00003003
+//                                                                      00004003

@@ -1,0 +1,50 @@
+)ATTR
+  %   TYPE(TEXT)  SKIP(ON) COLOR(WHITE)
+  +   TYPE(TEXT)  SKIP(ON) COLOR(BLUE)
+  _   TYPE(INPUT)          COLOR(RED)
+  #   TYPE(TEXT)  SKIP(ON) COLOR(RED)
+  {   TYPE(TEXT)  SKIP(ON) COLOR(TURQ)
+
+)BODY
+%-------------------------- #PRINT OFF THE DATASET %----------------------------
+%COMMAND ===>_ZCMD                                                             +
++
++Enter 'Y' if you like to
++
++
+{   BROWSE+the dataset again%===>_Z+
++
++
+{   KEEP+the dataset%===>_Z+ If 'Y' then enter the dataset name below. The
++                            dataset will be kept on disk TMP003 for 24hrs.
++         Dataset name%:_Z                                       +
++
++
+{   PRINT+the output dataset%===>_Z+ If 'Y' then enter details below.
++
++         Destination %:_Z      +eg. P3A0C, leave blank for COSMOS printers.
++
++         Output class%:_Z+
++
++
++
++Press%ENTER+to continue or%END+to return to the REQUEST PANEL.
+
+)INIT
+  .HELP   = MDBTUDS1
+  .ZVARS  = '(BROWS KEEP UDSN PRNT DEST CLASS)'
+  &BROWS  = ''
+  &UDSN   = ''
+  &PRNT   = ''
+
+)PROC
+  VER(&BROWS,LIST,Y,N,' ',MSG=MDBDS008)/* Verify the input.
+  VER(&KEEP,LIST,Y,N,' ',MSG=MDBDS008)
+  VER(&PRNT,LIST,Y,N,' ',MSG=MDBDS008)
+  IF (&KEEP = 'Y')                   /* If the dataset is to be kept, verify
+    VER(&UDSN,NB,MSG=MDBDS005)       /*    that the dataset name is non-blank.
+  IF (&PRNT = 'Y')                   /* If the dataset is to be printed, verify
+    VER(&CLASS,NB,MSG=MDBDS005)      /*    the printer details.
+    VER(&CLASS,ALPHA,MSG=MDBDS009)
+
+)END

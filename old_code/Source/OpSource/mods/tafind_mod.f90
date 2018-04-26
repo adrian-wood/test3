@@ -1,0 +1,28 @@
+MODULE tafind_mod
+  INTERFACE
+    SUBROUTINE TAFIND(POINT,BEND,OAMD,OCOR,AMDNUM,CORNUM,TTAAII, &
+                      CCCC,YYGGGG,GGGG,ICC,NFT,BLKSIZ,OERR,BULL)
+
+    IMPLICIT NONE
+
+! Subroutine arguments:
+
+    INTEGER,          INTENT(INOUT) :: POINT !a1
+    INTEGER,          INTENT(IN)    :: BEND !a2
+    LOGICAL,          INTENT(IN)    :: OAMD !a3
+    LOGICAL,          INTENT(IN)    :: OCOR !a4
+    CHARACTER(LEN=2), INTENT(IN)    :: AMDNUM !a5
+    CHARACTER(LEN=2), INTENT(IN)    :: CORNUM !a6
+    CHARACTER(LEN=6), INTENT(IN)    :: TTAAII !a7
+    CHARACTER(LEN=4), INTENT(IN)    :: CCCC !a8
+    CHARACTER(LEN=6), INTENT(IN)    :: YYGGGG !a9
+    CHARACTER(LEN=4), INTENT(INOUT) :: GGGG !a10
+    INTEGER,          INTENT(IN)    :: ICC !a11
+    INTEGER,          INTENT(IN)    :: NFT !a12
+    INTEGER,          INTENT(IN)    :: BLKSIZ !a13
+    LOGICAL,          INTENT(OUT)   :: OERR !a14
+    CHARACTER(LEN=*), INTENT(INOUT) :: BULL !a15
+
+    END SUBROUTINE TAFIND
+  END INTERFACE
+END MODULE tafind_mod

@@ -1,0 +1,32 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+      # TYPE(OUTPUT)
+)BODY
+%-------------------Station Master Data Display --------------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++  Reporting Practices for station : % #CDENT +
++                             1234567890123
++  SYN Elements Reported : % !SYN          +  U/A Reports : % !UA   +
++                             12345678901234567890123
++  NCM Elements Reported : % !NCM                    +
++
++     Day       SYNOP HOURS              NCM 09Z   NCM 21Z
++ 1 % !DAY1     !SYNTIM1                 !NCMTIM1A !NCMTIM2A +
++ 2 % !DAY2     !SYNTIM2                 !NCMTIM1B !NCMTIM2B +
++ 3 % !DAY3     !SYNTIM3                 !NCMTIM1C !NCMTIM2C +
++ 4 % !DAY4     !SYNTIM4                 !NCMTIM1D !NCMTIM2D +
++ 5 % !DAY5     !SYNTIM5                 !NCMTIM1E !NCMTIM2E +
++ 6 % !DAY6     !SYNTIM6                 !NCMTIM1F !NCMTIM2F +
++ 7 % !DAY7     !SYNTIM7                 !NCMTIM1G !NCMTIM2G +
++ 8 % !DAY8     !SYNTIM8                 !NCMTIM1H !NCMTIM2H +
++ 9 % !DAY9     !SYNTIM9                 !NCMTIM1I !NCMTIM2I +
++ 10% !DAY10    !SYNTIM10                !NCMTIM1J !NCMTIM2J +
++
++ Total of SYNOP reporting practice variations (0 to 10) :%!NUM+
++
++    Press%ENTER+or%END+to finish detail processing for this station
+)INIT
+     .CURSOR = ZCMD   .HELP = STNHLP6
+)PROC
+)END

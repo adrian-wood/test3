@@ -1,0 +1,54 @@
+//M12BCINT JOB (M12,BC,WDS0BF),BRIAN.G05.6951,PRTY=8,MSGCLASS=Q         00010029
+//*---------------------------------------------------------------------00011018
+//* INITIALISE MDB DATA SET - SET PARAMETERS ON EXEC CARD AT END        00012018
+//* (NO SEQUENCE IN SECOND BLOCK - USE MDBINITS IF ONE IS WANTED)       00013018
+//*---------------------------------------------------------------------00013118
+//MAKELOAD EXEC FORT2CL,FPARMS=NOFIPS                                   00013219
+//FORT.SYSIN DD DSN=MDB.UTILITY.SRCE(MDBINIT),DISP=SHR                  00013318
+//           DD DSN=MDB.SOURCE(CHAR2),DISP=SHR                          00013418
+//LKED.MPROG DD DSN=MET.PROGLIB,DISP=SHR                                00018919
+//LKED.SYSIN DD *                                                       00019019
+ INCLUDE MPROG(CLPARM)                                                  00019119
+/*                                                                      00019219
+//*---------------------------------------------------------------------00019319
+//TDBINIT PROC CYLS=                                                    00019419
+// EXEC FORT2G,                                                         00019519
+// PARM='&CYLS,&BLOCK,&ENTRYLEN,&INDBLOKS,&HRSINBLK,&OFFSET,&OVERFLOS/' 00019619
+//GO.FT01F001 DD DSN=&DSN,DISP=(,CATLG),UNIT=DISK,VOL=SER=OPR011,       00019720
+//            DCB=(RECFM=F,BLKSIZE=&BLOCK),SPACE=(CYL,&CYLS)            00019920
+// PEND                                                                 00020118
+//*---------------------------------------------------------------------00020218
+//*ATAFS  EXEC TDBINIT,DSN='TDB.ATAFS',CYLS=4,BLOCK=23476,              00021031
+//*       ENTRYLEN=23,INDBLOKS=8,HRSINBLK=6,OFFSET=0,OVERFLOS=25        00030031
+//*---------------------------------------------------------------------00032018
+//*CLIMAT EXEC TDBINIT,DSN='TDB.CLIMAT',CYLS=6,BLOCK=27998,             00033020
+//*       ENTRYLEN=23,INDBLOKS=2,HRSINBLK=730,OFFSET=0,OVERFLOS=56      00034020
+//*---------------------------------------------------------------------00035518
+//*HEALTH EXEC TDBINIT,DSN='TDB.HEALTHRR',CYLS=1,BLOCK=10796,           00035620
+//*       ENTRYLEN=23,INDBLOKS=3,HRSINBLK=24,OFFSET=0,OVERFLOS=4        00035720
+//*---------------------------------------------------------------------00035918
+//*METARS EXEC TDBINIT,DSN='TDB.METARS',CYLS=100,BLOCK=23476,           00036033
+//*       ENTRYLEN=23,INDBLOKS=7,HRSINBLK=6,OFFSET=0,OVERFLOS=1000      00036134
+//*---------------------------------------------------------------------00036318
+//*NCM    EXEC TDBINIT,DSN='TDB.NCM',CYLS=2,BLOCK=27998,                00036420
+//*       ENTRYLEN=23,INDBLOKS=4,HRSINBLK=24,OFFSET=0,OVERFLOS=10       00036530
+//*---------------------------------------------------------------------00036718
+//*PRESTL EXEC TDBINIT,DSN='TDB.PRESTEL',CYLS=1,BLOCK=27998,            00037220
+//*       ENTRYLEN=23,INDBLOKS=3,HRSINBLK=24,OFFSET=0,OVERFLOS=0        00037320
+//*---------------------------------------------------------------------00038018
+//*SAMOSX EXEC TDBINIT,DSN='TDB.SAMOSX',CYLS=1,BLOCK=4240,              00038120
+//*       ENTRYLEN=23,INDBLOKS=3,HRSINBLK=24,OFFSET=0,OVERFLOS=0        00038220
+//*---------------------------------------------------------------------00038418
+//*SREW   EXEC TDBINIT,DSN='TDB.SREW',CYLS=2,BLOCK=27998,               00038520
+//*       ENTRYLEN=23,INDBLOKS=3,HRSINBLK=24,OFFSET=0,OVERFLOS=27       00038620
+//*---------------------------------------------------------------------00038818
+//*TAFS   EXEC TDBINIT,DSN='TDB.TAFS',CYLS=25,BLOCK=23476,              00038933
+//*       ENTRYLEN=23,INDBLOKS=9,HRSINBLK=6,OFFSET=0,OVERFLOS=240       00039033
+//*---------------------------------------------------------------------00039218
+//*TBUS   EXEC TDBINIT,DSN='TDB.TBUS',CYLS=2,BLOCK=27998,               00039320
+//*       ENTRYLEN=23,INDBLOKS=4,HRSINBLK=24,OFFSET=0,OVERFLOS=31       00039430
+//*---------------------------------------------------------------------00039618
+//*TRPADV EXEC TDBINIT,DSN='TDB.TROPADV',CYLS=2,BLOCK=27998,            00040122
+//*       ENTRYLEN=23,INDBLOKS=17,HRSINBLK=3,OFFSET=0,OVERFLOS=0        00040230
+//*---------------------------------------------------------------------00040418
+//                                                                      00040518

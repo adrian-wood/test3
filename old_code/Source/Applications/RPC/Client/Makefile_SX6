@@ -1,0 +1,87 @@
+#-----------------------------------------------------------------------
+# 
+# Make file to build MetDB RPC library MetDBRPC.a on the SX6.
+#
+# Users can use this library to make an RPC client executable to
+# call the MDB remotely:
+#
+# e.g. sxf90 -o client.exe -ew lndsyn.f MetDBRPC.a
+#
+# $Revision: 1$
+# $Date: 11/10/2006 11:27:16$
+# $Source: /home/us0400/mdb/op/lib/RPC/client/RCS/Makefile_SX6,v $
+#
+# $Log:
+#  1    Met_DB_Project 1.0         11/10/2006 11:27:16    Kudsia Gwangwaa 
+# $
+# Revision 1.1  2003/03/14 12:22:58  usmdb
+# Initial revision
+#
+#-----------------------------------------------------------------------
+# (C) CROWN COPYRIGHT 2003 - MET OFFICE. All Rights Reserved.
+#
+# Met Office, United Kingdom
+#
+# The use, duplication and disclosure of this code is strictly
+# prohibited without the permission of The Meteorological Database 
+# Team at the above address.
+#-----------------------------------------------------------------------
+
+# turn off default suffix rules:
+# Tell the compiler that .o's are dependent on .c's
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+CC          = sxc++
+
+CFLAGS	    = -DL64 -DUNDERSCORE 
+
+LIBRARY     = MetDBRPC.a
+
+HDRS        = constants.h \
+	      msrpc_call_broker.h \
+	      msrpc_call_freepn.h \
+	      msrpc_call_mdb.h \
+   	      ssrpc_call_mdb.h
+
+SRCS	    = RPC_errors.c \
+	      mdb_rpc_main.c \
+       	      msrpc_call_broker.c \
+	      msrpc_call_broker_clnt.c \
+	      msrpc_call_broker_xdr.c \
+	      msrpc_call_freepn.c \
+	      msrpc_call_freepn_clnt.c \
+	      msrpc_call_freepn_xdr.c \
+	      msrpc_call_mdb_HP.c \
+	      msrpc_call_mdb_clnt.c \
+	      msrpc_call_mdb_xdr.c \
+	      ssrpc_call_mdb.c \
+	      ssrpc_call_mdb_clnt.c \
+	      ssrpc_call_mdb_xdr.c \
+	      timtxt.c
+
+OBJS	    = RPC_errors.o \
+	      mdb_rpc_main.o \
+	      msrpc_call_broker.o \
+	      msrpc_call_broker_clnt.o \
+	      msrpc_call_broker_xdr.o \
+	      msrpc_call_freepn.o \
+	      msrpc_call_freepn_clnt.o \
+	      msrpc_call_freepn_xdr.o \
+	      msrpc_call_mdb.o \
+	      msrpc_call_mdb_clnt.o \
+	      msrpc_call_mdb_xdr.o \
+	      ssrpc_call_mdb.o \
+	      ssrpc_call_mdb_clnt.o \
+	      ssrpc_call_mdb_xdr.o \
+	      timtxt.o
+
+$(LIBRARY):	${OBJS}
+		rm -f $@
+		sxar rv $@ ${OBJS}
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+clean:;		@rm -f $(OBJS) core

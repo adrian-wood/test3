@@ -1,0 +1,4733 @@
+#-----------------------------------------------------------------------
+#
+# FILE NAME      : Makefile
+#
+# TYPE           : Makefile
+#
+# PURPOSE        : To builds MDB load modules for operational or user
+#                  testing use. PLEASE READ NOTES BELOW BEFORE USE!
+#
+# REVISION INFO  :
+#
+# $Source:$
+# $Date: 15/02/2013 15:40:18$
+# $Revision: 101$
+#
+# $Author: Brian Barwell$
+#
+# NOTES:
+#       1) Copy this Makefile to folder where .o files are to be created
+#       2) Ensure sub folder for .mod files (INCL_MOD) exists
+#       3) Set destination of built executable module(s) (find LOAD_LIB)
+#       4) Check out code from last labelled build.(OLD_CODE & OLD_MODS)
+#       5) Set locations of checked out code files (find #?)
+#       6) Set locations of new/updated code & mod files (find #?)
+#       7) Update object lines for updated code files (set OLD to NEW)
+#       8) Add object lines for new code files
+#       9) Add object lines for new mod files
+#      10) Add executable module build lines for new files
+# For each load module being made
+#      11) Set FFLAGS for required load module
+#   If you change FFLAGS then remove /*.o and /mod/*.mod files
+#      12) Run module make command. See notes @ and * below
+#      13) Run JCL to complete if required. See * below
+#
+#          Some modules require copying to where they are to be run.
+#
+#-----------------------------------------------------------------------
+# Load module | FFLAGS settings | make command
+#             |                 |
+# DLL         | FF1:            | make -f makefile_name MDBDLL
+# MDBSTOR *   | FF2: or FF3:    | make -i -f makefile_name MDBSTOR
+# BUFRDAT *   | FF2: or FF3:    | make -i -f makefile_name BUFRDAT
+# STORAMD *   | FF2: or FF3:    | make -i -f makefile_name STORAMD
+# STOREUM *   | FF2: or FF3:    | make -i -f makefile_name STOREUM
+# BUFRDLL     | FF2: or FF3:    | make -f makefile_name BUFRDLL
+# MONITOR *   | FF2: or FF3:    | make -i -f makefile_name MONITOR
+# MERGE   * @ | FF2: or FF3:    | make -i -f makefile_name MERGE
+# STATSOBS    | FF2: or FF3:    | make -f makefile_name STATSOBS
+# HOWFULL     | FF2: or FF3:    | make -f makefile_name HOWFULL
+# WEBRET    @ | FF2: or FF3:    | make -f makefile_name WEBRET
+# WEBTEST   @ | FF2: or FF3:    | make -f makefile_name WEBTEST
+# UKSYNPCT  @ | FF2: or FF3:    | make -f makefile_name UKSYNPCT
+#             |                 |
+#
+#   *  Expect messages like "SYMBOL sysabn_ UNRESOLVED"! You need to
+#   *  run JCL to add silent/assembler routines for testing/oper use.
+#
+#   @  Requires MDBDLL.x
+#
+#-----------------------------------------------------------------------
+# Define the compiler parameters for NAG f95 compiler
+#-----------------------------------------------------------------------
+# -DBPATH (Bufr library), -save (implicit SAVE), -g (debug flag),
+# -DMVS (for code to run under MVS)
+# -DEBCDIC (for code on GPCS)
+# -C (range checking), -maxcontin (max continuation lines),
+# -C=all (max compiler checks)
+# -gline debug traceback
+# -Wc,+z (needed to construct shared library)
+# -O2  Best optimisation level (not the highest)
+# -Wc,-3   Level 3 optimisation of the C compiler
+
+#-----------------------------------------------------------------------
+
+FF 	= f95
+CC 	= cc
+
+#-----------------------------------------------------------------------
+
+DLL     = MDBDLL
+MDBSTOR = MDBSTOR
+BUFRDAT = BUFRDAT
+STORAMD = STORAMD
+STOREUM = STOREUM
+BUFRDLL = BUFRDLL
+MONITOR = MONITOR
+MERGE   = MERGE
+STATSOBS = STATSOBS
+HOWFULL = HOWFULL
+WEBRET = WEBRET
+WEBTEST = WEBTEST
+UKSYNPCT = UKSYNPCT
+SALTSSH  = SALTSSH
+
+#-----------------------------------------------------------------------
+
+# LOAD_LIB = need changing whenever a new library for the executable to be sent to
+LOAD_LIB = "//'MCC3.DBLOAD.D*****'"
+
+# STND_CODE  Used in main build rules to include zpdate,int2ch etc.
+STND_CODE = /u/os/t12db/dbrevsrc
+
+#-----------------------------------------------------------------------
+
+#FF1: Setting of FFLAGS for optimised MDBDLL module
+# FFLAGS = -DMVS -DEBCDIC -O2 -Wc,-3
+
+#FF2: Setting of FFLAGS for other operational modules
+FFLAGS = -DMVS -DEBCDIC
+
+#FF3: Setting of FFLAGS for slow test modules
+# FFLAGS = -DMVS -DEBCDIC -C=all -gline
+
+#-----------------------------------------------------------------------
+
+CFLAGS = -I/usr/local/lib/f95
+
+#-----------------------------------------------------------------------
+
+# Location of created mod files used by this Makefile created .o files.
+# (May be same as NEW_MODS)
+INCL_MOD = /u/os/t12db/dbrevsrc/mods
+
+# Location of existing unchanged operational code.
+OLD_CODE  = /u/os/t12db/dbrevsrc
+
+# Location of existing unchanged operational mod files.
+OLD_MODS = /u/os/t12db/dbrevsrc/mods
+
+# Location of changed code.
+# (Likely to be same folder as this Makefile)
+NEW_CODE  = /u/os/t12db/dbrevsrc
+
+# Location of changed mod files.
+# (May be same as INCL_MOD)
+NEW_MODS  = /u/os/t12db/dbrevsrc/mods
+
+#-----------------------------------------------------------------------
+
+IFLAGS 	= -I${INCL_MOD}
+
+#--------- executable module build lines -------------------------------
+
+BUFRDAT_OBJS = asc2eb.o \
+               bufdass.o \
+               bufdata.o \
+               bufdchr.o \
+               bufdelt.o \
+               bufdmap.o \
+               bufdrip.o \
+               bufdrpl.o \
+               bufdspl.o \
+               bufd203.o \
+               bufd206.o \
+               bufrchek.o \
+               bufrdat.o \
+               bufrep.o \
+               bufrpath.o \
+               bufrqel.o \
+               bufrqop.o \
+               bufrseq.o \
+               bufr207.o \
+               bufseq.o \
+               char2.o \
+               char3.o \
+               clrmap.o \
+               code.o \
+               datim.o \
+               decord.o \
+               debufr.o \
+               desfxy.o \
+               dreg.o \
+               dsinfo.o \
+               dsopen.o \
+               dupchk.o \
+               dynalc.o \
+               ebcdic.o \
+               findftp.o \
+               findjsr.o \
+               findmhs.o \
+               findpath.o \
+               freeblk.o \
+               getvals.o \
+               ichar2.o \
+               ichar3.o \
+               ides.o \
+               idmake.o \
+               index1.o \
+               index2.o \
+               inquire.o \
+               initstor.o \
+               int2ch_mod.o \
+               ioblks.o \
+               latbox.o \
+               locald.o \
+               metdb_com_mod.o \
+               MetDB_c_utils.o \
+               nextfile.o \
+               nextmsg.o \
+               onland.o \
+               readcf.o \
+               read4k.o \
+               read512.o \
+               satype.o \
+               script.o \
+               storbufr.o \
+               summary.o \
+               tableb.o \
+               tabled.o \
+               trange.o \
+               valout.o \
+               value.o \
+               zpdate_mod.o
+
+HOWFULL_OBJS = howfull.o \
+              datim.o \
+              ichar2.o \
+              MetDB_c_utils.o
+
+MDB_OBJS = getlocd.o \
+         getid.o \
+         gribindx.o \
+         gribopen.o \
+         inquire.o \
+         mdb.o \
+         mdbalc.o \
+         readabrv.o \
+         readidx.o \
+         readlist.o \
+         stnret.o \
+         check_uid.o \
+         check_auth.o \
+         alselm.o \
+         arrindx.o \
+         arrsub.o \
+         bitindx.o \
+         bufindx.o \
+         bufret.o \
+         busret.o \
+         century.o \
+         chekreps.o \
+         chkmodid.o \
+         chk4tw.o \
+         condes.o \
+         copyvals.o \
+         dataindx.o \
+         datchk.o \
+         delspce.o \
+         dt2hrs.o \
+         elements.o \
+         expelm.o \
+         expreq.o \
+         findpath.o \
+         getare.o \
+         getdat.o \
+         getkey.o \
+         getreq.o \
+         getstn.o \
+         getstr.o \
+         gribfind.o \
+         gribread.o \
+         gribret.o \
+         gtgrp.o \
+         hrs2dt.o \
+         iceint.o \
+         iceret.o \
+         ichar2.o \
+         ichar3.o \
+         idmtch.o \
+         intcon.o \
+         inxkey.o \
+         iterat.o \
+         ivalue.o \
+         keys.o \
+         latbox.o \
+         mapelm.o \
+         maprd.o \
+         mdbio.o \
+         mdbret.o \
+         mdbrsn.o \
+         msgdsp.o \
+         msgdspn.o \
+         msgsub.o \
+         msgsubn.o \
+         mtrccc.o \
+         mtrcld.o \
+         mtrddf.o \
+         mtrexp.o \
+         mtrgrp.o \
+         mtrint.o \
+         mtrloc.o \
+         mtrper.o \
+         mtrrwy.o \
+         mtrshe.o \
+         mtrsky.o \
+         mtrtrd.o \
+         mtrvht.o \
+         mtrwnd.o \
+         mtrwtr.o \
+         mtrwwr.o \
+         ncmexp.o \
+         ncmint.o \
+         nmstem.o \
+         nxtkey.o \
+         ofigts.o \
+         openindx.o \
+         parse.o \
+         pop.o \
+         push.o \
+         rainexp.o \
+         rdbitab.o \
+         readmap.o \
+         retpos.o \
+         rotarea.o \
+         rtable.o \
+         setdef.o \
+         sethed.o \
+         sklarr.o \
+         skldsp.o \
+         skldspn.o \
+         sklsub.o \
+         sklsubn.o \
+         sortch.o \
+         sortchr.o \
+         sortn.o \
+         sortr.o \
+         srwexp.o \
+         srwint.o \
+         ssmret.o \
+         stmret.o \
+         stnary.o \
+         stnfin.o \
+         stnindx.o \
+         subper.o \
+         subslocd.o \
+         synret.o \
+         tafcnl.o \
+         tafexp.o \
+         tafint.o \
+         tafsect.o \
+         tafvism.o \
+         tempexp.o \
+         tfmret.o \
+         trnsfr.o \
+         trpint.o \
+         upaind.o \
+         uprepid.o \
+         uprparts.o \
+         uprret.o \
+         uprwinds.o \
+         valarea.o \
+         valarr.o \
+         valdat.o \
+         valrec.o \
+         valreq.o \
+         value.o\
+         valusr.o \
+         wantarea.o\
+         wantid.o\
+         wantobs.o\
+         wanttime.o\
+         datim.o \
+         asc2eb.o \
+         eb2asc.o \
+         bufrpath.o \
+         eochn.o \
+         valout.o \
+         bufd203.o \
+         bufd206.o \
+         bufdass.o \
+         bufdata.o \
+         bufdchr.o \
+         bufdelt.o \
+         bufdmap.o \
+         bufdrip.o \
+         bufdrpl.o \
+         bufdspl.o \
+         bufr207.o \
+         bufrqel.o \
+         bufrqop.o \
+         bufrseq.o \
+         code.o \
+         debufr.o \
+         desfxy.o \
+         encode.o \
+         ides.o \
+         locald.o \
+         readcf.o \
+         tabbver.o \
+         tableb.o \
+         tabled.o
+
+MDBSTOR_OBJS = achtst.o \
+              advbul.o \
+              airarp.o \
+              airbul.o \
+              aircmd.o \
+              aircod.o \
+              airdate.o \
+              airelm.o \
+              airenc.o \
+              airgrp.o \
+              airice.o \
+              airidx.o \
+              airind.o \
+              airlag.o \
+              airlev.o \
+              airloc.o \
+              airmid.o \
+              airopt.o \
+              airpos.o \
+              airset.o \
+              airsgn.o \
+              airsto.o \
+              airtim.o \
+              airtmp.o \
+              airtrb.o \
+              amdar.o \
+              amdbuc.o \
+              amdcor.o \
+              amdexb.o \
+              amdexc.o \
+              amdind.o \
+              asc2eb.o \
+              artmck.o \
+              batesbul.o \
+              bathy.o \
+              becpos.o \
+              becret.o \
+              bitindx.o \
+              boxlalo.o \
+              boyenc.o \
+              boyexp.o \
+              boyind.o \
+              bthind.o \
+              bthsc1.o \
+              bthsc2.o \
+              bthsc3.o \
+              bthsc4.o \
+              bufd203.o \
+              bufd206.o \
+              bufdass.o \
+              bufdata.o \
+              bufdchr.o \
+              bufdelt.o \
+              bufdmap.o \
+              bufdrip.o \
+              bufdrpl.o \
+              bufdspl.o \
+              bufr207.o \
+              bufrchek.o \
+              bufrhed.o \
+              bufrqel.o \
+              bufrqop.o \
+              bufrseq.o \
+              bufseq.o \
+              bulhed.o \
+              bulled.o \
+              buoy.o \
+              cccode.o \
+              century.o \
+              clmbul.o \
+              code.o \
+              datim.o \
+              datimgp.o \
+              debufr.o \
+              decord.o \
+              desfxy.o \
+              dreg.o \
+              dsinfo.o \
+              dsopen.o \
+              dt2hrs.o \
+              dynalc.o \
+              eb2asc.o \
+              ebcdic.o \
+              encode.o \
+              eerror.o \
+              enbufr.o \
+              enhbul.o \
+              enhexp.o \
+              ersind.o \
+              ersrep.o \
+              findjsr.o \
+              findpath.o \
+              ffunit.o \
+              gethdr.o \
+              ichar3.o \
+              icobrv.o \
+              icolod.o \
+              ides.o \
+              indlalo.o \
+              inquire.o \
+              initstor.o \
+              int2ch_mod.o \
+              isrch.o \
+              ivalue.o \
+              latbox.o \
+              locald.o \
+              mdbstor.o \
+              mdbio.o \
+              metbul.o \
+              MetDB_c_utils.o \
+              metdb_com_mod.o \
+              mobsto.o \
+              msgdspn.o \
+              msgdsp.o \
+              mtrloc.o \
+              nchtst.o \
+              ncmbul.o \
+              ncmexp.o \
+              ncmind.o \
+              nextfile.o \
+              nextmsg.o \
+              obhour.o \
+              ofigts.o \
+              onland.o \
+              oukstn.o \
+              prestel.o \
+              rainexp.o \
+              rdbitab.o \
+              readcf.o \
+              read4k.o \
+              readidx.o \
+              repedt.o \
+              rtable.o \
+              sambul.o \
+              satbbn.o \
+              satob1.o \
+              satob2.o \
+              satob3.o \
+              satob4.o \
+              satob5.o \
+              satob7.o \
+              satype.o \
+              script.o \
+              secsout.o \
+              sfdate.o \
+              sferics.o \
+              sfrexp.o \
+              shpseq.o \
+              shpsto.o \
+              skldsp.o \
+              skldspn.o \
+              sortch.o \
+              sortn.o \
+              sortr.o \
+              srwbul.o \
+              stapos.o \
+              staray.o \
+              stbbul.o \
+              stbenc.o \
+              stbind.o \
+              stdprht.o \
+              storchek.o \
+              summary.o \
+              synbul.o \
+              syncld.o \
+              synend.o \
+              synexp.o \
+              synfiv.o \
+              synhed.o \
+              synind.o \
+              synit.o \
+              synnin.o \
+              synob.o \
+              synqc.o \
+              synreg.o \
+              synrpr.o \
+              synseq.o \
+              synsto.o \
+              syntpr.o\
+              synxp1.o \
+              synxp2.o \
+              synxp3.o \
+              synxp4.o \
+              synxp5.o \
+              tableb.o \
+              tabled.o \
+              tafamd.o \
+              tafbul.o \
+              tafind.o \
+              tafrep.o \
+              tbusbul.o \
+              tempexp.o \
+              tesac.o \
+              tesind.o \
+              tessc1.o \
+              tessc2.o \
+              tessc3.o \
+              tessc4.o \
+              tessc5.o \
+              trkbul.o \
+              tropbul.o \
+              trpsto.o \
+              uabul.o \
+              uacloud.o \
+              uadups.o \
+              uaedit.o \
+              uahead.o \
+              uamaxw.o \
+              uapart.o \
+              uapstd.o \
+              uasight.o \
+              uasigpr.o \
+              uasonde.o \
+              uasort.o \
+              uatrop.o \
+              uatstdp.o \
+              uatstx.o \
+              uaxpand.o \
+              valddy.o \
+              valout.o \
+              value.o \
+              valusr.o \
+              winpro.o \
+              zpdate_mod.o
+
+MONITOR_OBJS = achtst.o \
+               abc.o \
+               datim.o \
+               dreg.o \
+               ebcdic.o \
+               findmhs.o \
+               findrec.o \
+               hkstart.o \
+               hkstop.o \
+               hkupdate.o \
+               initbull.o \
+               int2ch_mod.o \
+               MetDB_c_utils.o \
+               monitor.o \
+               nextmsg.o \
+               read4k.o \
+               satype.o \
+               storchek.o \
+               summary.o \
+               zpdate_mod.o
+
+STORAMD_OBJS = achtst.o \
+               airdate.o \
+               amdbuc.o \
+               amdbul.o \
+               amdexb.o \
+               amdexc.o \
+               asc2eb.o \
+               bufdata.o \
+               bufrchek.o \
+               bufrep.o \
+               bufseq.o \
+               bufdass.o \
+               bufdchr.o \
+               bufdelt.o \
+               bufdmap.o \
+               bufdrip.o \
+               bufdrpl.o \
+               bufdspl.o \
+               bufd203.o \
+               bufd206.o \
+               bufrqel.o \
+               bufrqop.o \
+               bufrseq.o \
+               bufr207.o \
+               bulled.o \
+               cccode.o \
+               char2.o \
+               char3.o \
+               clrmap.o \
+               code.o \
+               datim.o \
+               debufr.o \
+               decord.o \
+               desfxy.o \
+               dreg.o \
+               dsinfo.o \
+               dsopen.o \
+               dupchk.o \
+               dynalc.o \
+               eb2asc.o \
+               ebcdic.o \
+               enbufr.o \
+               enbufv4.o \
+               encode.o \
+               findjsr.o \
+               findpath.o \
+               freeblk.o \
+               gethdr.o \
+               getvals.o \
+               ichar2.o \
+               ichar3.o \
+               ides.o \
+               idmake.o \
+               index1.o \
+               index2.o \
+               indlalo.o \
+               initstor.o \
+               inquire.o \
+               int2ch_mod.o \
+               ioblks.o \
+               latbox.o \
+               locald.o \
+               metdb_com_mod.o\
+               MetDB_c_utils.o\
+               nextfile.o \
+               nextmsg.o \
+               ofigts.o \
+               onland.o \
+               readcf.o \
+               read4k.o \
+               satype.o \
+               script.o \
+               secsout.o \
+               storamd.o \
+               storchek.o \
+               summary.o \
+               tabbver.o \
+               tableb.o \
+               tabled.o \
+               trange.o \
+               valout.o \
+               value.o \
+               zpdate_mod.o
+
+STOREUM_OBJS = argchop.o \
+               argdcode.o \
+               asc2eb.o \
+               bufdass.o \
+               bufdata.o \
+               bufdchr.o \
+               bufdelt.o \
+               bufdmap.o \
+               bufdrip.o \
+               bufdrpl.o \
+               bufdspl.o \
+               bufd203.o \
+               bufd206.o \
+               bufrchek.o \
+               bufrep.o \
+               bufrpath.o \
+               bufrqel.o \
+               bufrqop.o \
+               bufrseq.o \
+               bufr207.o \
+               bufseq.o \
+               char2.o \
+               char3.o \
+               clrmap.o \
+               code.o \
+               datim.o \
+               decord.o \
+               debufr.o \
+               desfxy.o \
+               dreg.o \
+               dsinfo.o \
+               dsopen.o \
+               dupchk.o \
+               dynalc.o \
+               eb2asc.o \
+               ebcdic.o \
+               enbufr.o \
+               enbufv4.o \
+               encode.o \
+               findftp.o \
+               findjsr.o \
+               findmhs.o \
+               findpath.o \
+               freeblk.o \
+               getvals.o \
+               ichar2.o \
+               ichar3.o \
+               ides.o \
+               idmake.o \
+               index1.o \
+               index2.o \
+               initstor.o \
+               int2ch_mod.o \
+               inquire.o \
+               ioblks.o \
+               latbox.o \
+               locald.o \
+               metdb_com_mod.o\
+               MetDB_c_utils.o\
+               msgchop.o \
+               msgdcode.o \
+               nextfile.o \
+               nextmsg.o \
+               onland.o \
+               readcf.o \
+               read4k.o \
+               read512.o \
+               satype.o \
+               script.o \
+               storbufr.o \
+               storeum.o \
+               summary.o \
+               tabbver.o \
+               tableb.o \
+               tabled.o \
+               trange.o \
+               valout.o \
+               value.o \
+               zpdate_mod.o
+
+BUFR_OBJS = asc2eb.o \
+            bufd203.o \
+            bufd206.o \
+            bufdass.o \
+            bufdata.o \
+            bufdchr.o \
+            bufdelt.o \
+            bufdmap.o \
+            bufdrip.o \
+            bufdrpl.o \
+            bufdspl.o \
+            bufr207.o \
+            bufrpath.o \
+            bufrqel.o \
+            bufrqop.o \
+            bufrseq.o \
+            code.o \
+            debufr.o \
+            decord.o \
+            desfxy.o \
+            eb2asc.o \
+            enbufv4.o \
+            enbufr.o \
+            encode.o \
+            ides.o \
+            inquire.o \
+            locald.o \
+            readcf.o \
+            script.o \
+            tabbver.o \
+            tableb.o \
+            tabled.o \
+            valout.o \
+            value.o
+
+MERGE_OBJS = airsto.o \
+             boxlalo.o \
+             bufrep.o \
+             bufseq.o \
+             bufval.o \
+             century.o \
+             char2.o \
+             char3.o \
+             clrmap.o \
+             datim.o \
+             dupchk.o \
+             freeblk.o \
+             getchr.o \
+             getvals.o \
+             ichar2.o \
+             ichar3.o \
+             icobrv_dummy.o \
+             idmake.o \
+             index1.o \
+             index2.o \
+             indlalo.o \
+             int2ch_mod.o \
+             ioblks.o \
+             ivalue.o \
+             latbox.o \
+             mdbc.o \
+             mdbio.o \
+             merbitx.o \
+             mereqs.o \
+             merge.o \
+             mermdb.o \
+             mersy9.o \
+             merval.o \
+             MetDB_c_utils.o \
+             modela.o \
+             modelb.o \
+             modlva.o \
+             modlvb.o \
+             onland.o \
+             trange.o \
+             zpdate_mod.o
+
+STATSOBS_OBJS = statsobs.o \
+                datim.o \
+                dsinfo.o \
+                dsopen.o \
+                findpath.o \
+                ichar2.o \
+                ichar3.o \
+                inquire.o \
+                satype.o \
+                MetDB_c_utils.o \
+                zpdate_mod.o \
+                dynalc.o
+
+WEB_RET_OBJS = webair.o \
+               webbuoyp.o \
+               webdis.o \
+               webesaw.o \
+               webform.o \
+               webform2.o \
+               webgexp.o \
+               weblnd.o \
+               webncm.o \
+               webret.o \
+               websamos.o \
+               webshp.o \
+               websrew.o \
+               webssea.o \
+               webtadv.o \
+               webtbus.o \
+               webtfmet.o \
+               webupr.o \
+               code.o \
+               delspce.o \
+               dynalc.o \
+               ides.o \
+               inquire.o \
+               getchr.o \
+               mdbc.o \
+               MetDB_c_utils.o \
+               readcf.o \
+               value.o
+
+WEB_TEST_OBJS = webair.o \
+                webbuoyp.o \
+                webdis.o \
+                webesaw.o \
+                webform.o \
+                webform2.o \
+                webgexp.o \
+                weblnd.o \
+                webncm.o \
+                webretst.o \
+                websamos.o \
+                webshp.o \
+                websrew.o \
+                webssea.o \
+                webtadv.o \
+                webtbus.o \
+                webtfmet.o \
+                webupr.o \
+                code.o \
+                delspce.o \
+                dynalc.o \
+                ides.o \
+                inquire.o \
+                getchr.o \
+                mdbc.o \
+                MetDB_c_utils.o \
+                readcf.o \
+                value.o
+
+UKSYNPCT_OBJS = uksynpct.o \
+                mdbc.o \
+                datim.o
+
+#----------------------------------------------------
+# ides.o is a function in BUFRDLL but it is included
+# here because the dll version always returns zero.
+# The build will give duplicate entry error messages
+# but these can be ignored.               S.N
+#----------------------------------------------------
+SALTSSH_OBJS = saltssh.o \
+              airsto.o \
+              latbox.o \
+              datim.o \
+              century.o \
+              ides.o \
+              zpdate_mod.o \
+              MetDB_c_utils.o \
+              bufrshel_pre.o \
+              bufrshel95.o
+
+#-----------------------------------------------------------------------
+
+SILENT_TEST = tellops.o replyt.o replytu.o
+
+C_OBJS = MetDB_c_utils.o \
+         mdbwrap.o \
+         dynalc.o \
+         system_cmd.o
+
+BUFRC_OBJS = MetDB_c_utils.o \
+             bufrwrap.o
+
+
+#-----------------------------------------------------------------------
+# Rule to run builds
+#-----------------------------------------------------------------------
+ALL: $(BUFRDAT) $(STOREUM) $(MDBSTOR) $(BUFRDLL) $(WEBRET) \
+     $(WEBTEST) $(STATSOBS) $(HOWFULL) $(UKSYNPCT) $(STORAMD)
+
+
+#-----------------------------------------------------------------------
+# Rule to build MDBDLL
+#-----------------------------------------------------------------------
+
+$(DLL): ${MDB_OBJS} ${C_OBJS}
+	c89 -Wl,dll \
+        -o ${DLL} ${MDB_OBJS} ${C_OBJS} \
+        ${STND_CODE}/zpdate_mod.o \
+        ${STND_CODE}/int2ch_mod.o \
+        ${STND_CODE}/stnmas_mod.o \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	cp -X ${DLL} ${LOAD_LIB}
+
+#-----------------------------------------------------------------------
+# Rule to build MDBSTOR
+#-----------------------------------------------------------------------
+
+$(MDBSTOR): ${MDBSTOR_OBJS}
+	c89 -o ${MDBSTOR} ${MDBSTOR_OBJS} \
+        ${STND_CODE}/int2ch_mod.o \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages like 'SYMBOL sysabn_ UNRESOLVED'! "
+	@echo "Complete the test build using a copy of MDB.TESTJOBS(MSTORBD) "
+	@echo "Complete the operational build using MCC3.DBJCLINK.CNTL(MSTOR)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build STORAMD
+#-----------------------------------------------------------------------
+
+$(STORAMD): ${STORAMD_OBJS}
+	c89 -o ${STORAMD} ${STORAMD_OBJS} \
+        ${STND_CODE}/int2ch_mod.o \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages like 'SYMBOL sysabn_ UNRESOLVED'! "
+	@echo "Complete the test build using a copy of MDB.TESTJOBS(STAMDBD) "
+	@echo "Complete the oper build using MCC3.DBJCLINK.CNTL(STORAMD)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build MONITOR
+#-----------------------------------------------------------------------
+
+$(MONITOR): ${MONITOR_OBJS}
+	c89 -o ${MONITOR} ${MONITOR_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages like 'SYMBOL sysabn_ UNRESOLVED'! "
+	@echo "Complete the test build using a copy of MDB.TESTJOBS(MONTORBD)"
+	@echo "Complete the oper build using MCC3.DBJCLINK.CNTL(MONITOR)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build BUFRDAT
+#-----------------------------------------------------------------------
+
+$(BUFRDAT): ${BUFRDAT_OBJS}
+	c89 -o ${BUFRDAT} ${BUFRDAT_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages like 'SYMBOL sysabn_ UNRESOLVED'! "
+	@echo "Complete the test build using a copy of MDB.TESTJOBS(BFDATBD)"
+	@echo "Complete the oper build using MCC3.DBJCLINK.CNTL(BUFRDAT)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build HOWFULL
+#-----------------------------------------------------------------------
+
+$(HOWFULL): ${HOWFULL_OBJS}
+	xlc -o ${HOWFULL} ${HOWFULL_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	cp -X ${HOWFULL} ${LOAD_LIB}
+
+#-----------------------------------------------------------------------
+# Rule to build STATSOBS
+#-----------------------------------------------------------------------
+
+$(STATSOBS): ${STATSOBS_OBJS}
+	xlc -o ${STATSOBS} ${STATSOBS_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	cp -X ${STATSOBS} ${LOAD_LIB}
+
+#-----------------------------------------------------------------------
+# Rule to build STOREUM
+#-----------------------------------------------------------------------
+
+$(STOREUM): ${STOREUM_OBJS}
+	c89 -o ${STOREUM} ${STOREUM_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages like 'SYMBOL sysabn_ UNRESOLVED'! "
+	@echo "Complete the test build using a copy of MDB.TESTJOBS(STEUMBD)"
+	@echo "Complete the oper build using MCC3.DBJCLINK.CNTL(STOREUM)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build BUFRDLL
+#-----------------------------------------------------------------------
+
+$(BUFRDLL): ${BUFR_OBJS} ${BUFRC_OBJS} ${STND_CODE}/int2ch_mod.o
+	c89 -Wl,dll \
+        -o ${BUFRDLL} ${BUFR_OBJS} ${BUFRC_OBJS} \
+        ${STND_CODE}/int2ch_mod.o \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	cp -X ${BUFRDLL} ${LOAD_LIB}
+
+#-----------------------------------------------------------------------
+# Rule to build MERGE
+#-----------------------------------------------------------------------
+
+$(MERGE): ${MERGE_OBJS} ${BUFR_OBJS}
+	c89 -o ${MERGE} -Wc,dll ${MERGE_OBJS} ${BUFR_OBJS} \
+        MDBDLL.x \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "No test build required for intergration testing"
+	@echo "Complete the oper build using MCC3.DBJCLINK.CNTL(MERGE)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build WEBRET
+#-----------------------------------------------------------------------
+
+$(WEBRET): ${WEB_RET_OBJS}
+	c89 -Wl,dll -o webret.exe ${WEB_RET_OBJS} \
+        ${STND_CODE}/int2ch_mod.o \
+        MDBDLL.x \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "       Copy executable (webret.exe) to running folder "
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build WEBTEST
+#-----------------------------------------------------------------------
+
+$(WEBTEST): ${WEB_TEST_OBJS}
+	c89 -Wl,dll -o webtst.exe ${WEB_TEST_OBJS} \
+        ${STND_CODE}/int2ch_mod.o \
+        MDBDLL.x \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "       Copy executable (webtst.exe) to running folder "
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build UKSYNPCT
+#-----------------------------------------------------------------------
+
+$(UKSYNPCT): ${UKSYNPCT_OBJS}
+	c89 -Wl,dll -o uksynpct.exe ${UKSYNPCT_OBJS} \
+         MDBDLL.x \
+        ${STND_CODE}/zpdate_mod.o \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "       Copy executable (uksynpct.exe) to running folder "
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build SALTSSH
+#-----------------------------------------------------------------------
+
+$(SALTSSH): ${SALTSSH_OBJS}
+	c89 -Wl,dll \
+	    -o ${SALTSSH} ${SALTSSH_OBJS} \
+        ${OLD_CODE}/BUFRDLL.x \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a
+	@echo "**********************************************************************"
+	@echo "   Expect messages  'A711 EXTERNAL SYMBOL ides_...' "
+	@echo "                    'A712 THE ORIGINAL DEFINITIO...' "
+	@echo "                    '9207 SYMBOL mhsiffc_ UNRESOLVED.' "
+	@echo "                    '9207 SYMBOL sysabn_ UNRESOLVED.' "
+	@echo "Complete the operational build using MCC3.DBJCLINK.CNTL(SALTSSH)"
+	@echo "**********************************************************************"
+
+#-----------------------------------------------------------------------
+# Rules to build object code
+#-----------------------------------------------------------------------
+
+#
+# .c source code to .o
+#
+# -DF95 because this version will be called from f95 code in MDBDLL
+bufrshel95.o: ${OLD_CODE}/bufrshel.c
+	${CC} -o bufrshel95.o ${CFLAGS} -DF95 -Wc,dll -c ${OLD_CODE}/bufrshel.c
+
+bufrwrap.o: ${OLD_CODE}/bufrwrap.c
+	${CC} ${CFLAGS} -Wc,"EXPORTALL" -c ${OLD_CODE}/bufrwrap.c
+
+dynalc.o: ${OLD_CODE}/dynalc.c
+	${CC} ${CFLAGS} -c ${OLD_CODE}/dynalc.c
+
+getid.o: ${OLD_CODE}/getid.c
+	${CC} ${CFLAGS} -c ${OLD_CODE}/getid.c
+
+mdbc.o: ${OLD_CODE}/mdbc.c
+	${CC} ${CFLAGS} -c -DF95 -Wc,dll ${OLD_CODE}/mdbc.c
+
+mdbwrap.o: ${OLD_CODE}/mdbwrap.c
+	${CC} ${CFLAGS} -Wc,"EXPORTALL" -c ${OLD_CODE}/mdbwrap.c
+
+MetDB_c_utils.o: ${OLD_CODE}/MetDB_c_utils.c
+	xlc -DUNDERSCORE -c ${OLD_CODE}/MetDB_c_utils.c
+
+secsout.o: ${OLD_CODE}/secsout.c
+	${CC} ${CFLAGS} -c ${OLD_CODE}/secsout.c
+
+system_cmd.o: ${OLD_CODE}/system_cmd.c
+	${CC} ${CFLAGS} -c ${OLD_CODE}/system_cmd.c
+
+
+#
+# .F and .f source to .o
+#
+abc.o: ${OLD_CODE}/abc.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/abc.f90
+
+achtst.o: ${OLD_CODE}/achtst.F90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/achtst.F90
+
+advbul.o: ${OLD_CODE}/advbul.F90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/obhour_mod.mod ${INCL_MOD}/trpsto_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/advbul.F90
+
+AIRARP_MODS = ${INCL_MOD}/airsgn_mod.mod \
+           ${INCL_MOD}/airpos_mod.mod \
+           ${INCL_MOD}/airtim_mod.mod \
+           ${INCL_MOD}/airlev_mod.mod \
+           ${INCL_MOD}/airopt_mod.mod \
+           ${INCL_MOD}/airset_mod.mod \
+           ${INCL_MOD}/airenc_mod.mod \
+           ${INCL_MOD}/airelm_mod.mod
+airarp.o: ${OLD_CODE}/airarp.f90 ${AIRARP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airarp.f90
+
+AIRBUL_MODS = ${INCL_MOD}/airlag_mod.mod \
+           ${INCL_MOD}/bulled_mod.mod \
+           ${INCL_MOD}/airarp_mod.mod \
+           ${INCL_MOD}/dreg_mod.mod \
+           ${INCL_MOD}/ivalue_mod.mod
+airbul.o: ${OLD_CODE}/airbul.F90 ${AIRBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airbul.F90
+
+aircmd.o: ${OLD_CODE}/aircmd.f90 ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/aircmd.f90
+
+aircod.o: ${OLD_CODE}/aircod.f90 ${INCL_MOD}/enbufr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/aircod.f90
+
+airdate.o: ${OLD_CODE}/airdate.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airdate.f90
+
+airelm.o: ${OLD_CODE}/airelm.f90 ${INCL_MOD}/airloc_mod.mod ${INCL_MOD}/airgrp_mod.mod ${INCL_MOD}/airtmp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airelm.f90
+
+AIRENC_MODS = ${INCL_MOD}/cccode_mod.mod \
+           ${INCL_MOD}/airind_mod.mod \
+           ${INCL_MOD}/datim_mod.mod \
+           ${INCL_MOD}/aircod_mod.mod \
+           ${INCL_MOD}/airsto_mod.mod
+airenc.o: ${OLD_CODE}/airenc.f90 ${AIRENC_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airenc.f90
+
+airgrp.o: ${OLD_CODE}/airgrp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airgrp.f90
+
+airice.o: ${OLD_CODE}/airice.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airice.f90
+
+airidx.o: ${OLD_CODE}/airidx.f90 ${INCL_MOD}/mdbio_mod.mod ${INCL_MOD}/aircmd_mod.mod ${INCL_MOD}/dt2hrs_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airidx.f90
+
+airind.o: ${OLD_CODE}/airind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airind.f90
+
+airlag.o: ${OLD_CODE}/airlag.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airlag.f90
+
+airlev.o: ${OLD_CODE}/airlev.f90 ${INCL_MOD}/airgrp_mod.mod ${INCL_MOD}/airloc_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airlev.f90
+
+airloc.o: ${OLD_CODE}/airloc.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airloc.f90
+
+airmid.o: ${OLD_CODE}/airmid.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/zpdate_mod.mod ${INCL_MOD}/airidx_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airmid.f90
+
+AIROPT_MODS = ${INCL_MOD}/airpos_mod.mod \
+           ${INCL_MOD}/airelm_mod.mod \
+           ${INCL_MOD}/airloc_mod.mod \
+           ${INCL_MOD}/airtrb_mod.mod \
+           ${INCL_MOD}/airice_mod.mod \
+           ${INCL_MOD}/airmid_mod.mod
+airopt.o: ${OLD_CODE}/airopt.f90 ${AIROPT_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airopt.f90
+
+airpos.o: ${OLD_CODE}/airpos.f90 ${INCL_MOD}/airloc_mod.mod ${INCL_MOD}/airgrp_mod.mod ${INCL_MOD}/becpos_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airpos.f90
+
+airset.o: ${OLD_CODE}/airset.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airset.f90
+
+airsgn.o: ${OLD_CODE}/airsgn.f90 ${INCL_MOD}/airloc_mod.mod ${INCL_MOD}/amdcor_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airsgn.f90
+
+airsto.o: ${OLD_CODE}/airsto.f90 ${INCL_MOD}/century_mod.mod ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airsto.f90
+
+airtim.o: ${OLD_CODE}/airtim.f90 ${INCL_MOD}/airloc_mod.mod ${INCL_MOD}/airgrp_mod.mod ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airtim.f90
+
+airtmp.o: ${OLD_CODE}/airtmp.f90 ${INCL_MOD}/airloc_mod.mod ${INCL_MOD}/airgrp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airtmp.f90
+
+airtrb.o: ${OLD_CODE}/airtrb.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/airtrb.f90
+
+alselm.o: ${OLD_CODE}/alselm.f90 ${INCL_MOD}/nmstem_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/alselm.f90
+
+amdcor.o: ${OLD_CODE}/amdcor.F90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/nchtst_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdcor.F90
+
+AMDAR_MODS = ${INCL_MOD}/metdb_com_mod.mod \
+           ${INCL_MOD}/airsto_mod.mod \
+           ${INCL_MOD}/amdbuc_mod.mod \
+           ${INCL_MOD}/amdexb_mod.mod \
+           ${INCL_MOD}/amdexc_mod.mod \
+           ${INCL_MOD}/amdind_mod.mod \
+           ${INCL_MOD}/cccode_mod.mod \
+           ${INCL_MOD}/datim_mod.mod \
+           ${INCL_MOD}/debufr_mod.mod \
+           ${INCL_MOD}/enbufr_mod.mod \
+           ${INCL_MOD}/ides_mod.mod
+amdar.o: ${OLD_CODE}/amdar.F90 ${AMDAR_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdar.F90
+
+amdbuc.o: ${OLD_CODE}/amdbuc.f90 ${INCL_MOD}/ofigts_mod.mod ${INCL_MOD}/bulled_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdbuc.f90
+
+AMDBUL_MODS = ${INCL_MOD}/metdb_com_mod.mod \
+           ${INCL_MOD}/amdbuc_mod.mod \
+           ${INCL_MOD}/amdexb_mod.mod \
+           ${INCL_MOD}/amdexc_mod.mod \
+           ${INCL_MOD}/bufrep_mod.mod \
+           ${INCL_MOD}/cccode_mod.mod \
+           ${INCL_MOD}/datim_mod.mod \
+           ${INCL_MOD}/debufr_mod.mod \
+           ${INCL_MOD}/enbufv4_mod.mod \
+           ${INCL_MOD}/ichar2_mod.mod \
+           ${INCL_MOD}/ichar3_mod.mod \
+           ${INCL_MOD}/ides_mod.mod \
+           ${INCL_MOD}/locald_mod.mod
+amdbul.o: ${OLD_CODE}/amdbul.f90 ${AMDBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdbul.f90
+
+amdexb.o: ${OLD_CODE}/amdexb.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/locald_mod.mod \
+            ${INCL_MOD}/ides_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdexb.f90
+
+amdexc.o: ${OLD_CODE}/amdexc.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/airdate_mod.mod \
+            ${INCL_MOD}/ofigts_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdexc.f90
+
+amdind.o: ${OLD_CODE}/amdind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/amdind.f90
+
+argchop.o: ${OLD_CODE}/argchop.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/enbufv4_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/argchop.f90
+
+argdcode.o: ${OLD_CODE}/argdcode.f90 ${INCL_MOD}/debufr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/argdcode.f90
+
+arrindx.o: ${OLD_CODE}/arrindx.f90 ${INCL_MOD}/arrsub_mod.mod ${INCL_MOD}/sklarr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/arrindx.f90
+
+arrsub.o: ${OLD_CODE}/arrsub.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/arrsub.f90
+
+artmck.o: ${OLD_CODE}/artmck.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/artmck.f90
+
+asc2eb.o: ${OLD_CODE}/asc2eb.f90 ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/asc2eb.f90
+
+batchlog.o: ${OLD_CODE}/batchlog.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/batchlog.f90
+
+batesbul.o: ${OLD_CODE}/batesbul.f90 ${INCL_MOD}/tesac_mod.mod ${INCL_MOD}/bathy_mod.mod \
+            ${INCL_MOD}/bulled_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/batesbul.f90
+
+BATHY_MODS = ${INCL_MOD}/bthsc1_mod.mod \
+              ${INCL_MOD}/bthsc2_mod.mod \
+              ${INCL_MOD}/bthsc3_mod.mod \
+              ${INCL_MOD}/bthsc4_mod.mod \
+              ${INCL_MOD}/bthind_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/airsto_mod.mod
+bathy.o: ${OLD_CODE}/bathy.f90 ${BATHY_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bathy.f90
+
+becpos.o: ${OLD_CODE}/becpos.f90 ${INCL_MOD}/becret_mod.mod ${INCL_MOD}/satype_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/becpos.f90
+
+becret.o: ${OLD_CODE}/becret.F90 ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/becret.F90
+
+bitindx.o: ${OLD_CODE}/bitindx.f90 ${INCL_MOD}/msgdsp_mod.mod ${INCL_MOD}/msgdspn_mod.mod ${INCL_MOD}/rdbitab_mod.mod ${INCL_MOD}/skldsp_mod.mod ${INCL_MOD}/skldspn_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bitindx.f90
+
+boxlalo.o: ${OLD_CODE}/boxlalo.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/boxlalo.f90
+
+BOYENC_MODS = ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/boyind_mod.mod \
+              ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod
+boyenc.o: ${OLD_CODE}/boyenc.f90 ${BOYENC_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/boyenc.f90
+
+boyexp.o: ${OLD_CODE}/boyexp.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/valddy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/boyexp.f90
+
+boyind.o: ${OLD_CODE}/boyind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/boyind.f90
+
+bthind.o: ${OLD_CODE}/bthind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bthind.f90
+
+bthsc1.o: ${OLD_CODE}/bthsc1.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bthsc1.f90
+
+bthsc2.o: ${OLD_CODE}/bthsc2.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bthsc2.f90
+
+bthsc3.o: ${OLD_CODE}/bthsc3.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bthsc3.f90
+
+bthsc4.o: ${OLD_CODE}/bthsc4.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/nchtst_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bthsc4.f90
+
+bufd203.o: ${OLD_CODE}/bufd203.f90 ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufd203.f90
+
+bufd206.o: ${OLD_CODE}/bufd206.f90 ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufd206.f90
+
+bufdass.o: ${OLD_CODE}/bufdass.f90 ${INCL_MOD}/bufdspl_mod.mod ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdass.f90
+
+BUFDATA_MODS = ${INCL_MOD}/bufrqop_mod.mod \
+               ${INCL_MOD}/bufrqel_mod.mod \
+               ${INCL_MOD}/bufdass_mod.mod \
+               ${INCL_MOD}/bufdchr_mod.mod \
+               ${INCL_MOD}/bufd203_mod.mod \
+               ${INCL_MOD}/bufd206_mod.mod \
+               ${INCL_MOD}/bufr207_mod.mod \
+               ${INCL_MOD}/bufdmap_mod.mod \
+               ${INCL_MOD}/desfxy_mod.mod \
+               ${INCL_MOD}/bufdspl_mod.mod \
+               ${INCL_MOD}/bufdrip_mod.mod \
+               ${INCL_MOD}/bufdrpl_mod.mod \
+               ${INCL_MOD}/bufrseq_mod.mod \
+               ${INCL_MOD}/bufdelt_mod.mod \
+               ${INCL_MOD}/value_mod.mod \
+               ${INCL_MOD}/asc2eb_mod.mod \
+               ${INCL_MOD}/int2ch_mod.mod \
+               ${INCL_MOD}/tableb_mod.mod
+bufdata.o: ${OLD_CODE}/bufdata.F90 ${BUFDATA_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdata.F90
+
+bufdchr.o: ${OLD_CODE}/bufdchr.F90 ${INCL_MOD}/value_mod.mod ${INCL_MOD}/asc2eb_mod.mod \
+            ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdchr.F90
+
+bufdelt.o: ${OLD_CODE}/bufdelt.f90 ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdelt.f90
+
+bufdmap.o: ${OLD_CODE}/bufdmap.f90 ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdmap.f90
+
+bufdrip.o: ${OLD_CODE}/bufdrip.f90 ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/tableb_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdrip.f90
+
+BUFDRPL_MODS = ${INCL_MOD}/value_mod.mod \
+               ${INCL_MOD}/desfxy_mod.mod \
+               ${INCL_MOD}/tableb_mod.mod \
+               ${INCL_MOD}/bufdrip_mod.mod
+bufdrpl.o: ${OLD_CODE}/bufdrpl.f90 ${BUFDRPL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdrpl.f90
+
+bufdspl.o: ${OLD_CODE}/bufdspl.f90 ${INCL_MOD}/code_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufdspl.f90
+
+bufindx.o: ${OLD_CODE}/bufindx.f90 ${INCL_MOD}/rdbitab_mod.mod ${INCL_MOD}/sklsub_mod.mod ${INCL_MOD}/sklsubn_mod.mod ${INCL_MOD}/msgsubn_mod.mod ${INCL_MOD}/msgsub_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufindx.f90
+
+bufr207.o: ${OLD_CODE}/bufr207.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufr207.f90
+
+bufrpath.o: ${OLD_CODE}/bufrpath.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrpath.f90
+
+bufrqel.o: ${OLD_CODE}/bufrqel.f90 ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrqel.f90
+
+bufrqop.o: ${OLD_CODE}/bufrqop.f90 ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/locald_mod.mod ${INCL_MOD}/tabled_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrqop.f90
+
+bufrseq.o: ${OLD_CODE}/bufrseq.f90 ${INCL_MOD}/locald_mod.mod ${INCL_MOD}/tabled_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrseq.f90
+
+bufrchek.o: ${OLD_CODE}/bufrchek.f90 ${INCL_MOD}/ichar3_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrchek.f90
+
+BUFRDAT_MODS = ${INCL_MOD}/bufrchek_mod.mod \
+              ${INCL_MOD}/bufrep_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/dreg_mod.mod \
+              ${INCL_MOD}/dsinfo_mod.mod \
+              ${INCL_MOD}/ebcdic_mod.mod \
+              ${INCL_MOD}/findftp_mod.mod \
+              ${INCL_MOD}/findmhs_mod.mod \
+              ${INCL_MOD}/initstor_mod.mod \
+              ${INCL_MOD}/nextfile_mod.mod \
+              ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/storbufr_mod.mod \
+              ${INCL_MOD}/summary_mod.mod \
+              ${INCL_MOD}/silent_mod.mod
+bufrdat.o: ${OLD_CODE}/bufrdat.f90 ${BUFRDAT_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrdat.f90
+
+BUFREP_MODS = ${INCL_MOD}/bufseq_mod.mod \
+              ${INCL_MOD}/char2_mod.mod \
+              ${INCL_MOD}/char3_mod.mod \
+              ${INCL_MOD}/clrmap_mod.mod \
+              ${INCL_MOD}/dupchk_mod.mod \
+              ${INCL_MOD}/freeblk_mod.mod \
+              ${INCL_MOD}/ichar2_mod.mod \
+              ${INCL_MOD}/ichar3_mod.mod \
+              ${INCL_MOD}/index1_mod.mod \
+              ${INCL_MOD}/index2_mod.mod \
+              ${INCL_MOD}/ioblks_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+bufrep.o: ${OLD_CODE}/bufrep.f90 ${BUFREP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrep.f90
+
+BUFRET_MODS = ${INCL_MOD}/bufindx_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/ichar2_mod.mod \
+              ${INCL_MOD}/ichar3_mod.mod \
+              ${INCL_MOD}/locald_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/valarr_mod.mod
+bufret.o: ${OLD_CODE}/bufret.f90 ${BUFRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufret.f90
+
+bufrhed.o: ${OLD_CODE}/bufrhed.f90 ${INCL_MOD}/value_mod.mod ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrhed.f90
+
+bufrhed_mod.o: ${OLD_CODE}/${INCL_MOD}/bufrhed_mod.mod
+
+bufrshel_pre.o: ${OLD_CODE}/bufrshel_pre.f
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufrshel_pre.f
+
+BUFSEQ_MODS = ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/ichar3_mod.mod \
+              ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/locald_mod.mod \
+              ${INCL_MOD}/tabled_mod.mod
+bufseq.o: ${OLD_CODE}/bufseq.f90 ${BUFSEQ_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufseq.f90
+
+bufval.o: ${OLD_CODE}/bufval.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bufval.f90
+
+bulhed.o: ${OLD_CODE}/bulhed.F90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/amdcor_mod.mod \
+              ${INCL_MOD}/bulled_mod.mod ${INCL_MOD}/nchtst_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bulhed.F90
+
+bulled.o: ${OLD_CODE}/bulled.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/bulled.f90
+
+buoy.o: ${OLD_CODE}/buoy.f90 ${INCL_MOD}/bulled_mod.mod ${INCL_MOD}/boyexp_mod.mod ${INCL_MOD}/boyenc_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/buoy.f90
+
+BUSRET_MODS = ${INCL_MOD}/bufindx_mod.mod \
+              ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/getlocd_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/maprd_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/sethed_mod.mod \
+              ${INCL_MOD}/valarr_mod.mod
+busret.o: ${OLD_CODE}/busret.f90 ${BUSRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/busret.f90
+
+cccode.o: ${OLD_CODE}/cccode.F90 ${INCL_MOD}/bufrpath_mod.mod ${INCL_MOD}/inquire_mod.mod ${INCL_MOD}/readcf_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/cccode.F90
+
+century.o: ${OLD_CODE}/century.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/century.f90
+
+char2.o: ${OLD_CODE}/char2.f90 ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/char2.f90
+
+char3.o: ${OLD_CODE}/char3.f90 ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/char3.f90
+
+check_uid.o: ${OLD_CODE}/check_uid.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/check_uid.f90
+
+check_auth.o: ${OLD_CODE}/check_auth.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/check_auth.f90
+
+chekreps.o: ${OLD_CODE}/chekreps.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/chekreps.f90
+
+chkmodid.o: ${OLD_CODE}/chkmodid.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/chkmodid.f90
+
+chk4tw.o: ${OLD_CODE}/chk4tw.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/chk4tw.f90
+
+CLMBUL_MODS = ${INCL_MOD}/nchtst_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/bulled_mod.mod \
+              ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/tafrep_mod.mod
+clmbul.o: ${OLD_CODE}/clmbul.f90 ${CLMBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/clmbul.f90
+
+clrmap.o: ${OLD_CODE}/clrmap.f90 ${INCL_MOD}/char2_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/clrmap.f90
+
+CODE_MODS = ${INCL_MOD}/readcf_mod.mod \
+            ${INCL_MOD}/value_mod.mod \
+            ${INCL_MOD}/bufrpath_mod.mod \
+            ${INCL_MOD}/int2ch_mod.mod \
+            ${INCL_MOD}/inquire_mod.mod
+code.o: ${OLD_CODE}/code.F90 ${CODE_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/code.F90
+
+condes.o: ${OLD_CODE}/condes.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/condes.f90
+
+copyvals.o: ${OLD_CODE}/copyvals.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/copyvals.f90
+
+dataindx.o: ${OLD_CODE}/dataindx.f90 ${INCL_MOD}/chekreps_mod.mod ${INCL_MOD}/elements_mod.mod ${INCL_MOD}/readmap_mod.mod ${INCL_MOD}/retpos_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dataindx.f90
+
+datchk.o: ${OLD_CODE}/datchk.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/datchk.f90
+
+datim.o: ${OLD_CODE}/datim.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/datim.f90
+
+datimgp.o: ${OLD_CODE}/datimgp.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/datimgp.f90
+
+debufr.o: ${OLD_CODE}/debufr.f90 ${INCL_MOD}/bufdata_mod.mod ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/debufr.f90
+
+decord.o: ${OLD_CODE}/decord.f90 ${INCL_MOD}/bufdata_mod.mod ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/script_mod.mod ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/decord.f90
+
+desfxy.o: ${OLD_CODE}/desfxy.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/desfxy.f90
+
+delspce.o: ${OLD_CODE}/delspce.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/delspce.f90
+
+dreg.o: ${OLD_CODE}/dreg.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dreg.f90
+
+dsinfo.o: ${OLD_CODE}/dsinfo.f90 ${INCL_MOD}/dsopen_mod.mod ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/findpath_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dsinfo.f90
+
+dsopen.o: ${OLD_CODE}/dsopen.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dsopen.f90
+
+dt2hrs.o: ${OLD_CODE}/dt2hrs.f90 ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dt2hrs.f90
+
+dupchk.o: ${OLD_CODE}/dupchk.f90 ${INCL_MOD}/ichar2_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/dupchk.f90
+
+eb2asc.o: ${OLD_CODE}/eb2asc.f90 ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/eb2asc.f90
+
+ebcdic.o: ${OLD_CODE}/ebcdic.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ebcdic.f90
+
+eerror.o: ${OLD_CODE}/eerror.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/eerror.f90
+
+elements.o: ${OLD_CODE}/elements.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/elements.f90
+
+enbufr.o: ${OLD_CODE}/enbufr.f90 ${INCL_MOD}/value_mod.mod ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/encode_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/enbufr.f90
+
+ENBUFV4_MODS = ${INCL_MOD}/enbufr_mod.mod \
+               ${INCL_MOD}/eb2asc_mod.mod \
+               ${INCL_MOD}/tabbver_mod.mod
+enbufv4.o: ${OLD_CODE}/enbufv4.F90 ${ENBUFV4_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/enbufv4.F90
+
+ENCODE_MODS = ${INCL_MOD}/tableb_mod.mod \
+              ${INCL_MOD}/tabled_mod.mod \
+              ${INCL_MOD}/valout_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/locald_mod.mod \
+              ${INCL_MOD}/bufrqop_mod.mod \
+              ${INCL_MOD}/value_mod.mod \
+              ${INCL_MOD}/bufr207_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod
+encode.o: ${OLD_CODE}/encode.F90 ${ENCODE_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/encode.F90
+
+ENHBUL_MODS = ${INCL_MOD}/bulled_mod.mod \
+              ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/enhexp_mod.mod \
+              ${INCL_MOD}/mtrloc_mod.mod \
+              ${INCL_MOD}/ncmind_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod \
+              ${INCL_MOD}/stapos_mod.mod \
+              ${INCL_MOD}/tafrep_mod.mod
+enhbul.o: ${OLD_CODE}/enhbul.f90 ${ENHBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/enhbul.f90
+
+enhexp.o: ${OLD_CODE}/enhexp.f90 ${INCL_MOD}/ofigts_mod.mod ${INCL_MOD}/tempexp_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/enhexp.f90
+
+eochn.o: ${OLD_CODE}/eochn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/eochn.f90
+
+ersind.o: ${OLD_CODE}/ersind.f90 ${INCL_MOD}/boxlalo_mod.mod ${INCL_MOD}/ersrep_mod.mod \
+               ${INCL_MOD}/latbox_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ersind.f90
+
+ersrep.o: ${OLD_CODE}/ersrep.f90 ${INCL_MOD}/century_mod.mod ${INCL_MOD}/datim_mod.mod \
+               ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ersrep.f90
+
+expelm.o: ${OLD_CODE}/expelm.f90 ${INCL_MOD}/gtgrp_mod.mod ${INCL_MOD}/keys_mod.mod ${INCL_MOD}/parse_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/expelm.f90
+
+expreq.o: ${OLD_CODE}/expreq.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/expreq.f90
+
+ffunit.o: ${OLD_CODE}/ffunit.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ffunit.f90
+
+findftp.o: ${OLD_CODE}/findftp.f90 ${INCL_MOD}/ichar3_mod.mod ${INCL_MOD}/dreg_mod.mod ${INCL_MOD}/read512_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/findftp.f90
+
+findjsr.o: ${OLD_CODE}/findjsr.f90 ${INCL_MOD}/dsinfo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/findjsr.f90
+
+findmhs.o: ${OLD_CODE}/findmhs.f90 ${INCL_MOD}/dreg_mod.mod ${INCL_MOD}/nextmsg_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/findmhs.f90
+
+findpath.o: ${OLD_CODE}/findpath.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/findpath.f90
+
+findrec.o: ${OLD_CODE}/findrec.f90 ${INCL_MOD}/hkupdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/findrec.f90
+
+freeblk.o: ${OLD_CODE}/freeblk.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/freeblk.f90
+
+getare.o: ${OLD_CODE}/getare.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getare.f90
+
+getchr.o: ${OLD_CODE}/getchr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getchr.f90
+
+getdat.o: ${OLD_CODE}/getdat.f90 ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getdat.f90
+
+gethdr.o: ${OLD_CODE}/gethdr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gethdr.f90
+
+getkey.o: ${OLD_CODE}/getkey.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getkey.f90
+
+getlocd.o: ${OLD_CODE}/getlocd.F90 ${INCL_MOD}/locald_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getlocd.F90
+
+GETREQ_MODS = ${INCL_MOD}/chkmodid_mod.mod \
+              ${INCL_MOD}/getare_mod.mod \
+              ${INCL_MOD}/getdat_mod.mod \
+              ${INCL_MOD}/getkey_mod.mod \
+              ${INCL_MOD}/getstn_mod.mod \
+              ${INCL_MOD}/getstr_mod.mod \
+              ${INCL_MOD}/inxkey_mod.mod
+getreq.o: ${OLD_CODE}/getreq.f90 ${GETREQ_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getreq.f90
+
+getstn.o: ${OLD_CODE}/getstn.f90 ${INCL_MOD}/nxtkey_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getstn.f90
+
+getstr.o: ${OLD_CODE}/getstr.f90 ${INCL_MOD}/nxtkey_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getstr.f90
+
+getvals.o: ${OLD_CODE}/getvals.f90 ${INCL_MOD}/decord_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getvals.f90
+
+gribfind.o: ${OLD_CODE}/gribfind.f90 ${INCL_MOD}/gribopen_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gribfind.f90
+
+gribindx.o: ${OLD_CODE}/gribindx.F90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/dt2hrs_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gribindx.F90
+
+gribopen.o: ${OLD_CODE}/gribopen.F90 ${INCL_MOD}/mdbrsn_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gribopen.F90
+
+gribread.o: ${OLD_CODE}/gribread.f90 ${INCL_MOD}/ichar3_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gribread.f90
+
+gribret.o: ${OLD_CODE}/gribret.f90 ${INCL_MOD}/gribfind_mod.mod ${INCL_MOD}/gribindx_mod.mod ${INCL_MOD}/gribread_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gribret.f90
+
+gtgrp.o: ${OLD_CODE}/gtgrp.f90 ${INCL_MOD}/iterat_mod.mod ${INCL_MOD}/push_mod.mod ${INCL_MOD}/pop_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/gtgrp.f90
+
+hkstart.o: ${OLD_CODE}/hkstart.f90 ${INCL_MOD}/zpdate_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/hkstart.f90
+
+hkstop.o: ${OLD_CODE}/hkstop.f90 ${INCL_MOD}/hkupdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/hkstop.f90
+
+hkupdate.o: ${OLD_CODE}/hkupdate.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/hkupdate.f90
+
+howfull.o: ${OLD_CODE}/howfull.F90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/ichar2_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/howfull.F90
+
+hrs2dt.o: ${OLD_CODE}/hrs2dt.f90 ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/hrs2dt.f90
+
+iceint.o: ${OLD_CODE}/iceint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/iceint.f90
+
+iceret.o: ${OLD_CODE}/iceret.f90 ${INCL_MOD}/iceint_mod.mod ${INCL_MOD}/condes_mod.mod ${INCL_MOD}/hrs2dt_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/iceret.f90
+
+ichar2.o: ${OLD_CODE}/ichar2.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ichar2.f90
+
+ichar3.o: ${OLD_CODE}/ichar3.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ichar3.f90
+
+icobrv.o: ${OLD_CODE}/icobrv.f90 ${INCL_MOD}/icolod_mod.mod ${INCL_MOD}/satype_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/icobrv.f90
+
+icobrv_dummy.o: ${OLD_CODE}/icobrv_dummy.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/icobrv_dummy.f90
+
+icolod.o: ${OLD_CODE}/icolod.F90 ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/icolod.F90
+
+ides.o: ${OLD_CODE}/ides.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ides.f90
+
+idmake.o: ${OLD_CODE}/idmake.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/idmake.f90
+
+idmtch.o: ${OLD_CODE}/idmtch.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/idmtch.f90
+
+INDEX1AND2_MODS = ${INCL_MOD}/char2_mod.mod \
+              ${INCL_MOD}/getvals_mod.mod \
+              ${INCL_MOD}/int2ch_mod.mod \
+              ${INCL_MOD}/latbox_mod.mod \
+              ${INCL_MOD}/onland_mod.mod \
+              ${INCL_MOD}/trange_mod.mod
+index1.o: ${OLD_CODE}/index1.f90 ${INDEX1AND2_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/index1.f90
+
+index2.o: ${OLD_CODE}/index2.f90 ${INDEX1AND2_MODS} ${INCL_MOD}/idmake_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/index2.f90
+
+indlalo.o: ${OLD_CODE}/indlalo.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/indlalo.f90
+
+initbull.o: ${OLD_CODE}/initbull.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/initbull.f90
+
+initstor.o: ${OLD_CODE}/initstor.f90 ${INCL_MOD}/dsinfo_mod.mod ${INCL_MOD}/locald_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/initstor.f90
+
+inquire.o: ${OLD_CODE}/inquire.F90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/inquire.F90
+
+intcon.o: ${OLD_CODE}/intcon.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/intcon.f90
+
+int2ch_mod.o: ${INCL_MOD}/int2ch_mod.mod
+
+inxkey.o: ${OLD_CODE}/inxkey.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/inxkey.f90
+
+ioblks.o: ${OLD_CODE}/ioblks.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ioblks.f90
+
+isrch.o: ${OLD_CODE}/isrch.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/isrch.f90
+
+iterat.o: ${OLD_CODE}/iterat.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/iterat.f90
+
+ivalue.o: ${OLD_CODE}/ivalue.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ivalue.f90
+
+keys.o: ${OLD_CODE}/keys.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/keys.f90
+
+latbox.o: ${OLD_CODE}/latbox.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/latbox.f90
+
+locald.o: ${OLD_CODE}/locald.F90 ${INCL_MOD}/bufrpath_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/locald.F90
+
+mapelm.o: ${OLD_CODE}/mapelm.f90 ${INCL_MOD}/nmstem_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mapelm.f90
+
+maprd.o: ${OLD_CODE}/maprd.f90 ${INCL_MOD}/locald_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/maprd.f90
+
+MDB_MODS = ${INCL_MOD}/alselm_mod.mod \
+           ${INCL_MOD}/bufret_mod.mod \
+           ${INCL_MOD}/busret_mod.mod \
+           ${INCL_MOD}/batchlog_mod.mod \
+           ${INCL_MOD}/check_uid_mod.mod \
+           ${INCL_MOD}/check_auth_mod.mod \
+           ${INCL_MOD}/chk4tw_mod.mod \
+           ${INCL_MOD}/zpdate_mod.mod \
+           ${INCL_MOD}/delspce_mod.mod \
+           ${INCL_MOD}/expelm_mod.mod \
+           ${INCL_MOD}/getreq_mod.mod \
+           ${INCL_MOD}/gribret_mod.mod \
+           ${INCL_MOD}/hrs2dt_mod.mod \
+           ${INCL_MOD}/iceret_mod.mod \
+           ${INCL_MOD}/inquire_mod.mod \
+           ${INCL_MOD}/mapelm_mod.mod \
+           ${INCL_MOD}/mdbalc_mod.mod \
+           ${INCL_MOD}/mdbret_mod.mod \
+           ${INCL_MOD}/readlist_mod.mod \
+           ${INCL_MOD}/rtable_mod.mod \
+           ${INCL_MOD}/setdef_mod.mod \
+           ${INCL_MOD}/ssmret_mod.mod \
+           ${INCL_MOD}/stmret_mod.mod \
+           ${INCL_MOD}/synret_mod.mod \
+           ${INCL_MOD}/tfmret_mod.mod \
+           ${INCL_MOD}/valreq_mod.mod \
+           ${INCL_MOD}/uprret_mod.mod
+
+mdb.o: ${OLD_CODE}/mdb.F90 ${MDB_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdb.F90
+
+mdbalc.o: ${OLD_CODE}/mdbalc.F90 ${INCL_MOD}/mdbrsn_mod.mod ${INCL_MOD}/rtable_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdbalc.F90
+
+mdbio.o: ${OLD_CODE}/mdbio.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdbio.f90
+
+MDBRET_MODS = ${INCL_MOD}/copyvals_mod.mod \
+              ${INCL_MOD}/dataindx_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/debufr_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/ichar2_mod.mod \
+              ${INCL_MOD}/ichar3_mod.mod \
+              ${INCL_MOD}/openindx_mod.mod \
+              ${INCL_MOD}/wantarea_mod.mod \
+              ${INCL_MOD}/wantid_mod.mod \
+              ${INCL_MOD}/wantobs_mod.mod \
+              ${INCL_MOD}/wanttime_mod.mod
+mdbret.o: ${OLD_CODE}/mdbret.f90 ${MDBRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdbret.f90
+
+mdbrsn.o: ${OLD_CODE}/mdbrsn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdbrsn.f90
+
+MDBSTOR_MODS = ${INCL_MOD}/advbul_mod.mod \
+              ${INCL_MOD}/airbul_mod.mod \
+              ${INCL_MOD}/amdar_mod.mod \
+              ${INCL_MOD}/batesbul_mod.mod \
+              ${INCL_MOD}/bufrchek_mod.mod \
+              ${INCL_MOD}/bulhed_mod.mod \
+              ${INCL_MOD}/buoy_mod.mod \
+              ${INCL_MOD}/clmbul_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/decord_mod.mod \
+              ${INCL_MOD}/dreg_mod.mod \
+              ${INCL_MOD}/dsinfo_mod.mod \
+              ${INCL_MOD}/ebcdic_mod.mod \
+              ${INCL_MOD}/enhbul_mod.mod \
+              ${INCL_MOD}/ersind_mod.mod \
+              ${INCL_MOD}/gethdr_mod.mod \
+              ${INCL_MOD}/initstor_mod.mod \
+              ${INCL_MOD}/metbul_mod.mod \
+              ${INCL_MOD}/ncmbul_mod.mod \
+              ${INCL_MOD}/nextfile_mod.mod \
+              ${INCL_MOD}/nextmsg_mod.mod \
+              ${INCL_MOD}/prestel_mod.mod \
+              ${INCL_MOD}/sambul_mod.mod \
+              ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/sferics_mod.mod \
+              ${INCL_MOD}/srwbul_mod.mod \
+              ${INCL_MOD}/stbbul_mod.mod \
+              ${INCL_MOD}/storchek_mod.mod \
+              ${INCL_MOD}/summary_mod.mod \
+              ${INCL_MOD}/synbul_mod.mod \
+              ${INCL_MOD}/synhed_mod.mod \
+              ${INCL_MOD}/tafbul_mod.mod \
+              ${INCL_MOD}/tbusbul_mod.mod \
+              ${INCL_MOD}/trkbul_mod.mod \
+              ${INCL_MOD}/tropbul_mod.mod \
+              ${INCL_MOD}/uabul_mod.mod \
+              ${INCL_MOD}/winpro_mod.mod
+mdbstor.o: ${OLD_CODE}/mdbstor.f90 ${MDBSTOR_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mdbstor.f90
+
+merbitx.o: ${OLD_CODE}/merbitx.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/merbitx.f90
+
+mereqs.o: ${OLD_CODE}/mereqs.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mereqs.f90
+
+MERGE_MODS = ${INCL_MOD}/modlva_mod.mod \
+             ${INCL_MOD}/desfxy_mod.mod \
+             ${INCL_MOD}/debufr_mod.mod \
+             ${INCL_MOD}/modlvb_mod.mod \
+             ${INCL_MOD}/modela_mod.mod \
+             ${INCL_MOD}/modelb_mod.mod \
+             ${INCL_MOD}/mermdb_mod.mod \
+             ${INCL_MOD}/tableb_mod.mod \
+             ${INCL_MOD}/bufval_mod.mod \
+             ${INCL_MOD}/merval_mod.mod \
+             ${INCL_MOD}/eb2asc_mod.mod \
+             ${INCL_MOD}/asc2eb_mod.mod \
+             ${INCL_MOD}/indlalo_mod.mod \
+             ${INCL_MOD}/latbox_mod.mod \
+             ${INCL_MOD}/locald_mod.mod \
+             ${INCL_MOD}/enbufr_mod.mod \
+             ${INCL_MOD}/merbitx_mod.mod \
+             ${INCL_MOD}/bufrep_mod.mod \
+             ${INCL_MOD}/airsto_mod.mod \
+             ${INCL_MOD}/mersy9_mod.mod
+
+merge.o: ${OLD_CODE}/merge.f90 ${MERGE_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/merge.f90
+
+MERMDB_MODS = ${INCL_MOD}/mdb_mod.mod \
+             ${INCL_MOD}/mereqs_mod.mod \
+             ${INCL_MOD}/datim_mod.mod \
+             ${INCL_MOD}/zpdate_mod.mod
+
+mermdb.o: ${OLD_CODE}/mermdb.f90 ${MERMDB_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mermdb.f90
+
+mersy9.o: ${OLD_CODE}/mersy9.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mersy9.f90
+
+merval.o: ${OLD_CODE}/merval.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/merval.f90
+
+modela.o: ${OLD_CODE}/modela.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/modela.f90
+
+modelb.o: ${OLD_CODE}/modelb.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/modelb.f90
+
+modlva.o: ${OLD_CODE}/modlva.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/modlva.f90
+
+modlvb.o: ${OLD_CODE}/modlvb.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/modlvb.f90
+
+metbul.o: ${OLD_CODE}/metbul.F90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/nchtst_mod.mod ${INCL_MOD}/tafind_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/metbul.F90
+
+metdb_com_mod.o: ${INCL_MOD}/metdb_com_mod.mod
+
+MOBSTO_MODS = ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/century_mod.mod
+
+mobsto.o: ${OLD_CODE}/mobsto.f90 ${MOBSTO_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mobsto.f90
+
+MONITOR_MODS = ${INCL_MOD}/abc_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/dreg_mod.mod \
+              ${INCL_MOD}/ebcdic_mod.mod \
+              ${INCL_MOD}/findmhs_mod.mod \
+              ${INCL_MOD}/findrec_mod.mod \
+              ${INCL_MOD}/hkstart_mod.mod \
+              ${INCL_MOD}/hkupdate_mod.mod \
+              ${INCL_MOD}/hkstop_mod.mod \
+              ${INCL_MOD}/initbull_mod.mod \
+              ${INCL_MOD}/int2ch_mod.mod \
+              ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/storchek_mod.mod \
+              ${INCL_MOD}/summary_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+
+monitor.o: ${OLD_CODE}/monitor.f90 ${MONITOR_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/monitor.f90
+
+msgchop.o: ${OLD_CODE}/msgchop.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/enbufv4_mod.mod ${INCL_MOD}/ides_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgchop.f90
+
+msgdcode.o: ${OLD_CODE}/msgdcode.f90 ${INCL_MOD}/debufr_mod.mod ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgdcode.f90
+
+msgdsp.o: ${OLD_CODE}/msgdsp.f90 ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgdsp.f90
+
+msgdspn.o: ${OLD_CODE}/msgdspn.f90 ${INCL_MOD}/value_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgdspn.f90
+
+msgsub.o: ${OLD_CODE}/msgsub.f90 ${INCL_MOD}/debufr_mod.mod ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgsub.f90
+
+msgsubn.o: ${OLD_CODE}/msgsubn.f90 ${INCL_MOD}/debufr_mod.mod ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/msgsubn.f90
+
+mtrccc.o: ${OLD_CODE}/mtrccc.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrccc.f90
+
+mtrcld.o: ${OLD_CODE}/mtrcld.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrcld.f90
+
+mtrddf.o: ${OLD_CODE}/mtrddf.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrddf.f90
+
+MTREXP_MODS = ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/mtrccc_mod.mod \
+              ${INCL_MOD}/mtrddf_mod.mod \
+              ${INCL_MOD}/mtrgrp_mod.mod \
+              ${INCL_MOD}/mtrloc_mod.mod \
+              ${INCL_MOD}/mtrshe_mod.mod \
+              ${INCL_MOD}/mtrtrd_mod.mod \
+              ${INCL_MOD}/mtrwwr_mod.mod
+mtrexp.o: ${OLD_CODE}/mtrexp.f90 ${MTREXP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrexp.f90
+
+mtrgrp.o: ${OLD_CODE}/mtrgrp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrgrp.f90
+
+mtrint.o: ${OLD_CODE}/mtrint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrint.f90
+
+mtrloc.o: ${OLD_CODE}/mtrloc.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrloc.f90
+
+mtrper.o: ${OLD_CODE}/mtrper.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrper.f90
+
+mtrrwy.o: ${OLD_CODE}/mtrrwy.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrrwy.f90
+
+mtrshe.o: ${OLD_CODE}/mtrshe.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrshe.f90
+
+mtrsky.o: ${OLD_CODE}/mtrsky.f90 ${INCL_MOD}/mtrcld_mod.mod ${INCL_MOD}/mtrvht_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrsky.f90
+
+MTRTRD_MODS = ${INCL_MOD}/mtrper_mod.mod \
+              ${INCL_MOD}/mtrwnd_mod.mod \
+              ${INCL_MOD}/mtrwtr_mod.mod \
+              ${INCL_MOD}/mtrsky_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+mtrtrd.o: ${OLD_CODE}/mtrtrd.f90 ${MTRTRD_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrtrd.f90
+
+mtrvht.o: ${OLD_CODE}/mtrvht.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrvht.f90
+
+mtrwnd.o: ${OLD_CODE}/mtrwnd.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrwnd.f90
+
+mtrwtr.o: ${OLD_CODE}/mtrwtr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrwtr.f90
+
+mtrwwr.o: ${OLD_CODE}/mtrwwr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/mtrwwr.f90
+
+nchtst.o: ${OLD_CODE}/nchtst.F90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/nchtst.F90
+
+NCMBUL_MODS = ${INCL_MOD}/bulled_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod \
+              ${INCL_MOD}/nchtst_mod.mod \
+              ${INCL_MOD}/ncmexp_mod.mod \
+              ${INCL_MOD}/tafrep_mod.mod \
+              ${INCL_MOD}/ncmind_mod.mod \
+              ${INCL_MOD}/stapos_mod.mod
+ncmbul.o: ${OLD_CODE}/ncmbul.f90 ${NCMBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ncmbul.f90
+
+ncmexp.o: ${OLD_CODE}/ncmexp.f90 ${INCL_MOD}/mtrloc_mod.mod ${INCL_MOD}/ofigts_mod.mod ${INCL_MOD}/rainexp_mod.mod ${INCL_MOD}/tempexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ncmexp.f90
+
+ncmind.o: ${OLD_CODE}/ncmind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ncmind.f90
+
+ncmint.o: ${OLD_CODE}/ncmint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ncmint.f90
+
+nextfile.o: ${OLD_CODE}/nextfile.f90 ${INCL_MOD}/findjsr_mod.mod ${INCL_MOD}/zpdate_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/nextfile.f90
+
+nextmsg.o: ${OLD_CODE}/nextmsg.f90 ${INCL_MOD}/read4k_mod.mod ${INCL_MOD}/ebcdic_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/nextmsg.f90
+
+nmstem.o: ${OLD_CODE}/nmstem.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/nmstem.f90
+
+nxtkey.o: ${OLD_CODE}/nxtkey.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/nxtkey.f90
+
+obhour.o: ${OLD_CODE}/obhour.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/valddy_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/obhour.f90
+
+ofigts.o: ${OLD_CODE}/ofigts.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ofigts.f90
+
+onland.o: ${OLD_CODE}/onland.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/onland.f90
+
+openindx.o: ${OLD_CODE}/openindx.F90 ${INCL_MOD}/rtable_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/openindx.F90
+
+oukstn.o: ${OLD_CODE}/oukstn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/oukstn.f90
+
+parse.o: ${OLD_CODE}/parse.f90 ${INCL_MOD}/pop_mod.mod ${INCL_MOD}/push_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/parse.f90
+
+pop.o: ${OLD_CODE}/pop.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/pop.f90
+
+PRESTEL_MODS = ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/sfdate_mod.mod \
+              ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+
+prestel.o: ${OLD_CODE}/prestel.f90 ${PRESTEL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/prestel.f90
+
+push.o: ${OLD_CODE}/push.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/push.f90
+
+rainexp.o: ${OLD_CODE}/rainexp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/rainexp.f90
+
+rdbitab.o: ${OLD_CODE}/rdbitab.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/rdbitab.f90
+
+read4k.o: ${OLD_CODE}/read4k.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/read4k.f90
+
+read512.o: ${OLD_CODE}/read512.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/read512.f90
+
+readabrv.o: ${OLD_CODE}/readabrv.F90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readabrv.F90
+
+readcf.o: ${OLD_CODE}/readcf.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readcf.f90
+
+readidx.o: ${OLD_CODE}/readidx.F90 ${INCL_MOD}/rtable_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readidx.F90
+
+readlist.o: ${OLD_CODE}/readlist.F90 ${INCL_MOD}/rtable_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readlist.F90
+
+readmap.o: ${OLD_CODE}/readmap.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readmap.f90
+
+repedt.o: ${OLD_CODE}/repedt.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/repedt.f90
+
+replytu.o: ${OLD_CODE}/replytu.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/replytu.f90
+
+replyt.o: ${OLD_CODE}/replyt.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/replyt.f90
+
+retpos.o: ${OLD_CODE}/retpos.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/retpos.f90
+
+rotarea.o: ${OLD_CODE}/rotarea.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/rotarea.f90
+
+rtable.o: ${OLD_CODE}/rtable.F90 ${INCL_MOD}/zpdate_mod.mod ${INCL_MOD}/inquire_mod.mod \
+           ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/findpath_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/rtable.F90
+
+saltssh.o: ${OLD_CODE}/saltssh.f
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/saltssh.f
+
+sambul.o: ${OLD_CODE}/sambul.F90 ${INCL_MOD}/nchtst_mod.mod ${INCL_MOD}/tafind_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sambul.F90
+
+satbbn.o: ${OLD_CODE}/satbbn.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satbbn.f90
+
+SATOB1_MODS = ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/satob2_mod.mod \
+              ${INCL_MOD}/satob3_mod.mod \
+              ${INCL_MOD}/satob4_mod.mod \
+              ${INCL_MOD}/satob5_mod.mod \
+              ${INCL_MOD}/satob7_mod.mod \
+              ${INCL_MOD}/stbind_mod.mod \
+              ${INCL_MOD}/stbenc_mod.mod
+satob1.o: ${OLD_CODE}/satob1.f90 ${SATOB1_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob1.f90
+
+satob2.o: ${OLD_CODE}/satob2.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/satbbn_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob2.f90
+
+satob3.o: ${OLD_CODE}/satob3.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/satbbn_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob3.f90
+
+satob4.o: ${OLD_CODE}/satob4.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/satbbn_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob4.f90
+
+satob5.o: ${OLD_CODE}/satob5.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/satbbn_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob5.f90
+
+satob7.o: ${OLD_CODE}/satob7.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/satbbn_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satob7.f90
+
+satype.o: ${OLD_CODE}/satype.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/satype.f90
+
+SCRIPT_MODS = ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/locald_mod.mod \
+              ${INCL_MOD}/tableb_mod.mod \
+              ${INCL_MOD}/tabled_mod.mod
+script.o: ${OLD_CODE}/script.f90 ${SCRIPT_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/script.f90
+
+setdef.o: ${OLD_CODE}/setdef.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/setdef.f90
+
+sethed.o: ${OLD_CODE}/sethed.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sethed.f90
+
+sfdate.o: ${OLD_CODE}/sfdate.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sfdate.f90
+
+SFERICS_MODS = ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/sfrexp_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/latbox_mod.mod \
+              ${INCL_MOD}/boxlalo_mod.mod \
+              ${INCL_MOD}/datim_mod.mod
+
+sferics.o: ${OLD_CODE}/sferics.f90 ${SFERICS_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sferics.f90
+
+sfrexp.o: ${OLD_CODE}/sfrexp.f90 ${INCL_MOD}/century_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sfrexp.f90
+
+SHPSEQ_MODS = ${INCL_MOD}/bitindx_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/mdbio_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/valusr_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+shpseq.o: ${OLD_CODE}/shpseq.f90 ${SHPSEQ_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/shpseq.f90
+
+SHPSTO_MODS = ${INCL_MOD}/zpdate_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/century_mod.mod
+shpsto.o: ${OLD_CODE}/shpsto.f90 ${SHPSTO_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/shpsto.f90
+
+silent_mod.o: ${OLD_CODE}/${INCL_MOD}/silent_mod.mod
+
+sklarr.o: ${OLD_CODE}/sklarr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sklarr.f90
+
+skldsp.o: ${OLD_CODE}/skldsp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/skldsp.f90
+
+skldspn.o: ${OLD_CODE}/skldspn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/skldspn.f90
+
+sklsub.o: ${OLD_CODE}/sklsub.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sklsub.f90
+
+sklsubn.o: ${OLD_CODE}/sklsubn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sklsubn.f90
+
+sortch.o: ${OLD_CODE}/sortch.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sortch.f90
+
+sortchr.o: ${OLD_CODE}/sortchr.f90 ${INCL_MOD}/sortn_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sortchr.f90
+
+sortn.o: ${OLD_CODE}/sortn.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sortn.f90
+
+sortr.o: ${OLD_CODE}/sortr.f90 ${INCL_MOD}/sortn_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/sortr.f90
+
+SRWBUL_MODS = ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/bulled_mod.mod \
+              ${INCL_MOD}/stapos_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/ncmind_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod \
+              ${INCL_MOD}/tafrep_mod.mod \
+              ${INCL_MOD}/ofigts_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+srwbul.o: ${OLD_CODE}/srwbul.f90 ${SRWBUL}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/srwbul.f90
+
+srwexp.o: ${OLD_CODE}/srwexp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/srwexp.f90
+
+srwint.o: ${OLD_CODE}/srwint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/srwint.f90
+
+SSMRET_MODS = ${INCL_MOD}/bufindx_mod.mod \
+              ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/getlocd_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/maprd_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/subslocd_mod.mod \
+              ${INCL_MOD}/valarr_mod.mod
+ssmret.o: ${OLD_CODE}/ssmret.f90 ${SSMRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ssmret.f90
+
+STATSOBS_MODS = ${INCL_MOD}/datim_mod.mod \
+                ${INCL_MOD}/dsinfo_mod.mod \
+                ${INCL_MOD}/ichar2_mod.mod \
+                ${INCL_MOD}/ichar3_mod.mod \
+                ${INCL_MOD}/inquire_mod.mod \
+                ${INCL_MOD}/zpdate_mod.mod
+
+statsobs.o: ${OLD_CODE}/statsobs.F90 ${STATSOBS_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/statsobs.F90
+
+staray.o: ${OLD_CODE}/staray.F90 ${INCL_MOD}/inquire_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/staray.F90
+
+stapos.o: ${OLD_CODE}/stapos.f90 ${INCL_MOD}/isrch_mod.mod ${INCL_MOD}/staray_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stapos.f90
+
+stbbul.o: ${OLD_CODE}/stbbul.F90 ${INCL_MOD}/bulled_mod.mod ${INCL_MOD}/satob1_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stbbul.F90
+
+stbenc.o: ${OLD_CODE}/stbenc.f90 ${INCL_MOD}/enbufr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stbenc.f90
+
+stbind.o: ${OLD_CODE}/stbind.f90 ${INCL_MOD}/boxlalo_mod.mod ${INCL_MOD}/indlalo_mod.mod ${INCL_MOD}/latbox_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stbind.f90
+
+stdprht.o: ${OLD_CODE}/stdprht.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stdprht.f90
+
+stmret.o: ${OLD_CODE}/stmret.f90 ${INCL_MOD}/stnret_mod.mod ${INCL_MOD}/stnary_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stmret.f90
+
+stnary.o: ${OLD_CODE}/stnary.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stnary.f90
+
+stnfin.o: ${OLD_CODE}/stnfin.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/stnmas_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stnfin.f90
+
+stnindx.o: ${OLD_CODE}/stnindx.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stnindx.f90
+
+stnret.o: ${OLD_CODE}/stnret.F90 ${INCL_MOD}/stnindx_mod.mod ${INCL_MOD}/stnfin_mod.mod \
+          ${INCL_MOD}/stnmas_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/stnret.F90
+
+storbufr.o: ${OLD_CODE}/storbufr.f90 ${INCL_MOD}/ichar3_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/storbufr.f90
+
+storchek.o: ${OLD_CODE}/storchek.f90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/dreg_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/storchek.f90
+
+STORAMD_MODS = ${INCL_MOD}/amdbul_mod.mod \
+              ${INCL_MOD}/bufrchek_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/dreg_mod.mod \
+              ${INCL_MOD}/dsinfo_mod.mod \
+              ${INCL_MOD}/ebcdic_mod.mod \
+              ${INCL_MOD}/gethdr_mod.mod \
+              ${INCL_MOD}/initstor_mod.mod \
+              ${INCL_MOD}/nextfile_mod.mod \
+              ${INCL_MOD}/nextmsg_mod.mod \
+              ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/storchek_mod.mod \
+              ${INCL_MOD}/summary_mod.mod
+storamd.o: ${OLD_CODE}/storamd.f90 ${STORAMD_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/storamd.f90
+
+STOREUM_MODS = ${INCL_MOD}/argchop_mod.mod \
+              ${INCL_MOD}/argdcode_mod.mod \
+              ${INCL_MOD}/bufrchek_mod.mod \
+              ${INCL_MOD}/bufrep_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/dreg_mod.mod \
+              ${INCL_MOD}/dsinfo_mod.mod \
+              ${INCL_MOD}/ebcdic_mod.mod \
+              ${INCL_MOD}/findftp_mod.mod \
+              ${INCL_MOD}/findmhs_mod.mod \
+              ${INCL_MOD}/initstor_mod.mod \
+              ${INCL_MOD}/msgchop_mod.mod \
+              ${INCL_MOD}/msgdcode_mod.mod \
+              ${INCL_MOD}/nextfile_mod.mod \
+              ${INCL_MOD}/satype_mod.mod \
+              ${INCL_MOD}/storbufr_mod.mod \
+              ${INCL_MOD}/summary_mod.mod \
+              ${INCL_MOD}/silent_mod.mod
+storeum.o: ${OLD_CODE}/storeum.f90 ${STOREUM_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/storeum.f90
+
+subper.o: ${OLD_CODE}/subper.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/subper.f90
+
+subslocd.o: ${OLD_CODE}/subslocd.f90 ${INCL_MOD}/desfxy_mod.mod ${INCL_MOD}/eb2asc_mod.mod ${INCL_MOD}/locald_mod.mod ${INCL_MOD}/tabled_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/subslocd.f90
+
+summary.o: ${OLD_CODE}/summary.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/summary.f90
+
+SYNBUL_MODS = ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/nchtst_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod \
+              ${INCL_MOD}/synend_mod.mod \
+              ${INCL_MOD}/repedt_mod.mod \
+              ${INCL_MOD}/eerror_mod.mod \
+              ${INCL_MOD}/synob_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+synbul.o: ${OLD_CODE}/synbul.f90 ${SYNBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synbul.f90
+
+syncld.o: ${OLD_CODE}/syncld.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/syncld.f90
+
+synend.o: ${OLD_CODE}/synend.F90 ${INCL_MOD}/nchtst_mod.mod ${INCL_MOD}/stapos_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synend.F90
+
+SYNEXP_MODS = ${INCL_MOD}/ffunit_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/mtrloc_mod.mod \
+              ${INCL_MOD}/oukstn_mod.mod \
+              ${INCL_MOD}/shpseq_mod.mod \
+              ${INCL_MOD}/stapos_mod.mod \
+              ${INCL_MOD}/synit_mod.mod \
+              ${INCL_MOD}/synqc_mod.mod \
+              ${INCL_MOD}/synreg_mod.mod \
+              ${INCL_MOD}/synrpr_mod.mod \
+              ${INCL_MOD}/synseq_mod.mod \
+              ${INCL_MOD}/synxp1_mod.mod \
+              ${INCL_MOD}/synxp2_mod.mod \
+              ${INCL_MOD}/synxp3_mod.mod \
+              ${INCL_MOD}/synxp4_mod.mod \
+              ${INCL_MOD}/synxp5_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+synexp.o: ${OLD_CODE}/synexp.f90 ${SYNEXP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synexp.f90
+
+synfiv.o: ${OLD_CODE}/synfiv.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synfiv.f90
+
+synhed.o: ${OLD_CODE}/synhed.F90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/amdcor_mod.mod ${INCL_MOD}/nchtst_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synhed.F90
+
+synind.o: ${OLD_CODE}/synind.f90 ${INCL_MOD}/indlalo_mod.mod ${INCL_MOD}/mobsto_mod.mod ${INCL_MOD}/shpsto_mod.mod ${INCL_MOD}/synsto_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synind.f90
+
+synit.o: ${OLD_CODE}/synit.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synit.f90
+
+synnin.o: ${OLD_CODE}/synnin.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synnin.f90
+
+SYNOB_MODS = ${INCL_MOD}/obhour_mod.mod \
+             ${INCL_MOD}/datim_mod.mod \
+             ${INCL_MOD}/metdb_com_mod.mod \
+             ${INCL_MOD}/synexp_mod.mod \
+             ${INCL_MOD}/enbufr_mod.mod \
+             ${INCL_MOD}/synind_mod.mod
+synob.o: ${OLD_CODE}/synob.f90 ${SYNOB_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synob.f90
+
+synqc.o: ${OLD_CODE}/synqc.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synqc.f90
+
+synreg.o: ${OLD_CODE}/synreg.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synreg.f90
+
+SYNRET_MODS = ${INCL_MOD}/bitindx_mod.mod \
+              ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/eochn_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/idmtch_mod.mod \
+              ${INCL_MOD}/maprd_mod.mod \
+              ${INCL_MOD}/readabrv_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/rotarea_mod.mod \
+              ${INCL_MOD}/sethed_mod.mod \
+              ${INCL_MOD}/sortchr_mod.mod \
+              ${INCL_MOD}/subper_mod.mod \
+              ${INCL_MOD}/valarea_mod.mod \
+              ${INCL_MOD}/int2ch_mod.mod \
+              ${INCL_MOD}/valusr_mod.mod
+synret.o: ${OLD_CODE}/synret.f90 ${SYNRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synret.f90
+
+synrpr.o: ${OLD_CODE}/synrpr.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synrpr.f90
+
+SYNSEQ_MODS = ${INCL_MOD}/bitindx_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/mdbio_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/valusr_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+synseq.o: ${OLD_CODE}/synseq.f90 ${SYNSEQ_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synseq.f90
+
+SYNSTO_MODS = ${INCL_MOD}/zpdate_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/century_mod.mod
+synsto.o: ${OLD_CODE}/synsto.f90 ${SYNSTO_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synsto.f90
+
+syntpr.o: ${OLD_CODE}/syntpr.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/syntpr.f90
+
+synxp1.o: ${OLD_CODE}/synxp1.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synxp1.f90
+
+synxp2.o: ${OLD_CODE}/synxp2.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synxp2.f90
+
+SYNXP3_MODS = ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/syncld_mod.mod \
+              ${INCL_MOD}/synfiv_mod.mod \
+              ${INCL_MOD}/synnin_mod.mod \
+              ${INCL_MOD}/syntpr_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod
+synxp3.o: ${OLD_CODE}/synxp3.f90 ${SYNXP3_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synxp3.f90
+
+synxp4.o: ${OLD_CODE}/synxp4.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synxp4.f90
+
+synxp5.o: ${OLD_CODE}/synxp5.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/syncld_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/synxp5.f90
+
+tabbver.o: ${OLD_CODE}/tabbver.F90 ${INCL_MOD}/bufrpath_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tabbver.F90
+
+tableb.o: ${OLD_CODE}/tableb.F90 ${INCL_MOD}/bufrpath_mod.mod ${INCL_MOD}/inquire_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tableb.F90
+
+tabled.o: ${OLD_CODE}/tabled.F90 ${INCL_MOD}/bufrpath_mod.mod ${INCL_MOD}/inquire_mod.mod \
+        ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tabled.F90
+
+tafamd.o: ${OLD_CODE}/tafamd.f90 ${INCL_MOD}/nchtst_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafamd.f90
+
+tafbul.o: ${OLD_CODE}/tafbul.f90 ${INCL_MOD}/achtst_mod.mod ${INCL_MOD}/datimgp_mod.mod ${INCL_MOD}/tafamd_mod.mod ${INCL_MOD}/tafind_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafbul.f90
+
+tafcnl.o: ${OLD_CODE}/tafcnl.f90 ${INCL_MOD}/mtrloc_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafcnl.f90
+
+TAFEXP_MODS = ${INCL_MOD}/mtrloc_mod.mod \
+              ${INCL_MOD}/mtrgrp_mod.mod \
+              ${INCL_MOD}/tafcnl_mod.mod \
+              ${INCL_MOD}/tafsect_mod.mod \
+              ${INCL_MOD}/mtrwwr_mod.mod \
+              ${INCL_MOD}/mtrddf_mod.mod \
+              ${INCL_MOD}/mtrccc_mod.mod \
+              ${INCL_MOD}/tafvism_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+tafexp.o: ${OLD_CODE}/tafexp.f90 ${TAFEXP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafexp.f90
+
+tafind.o: ${OLD_CODE}/tafind.f90 ${INCL_MOD}/datim_mod.mod ${INCL_MOD}/tafrep_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafind.f90
+
+tafint.o: ${OLD_CODE}/tafint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafint.f90
+
+TAFREP_MODS = ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/icobrv_mod.mod \
+              ${INCL_MOD}/indlalo_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/uadups_mod.mod \
+              ${INCL_MOD}/zpdate_mod.mod
+tafrep.o: ${OLD_CODE}/tafrep.f90 ${TAFREP_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafrep.f90
+
+tafsect.o: ${OLD_CODE}/tafsect.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/mtrgrp_mod.mod ${INCL_MOD}/mtrloc_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafsect.f90
+
+tafvism.o: ${OLD_CODE}/tafvism.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tafvism.f90
+
+tbusbul.o: ${OLD_CODE}/tbusbul.f90 ${INCL_MOD}/tafrep_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tbusbul.f90
+
+tellops.o: ${OLD_CODE}/tellops.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tellops.f90
+
+tempexp.o: ${OLD_CODE}/tempexp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tempexp.f90
+
+TESAC_MODS = ${INCL_MOD}/tessc1_mod.mod \
+              ${INCL_MOD}/tessc2_mod.mod \
+              ${INCL_MOD}/tessc3_mod.mod \
+              ${INCL_MOD}/tessc4_mod.mod \
+              ${INCL_MOD}/tessc5_mod.mod \
+              ${INCL_MOD}/tesind_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/ides_mod.mod
+tesac.o: ${OLD_CODE}/tesac.f90 ${TESAC_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tesac.f90
+
+tesind.o: ${OLD_CODE}/tesind.f90 ${INCL_MOD}/indlalo_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tesind.f90
+
+tessc1.o: ${OLD_CODE}/tessc1.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/valddy_mod.mod ${INCL_MOD}/datim_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tessc1.f90
+
+tessc2.o: ${OLD_CODE}/tessc2.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tessc2.f90
+
+tessc3.o: ${OLD_CODE}/tessc3.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tessc3.f90
+
+tessc4.o: ${OLD_CODE}/tessc4.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tessc4.f90
+
+tessc5.o: ${OLD_CODE}/tessc5.f90 ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tessc5.f90
+
+TFMRET_MODS = ${INCL_MOD}/condes_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/eochn_mod.mod \
+              ${INCL_MOD}/expreq_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/ichar2_mod.mod \
+              ${INCL_MOD}/idmtch_mod.mod \
+              ${INCL_MOD}/maprd_mod.mod \
+              ${INCL_MOD}/mtrexp_mod.mod \
+              ${INCL_MOD}/mtrint_mod.mod \
+              ${INCL_MOD}/ncmexp_mod.mod \
+              ${INCL_MOD}/ncmint_mod.mod \
+              ${INCL_MOD}/rotarea_mod.mod \
+              ${INCL_MOD}/sethed_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/int2ch_mod.mod \
+              ${INCL_MOD}/srwexp_mod.mod \
+              ${INCL_MOD}/srwint_mod.mod \
+              ${INCL_MOD}/subper_mod.mod \
+              ${INCL_MOD}/tafint_mod.mod \
+              ${INCL_MOD}/tafexp_mod.mod \
+              ${INCL_MOD}/trnsfr_mod.mod \
+              ${INCL_MOD}/trpint_mod.mod \
+              ${INCL_MOD}/valarea_mod.mod
+tfmret.o: ${OLD_CODE}/tfmret.f90 ${TFMRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tfmret.f90
+
+trange.o: ${OLD_CODE}/trange.f90 ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/trange.f90
+
+TRKBUL_MODS = ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/bulled_mod.mod \
+              ${INCL_MOD}/cccode_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/ides_mod.mod \
+              ${INCL_MOD}/indlalo_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod
+trkbul.o: ${OLD_CODE}/trkbul.f90 ${TRKBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/trkbul.f90
+
+TROPBUL_MODS = ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/bufseq_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/debufr_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/indlalo_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod
+tropbul.o: ${OLD_CODE}/tropbul.f90 ${TROPBUL_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/tropbul.f90
+
+trnsfr.o: ${OLD_CODE}/trnsfr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/trnsfr.f90
+
+trpint.o: ${OLD_CODE}/trpint.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/trpint.f90
+
+trpsto.o: ${OLD_CODE}/trpsto.f90 ${INCL_MOD}/century_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/trpsto.f90
+
+uabul.o: ${OLD_CODE}/uabul.F90 ${INCL_MOD}/bulled_mod.mod ${INCL_MOD}/uaedit_mod.mod ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/cccode_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uabul.F90
+
+uacloud.o: ${OLD_CODE}/uacloud.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uacloud.f90
+
+uadups.o: ${OLD_CODE}/uadups.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uadups.f90
+
+UAEDIT_MODS = ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/indlalo_mod.mod \
+              ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/onland_mod.mod \
+              ${INCL_MOD}/tafrep_mod.mod \
+              ${INCL_MOD}/uasort_mod.mod \
+              ${INCL_MOD}/uaxpand_mod.mod
+uaedit.o: ${OLD_CODE}/uaedit.f90 ${UAEDIT_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uaedit.f90
+
+UAHEAD_MODS = ${INCL_MOD}/ivalue_mod.mod \
+              ${INCL_MOD}/metdb_com_mod.mod \
+              ${INCL_MOD}/obhour_mod.mod \
+              ${INCL_MOD}/stapos_mod.mod \
+              ${INCL_MOD}/airgrp_mod.mod \
+              ${INCL_MOD}/airloc_mod.mod
+uahead.o: ${OLD_CODE}/uahead.f90 ${UAHEAD_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uahead.f90
+
+uamaxw.o: ${OLD_CODE}/uamaxw.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uamaxw.f90
+
+uapart.o: ${OLD_CODE}/uapart.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uapart.f90
+
+uapstd.o: ${OLD_CODE}/uapstd.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/stdprht_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uapstd.f90
+
+uasight.o: ${OLD_CODE}/uasight.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uasight.f90
+
+uasigpr.o: ${OLD_CODE}/uasigpr.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uasigpr.f90
+
+uasonde.o: ${OLD_CODE}/uasonde.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uasonde.f90
+
+uasort.o: ${OLD_CODE}/uasort.f90 ${INCL_MOD}/sortr_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uasort.f90
+
+uatrop.o: ${OLD_CODE}/uatrop.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uatrop.f90
+
+uatstdp.o: ${OLD_CODE}/uatstdp.f90 ${INCL_MOD}/ivalue_mod.mod ${INCL_MOD}/metdb_com_mod.mod ${INCL_MOD}/uatstx_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uatstdp.f90
+
+uatstx.o: ${OLD_CODE}/uatstx.f90 ${INCL_MOD}/ivalue_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uatstx.f90
+
+UAXPAND_MODS = ${INCL_MOD}/ides_mod.mod \
+               ${INCL_MOD}/metdb_com_mod.mod \
+               ${INCL_MOD}/uacloud_mod.mod \
+               ${INCL_MOD}/uamaxw_mod.mod \
+               ${INCL_MOD}/uapart_mod.mod \
+               ${INCL_MOD}/uapstd_mod.mod \
+               ${INCL_MOD}/uasight_mod.mod \
+               ${INCL_MOD}/uasigpr_mod.mod \
+               ${INCL_MOD}/uasonde_mod.mod \
+               ${INCL_MOD}/uatrop_mod.mod \
+               ${INCL_MOD}/uatstdp_mod.mod \
+               ${INCL_MOD}/uahead_mod.mod
+uaxpand.o: ${OLD_CODE}/uaxpand.f90 ${UAXPAND_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uaxpand.f90
+
+uksynpct.o: ${OLD_CODE}/uksynpct.f90 ${INCL_MOD}/datim_mod.mod \
+                                     ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c -o uksynpct.o ${OLD_CODE}/uksynpct.f90
+
+upaind.o: ${OLD_CODE}/upaind.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/upaind.f90
+
+uprepid.o: ${OLD_CODE}/uprepid.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uprepid.f90
+
+UPRPARTS_MODS = ${INCL_MOD}/bitindx_mod.mod \
+                ${INCL_MOD}/dt2hrs_mod.mod \
+                ${INCL_MOD}/desfxy_mod.mod \
+                ${INCL_MOD}/eb2asc_mod.mod \
+                ${INCL_MOD}/sethed_mod.mod \
+                ${INCL_MOD}/sortr_mod.mod \
+                ${INCL_MOD}/upaind_mod.mod \
+                ${INCL_MOD}/valusr_mod.mod
+uprparts.o: ${OLD_CODE}/uprparts.f90 ${UPRPARTS_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uprparts.f90
+
+UPRRET_MODS = ${INCL_MOD}/arrindx_mod.mod \
+              ${INCL_MOD}/bitindx_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/dt2hrs_mod.mod \
+              ${INCL_MOD}/hrs2dt_mod.mod \
+              ${INCL_MOD}/idmtch_mod.mod \
+              ${INCL_MOD}/maprd_mod.mod \
+              ${INCL_MOD}/readidx_mod.mod \
+              ${INCL_MOD}/rotarea_mod.mod \
+              ${INCL_MOD}/sortch_mod.mod \
+              ${INCL_MOD}/subper_mod.mod \
+              ${INCL_MOD}/uprepid_mod.mod \
+              ${INCL_MOD}/uprparts_mod.mod \
+              ${INCL_MOD}/uprwinds_mod.mod \
+              ${INCL_MOD}/valarea_mod.mod \
+              ${INCL_MOD}/valarr_mod.mod \
+              ${INCL_MOD}/value_mod.mod \
+              ${INCL_MOD}/valusr_mod.mod
+uprret.o: ${OLD_CODE}/uprret.f90 ${UPRRET_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uprret.f90
+
+uprwinds.o: ${OLD_CODE}/uprwinds.f90 ${INCL_MOD}/sortr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/uprwinds.f90
+
+valarea.o: ${OLD_CODE}/valarea.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valarea.f90
+
+valarr.o: ${OLD_CODE}/valarr.f90 ${INCL_MOD}/rotarea_mod.mod ${INCL_MOD}/valarea_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valarr.f90
+
+valdat.o: ${OLD_CODE}/valdat.f90 ${INCL_MOD}/datchk_mod.mod ${INCL_MOD}/dt2hrs_mod.mod ${INCL_MOD}/hrs2dt_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valdat.f90
+
+valddy.o: ${OLD_CODE}/valddy.f90 ${INCL_MOD}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valddy.f90
+
+valout.o: ${OLD_CODE}/valout.F90 ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valout.F90
+
+valrec.o: ${OLD_CODE}/valrec.f90 ${INCL_MOD}/datchk_mod.mod ${INCL_MOD}/dt2hrs_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valrec.f90
+
+valreq.o: ${OLD_CODE}/valreq.f90 ${INCL_MOD}/valdat_mod.mod ${INCL_MOD}/valrec_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valreq.f90
+
+value.o: ${OLD_CODE}/value.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/value.f90
+
+valusr.o: ${OLD_CODE}/valusr.f90 ${INCL_MOD}/asc2eb_mod.mod ${INCL_MOD}/century_mod.mod ${INCL_MOD}/value_mod.mod \
+       ${INCL_MOD}/int2ch_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/valusr.f90
+
+wantarea.o: ${OLD_CODE}/wantarea.f90 ${INCL_MOD}/rotarea_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/wantarea.f90
+
+wantid.o: ${OLD_CODE}/wantid.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/wantid.f90
+
+wantobs.o: ${OLD_CODE}/wantobs.f90 ${INCL_MOD}/rotarea_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/wantobs.f90
+
+wanttime.o: ${OLD_CODE}/wanttime.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/wanttime.f90
+
+webair.o: ${OLD_CODE}/webair.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webair.f90
+
+webbuoyp.o: ${OLD_CODE}/webbuoyp.f90 ${INCL_MOD}/code_mod.mod \
+                         ${INCL_MOD}/ides_mod.mod \
+                         ${INCL_MOD}/webform2_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webbuoyp.f90
+
+webdis.o: ${OLD_CODE}/webdis.f90 ${INCL_MOD}/code_mod.mod \
+                     ${INCL_MOD}/getchr_mod.mod \
+                     ${INCL_MOD}/ides_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webdis.f90
+
+webesaw.o: ${OLD_CODE}/webesaw.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webesaw.f90
+
+webform.o: ${OLD_CODE}/webform.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webform.f90
+
+webform2.o: ${OLD_CODE}/webform2.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webform2.f90
+
+webgexp.o: ${OLD_CODE}/webgexp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webgexp.f90
+
+weblnd.o: ${OLD_CODE}/weblnd.f90 ${INCL_MOD}/webform_mod.mod \
+                     ${INCL_MOD}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/weblnd.f90
+
+webncm.o: ${OLD_CODE}/webncm.f90 ${INCL_MOD}/webform_mod.mod \
+                     ${INCL_MOD}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webncm.f90
+
+webret.o: ${OLD_CODE}/webret.f90 ${INCL_MOD}/delspce_mod.mod \
+                     ${INCL_MOD}/webair_mod.mod \
+                     ${INCL_MOD}/webbuoyp_mod.mod \
+                     ${INCL_MOD}/webdis_mod.mod \
+                     ${INCL_MOD}/webesaw_mod.mod \
+                     ${INCL_MOD}/webform_mod.mod \
+                     ${INCL_MOD}/weblnd_mod.mod \
+                     ${INCL_MOD}/webncm_mod.mod \
+                     ${INCL_MOD}/websamos_mod.mod \
+                     ${INCL_MOD}/webshp_mod.mod \
+                     ${INCL_MOD}/websrew_mod.mod \
+                     ${INCL_MOD}/webssea_mod.mod \
+                     ${INCL_MOD}/webtadv_mod.mod \
+                     ${INCL_MOD}/webtbus_mod.mod \
+                     ${INCL_MOD}/webtfmet_mod.mod \
+                     ${INCL_MOD}/webupr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webret.f90
+
+webretst.o: ${OLD_CODE}/webretst.f90 ${INCL_MOD}/delspce_mod.mod \
+                         ${INCL_MOD}/webair_mod.mod \
+                         ${INCL_MOD}/webbuoyp_mod.mod \
+                         ${INCL_MOD}/webdis_mod.mod \
+                         ${INCL_MOD}/webesaw_mod.mod \
+                         ${INCL_MOD}/webform_mod.mod \
+                         ${INCL_MOD}/weblnd_mod.mod \
+                         ${INCL_MOD}/webncm_mod.mod \
+                         ${INCL_MOD}/websamos_mod.mod \
+                         ${INCL_MOD}/webshp_mod.mod \
+                         ${INCL_MOD}/websrew_mod.mod \
+                         ${INCL_MOD}/webssea_mod.mod \
+                         ${INCL_MOD}/webtadv_mod.mod \
+                         ${INCL_MOD}/webtbus_mod.mod \
+                         ${INCL_MOD}/webtfmet_mod.mod \
+                         ${INCL_MOD}/webupr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webretst.f90
+
+websamos.o: ${OLD_CODE}/websamos.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/websamos.f90
+
+webshp.o: ${OLD_CODE}/webshp.f90 ${INCL_MOD}/webform_mod.mod \
+                     ${INCL_MOD}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webshp.f90
+
+websrew.o: ${OLD_CODE}/websrew.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/websrew.f90
+
+webssea.o: ${OLD_CODE}/webssea.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webssea.f90
+
+webtadv.o: ${OLD_CODE}/webtadv.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtadv.f90
+
+webtbus.o: ${OLD_CODE}/webtbus.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtbus.f90
+
+webtfmet.o: ${OLD_CODE}/webtfmet.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtfmet.f90
+
+webupr.o: ${OLD_CODE}/webupr.f90 ${INCL_MOD}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webupr.f90
+
+WINPRO_MODS = ${INCL_MOD}/airsto_mod.mod \
+              ${INCL_MOD}/bufrhed_mod.mod \
+              ${INCL_MOD}/century_mod.mod \
+              ${INCL_MOD}/datim_mod.mod \
+              ${INCL_MOD}/debufr_mod.mod \
+              ${INCL_MOD}/desfxy_mod.mod \
+              ${INCL_MOD}/eb2asc_mod.mod \
+              ${INCL_MOD}/enbufr_mod.mod \
+              ${INCL_MOD}/indlalo_mod.mod
+winpro.o: ${OLD_CODE}/winpro.f90 ${WINPRO_MODS}
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/winpro.f90
+
+zpdate_mod.o: ${INCL_MOD}/zpdate_mod.mod
+#
+# Modules files, common constants
+#
+${INCL_MOD}/metdb_com_mod.mod: ${OLD_MODS}/metdb_com_mod.f90
+	${FF} ${FFLAGS} -c ${OLD_MODS}/metdb_com_mod.f90
+	mv metdb_com_mod.mod ${INCL_MOD}/.
+
+#
+# Modules files, interfaces, subroutines and functions
+#	
+${INCL_MOD}/abc_mod.mod: ${OLD_MODS}/abc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/abc_mod.f90
+	mv abc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/achtst_mod.mod: ${OLD_MODS}/achtst_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/achtst_mod.f90
+	mv achtst_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/advbul_mod.mod: ${OLD_MODS}/advbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/advbul_mod.f90
+	mv advbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airarp_mod.mod: ${OLD_MODS}/airarp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airarp_mod.f90
+	mv airarp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airbul_mod.mod: ${OLD_MODS}/airbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airbul_mod.f90
+	mv airbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/aircmd_mod.mod: ${OLD_MODS}/aircmd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/aircmd_mod.f90
+	mv aircmd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/aircod_mod.mod: ${OLD_MODS}/aircod_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/aircod_mod.f90
+	mv aircod_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airdate_mod.mod: ${OLD_MODS}/airdate_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airdate_mod.f90
+	mv airdate_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airelm_mod.mod: ${OLD_MODS}/airelm_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airelm_mod.f90
+	mv airelm_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airenc_mod.mod: ${OLD_MODS}/airenc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airenc_mod.f90
+	mv airenc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airgrp_mod.mod: ${OLD_MODS}/airgrp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airgrp_mod.f90
+	mv airgrp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airice_mod.mod: ${OLD_MODS}/airice_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airice_mod.f90
+	mv airice_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airidx_mod.mod: ${OLD_MODS}/airidx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airidx_mod.f90
+	mv airidx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airind_mod.mod: ${OLD_MODS}/airind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airind_mod.f90
+	mv airind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airlag_mod.mod: ${OLD_MODS}/airlag_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airlag_mod.f90
+	mv airlag_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airlev_mod.mod: ${OLD_MODS}/airlev_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airlev_mod.f90
+	mv airlev_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airloc_mod.mod: ${OLD_MODS}/airloc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airloc_mod.f90
+	mv airloc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airmid_mod.mod: ${OLD_MODS}/airmid_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airmid_mod.f90
+	mv airmid_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airopt_mod.mod: ${OLD_MODS}/airopt_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airopt_mod.f90
+	mv airopt_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airpos_mod.mod: ${OLD_MODS}/airpos_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airpos_mod.f90
+	mv airpos_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airset_mod.mod: ${OLD_MODS}/airset_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airset_mod.f90
+	mv airset_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airsgn_mod.mod: ${OLD_MODS}/airsgn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airsgn_mod.f90
+	mv airsgn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airsto_mod.mod: ${OLD_MODS}/airsto_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airsto_mod.f90
+	mv airsto_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airtim_mod.mod: ${OLD_MODS}/airtim_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airtim_mod.f90
+	mv airtim_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airtmp_mod.mod: ${OLD_MODS}/airtmp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airtmp_mod.f90
+	mv airtmp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/airtrb_mod.mod: ${OLD_MODS}/airtrb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/airtrb_mod.f90
+	mv airtrb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/alselm_mod.mod: ${OLD_MODS}/alselm_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/alselm_mod.f90
+	mv alselm_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdar_mod.mod: ${OLD_MODS}/amdar_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdar_mod.f90
+	mv amdar_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdbuc_mod.mod: ${OLD_MODS}/amdbuc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdbuc_mod.f90
+	mv amdbuc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdbul_mod.mod: ${OLD_MODS}/amdbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdbul_mod.f90
+	mv amdbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdcor_mod.mod: ${OLD_MODS}/amdcor_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdcor_mod.f90
+	mv amdcor_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdexb_mod.mod: ${OLD_MODS}/amdexb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdexb_mod.f90
+	mv amdexb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdexc_mod.mod: ${OLD_MODS}/amdexc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdexc_mod.f90
+	mv amdexc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/amdind_mod.mod: ${OLD_MODS}/amdind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/amdind_mod.f90
+	mv amdind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/argchop_mod.mod: ${OLD_MODS}/argchop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/argchop_mod.f90
+	mv argchop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/argdcode_mod.mod: ${OLD_MODS}/argdcode_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/argdcode_mod.f90
+	mv argdcode_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/arrindx_mod.mod: ${OLD_MODS}/arrindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/arrindx_mod.f90
+	mv arrindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/arrsub_mod.mod: ${OLD_MODS}/arrsub_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/arrsub_mod.f90
+	mv arrsub_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/artmck_mod.mod: ${OLD_MODS}/artmck_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/artmck_mod.f90
+	mv artmck_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/asc2eb_mod.mod: ${OLD_MODS}/asc2eb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/asc2eb_mod.f90
+	mv asc2eb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/batchlog_mod.mod: ${OLD_MODS}/batchlog_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/batchlog_mod.f90
+	mv batchlog_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/batesbul_mod.mod: ${OLD_MODS}/batesbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/batesbul_mod.f90
+	mv batesbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bathy_mod.mod: ${OLD_MODS}/bathy_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bathy_mod.f90
+	mv bathy_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/becpos_mod.mod: ${OLD_MODS}/becpos_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/becpos_mod.f90
+	mv becpos_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/becret_mod.mod: ${OLD_MODS}/becret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/becret_mod.f90
+	mv becret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bitindx_mod.mod: ${OLD_MODS}/bitindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bitindx_mod.f90
+	mv bitindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/boxlalo_mod.mod: ${OLD_MODS}/boxlalo_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/boxlalo_mod.f90
+	mv boxlalo_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/boyenc_mod.mod: ${OLD_MODS}/boyenc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/boyenc_mod.f90
+	mv boyenc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/boyexp_mod.mod: ${OLD_MODS}/boyexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/boyexp_mod.f90
+	mv boyexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/boyind_mod.mod: ${OLD_MODS}/boyind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/boyind_mod.f90
+	mv boyind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bthind_mod.mod: ${OLD_MODS}/bthind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bthind_mod.f90
+	mv bthind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bthsc1_mod.mod: ${OLD_MODS}/bthsc1_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bthsc1_mod.f90
+	mv bthsc1_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bthsc2_mod.mod: ${OLD_MODS}/bthsc2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bthsc2_mod.f90
+	mv bthsc2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bthsc3_mod.mod: ${OLD_MODS}/bthsc3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bthsc3_mod.f90
+	mv bthsc3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bthsc4_mod.mod: ${OLD_MODS}/bthsc4_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bthsc4_mod.f90
+	mv bthsc4_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufd203_mod.mod: ${OLD_MODS}/bufd203_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufd203_mod.f90
+	mv bufd203_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufd206_mod.mod: ${OLD_MODS}/bufd206_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufd206_mod.f90
+	mv bufd206_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdass_mod.mod: ${OLD_MODS}/bufdass_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdass_mod.f90
+	mv bufdass_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdata_mod.mod: ${OLD_MODS}/bufdata_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdata_mod.f90
+	mv bufdata_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdchr_mod.mod: ${OLD_MODS}/bufdchr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdchr_mod.f90
+	mv bufdchr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdelt_mod.mod: ${OLD_MODS}/bufdelt_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdelt_mod.f90
+	mv bufdelt_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdmap_mod.mod: ${OLD_MODS}/bufdmap_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdmap_mod.f90
+	mv bufdmap_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdrip_mod.mod: ${OLD_MODS}/bufdrip_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdrip_mod.f90
+	mv bufdrip_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdrpl_mod.mod: ${OLD_MODS}/bufdrpl_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdrpl_mod.f90
+	mv bufdrpl_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufdspl_mod.mod: ${OLD_MODS}/bufdspl_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufdspl_mod.f90
+	mv bufdspl_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufindx_mod.mod: ${OLD_MODS}/bufindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufindx_mod.f90
+	mv bufindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufr207_mod.mod: ${OLD_MODS}/bufr207_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufr207_mod.f90
+	mv bufr207_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrchek_mod.mod: ${OLD_MODS}/bufrchek_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrchek_mod.f90
+	mv bufrchek_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrep_mod.mod: ${OLD_MODS}/bufrep_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrep_mod.f90
+	mv bufrep_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufret_mod.mod: ${OLD_MODS}/bufret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufret_mod.f90
+	mv bufret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrhed_mod.mod: ${OLD_MODS}/bufrhed_mod.f90 ${INCL_MOD}/desfxy_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_MODS}/bufrhed_mod.f90
+	mv bufrhed_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrpath_mod.mod: ${OLD_MODS}/bufrpath_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrpath_mod.f90
+	mv bufrpath_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrqel_mod.mod: ${OLD_MODS}/bufrqel_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrqel_mod.f90
+	mv bufrqel_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrqop_mod.mod: ${OLD_MODS}/bufrqop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrqop_mod.f90
+	mv bufrqop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufrseq_mod.mod: ${OLD_MODS}/bufrseq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufrseq_mod.f90
+	mv bufrseq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufseq_mod.mod: ${OLD_MODS}/bufseq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufseq_mod.f90
+	mv bufseq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bufval_mod.mod: ${OLD_MODS}/bufval_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bufval_mod.f90
+	mv bufval_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bulhed_mod.mod: ${OLD_MODS}/bulhed_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bulhed_mod.f90
+	mv bulhed_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/bulled_mod.mod: ${OLD_MODS}/bulled_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/bulled_mod.f90
+	mv bulled_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/buoy_mod.mod: ${OLD_MODS}/buoy_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/buoy_mod.f90
+	mv buoy_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/busret_mod.mod: ${OLD_MODS}/busret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/busret_mod.f90
+	mv busret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/cccode_mod.mod: ${OLD_MODS}/cccode_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/cccode_mod.f90
+	mv cccode_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/century_mod.mod: ${OLD_MODS}/century_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/century_mod.f90
+	mv century_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/check_auth_mod.mod: ${OLD_MODS}/check_auth_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/check_auth_mod.f90
+	mv check_auth_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/check_uid_mod.mod: ${OLD_MODS}/check_uid_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/check_uid_mod.f90
+	mv check_uid_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/char2_mod.mod: ${OLD_MODS}/char2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/char2_mod.f90
+	mv char2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/char3_mod.mod: ${OLD_MODS}/char3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/char3_mod.f90
+	mv char3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/chekreps_mod.mod: ${OLD_MODS}/chekreps_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/chekreps_mod.f90
+	mv chekreps_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/chk4tw_mod.mod: ${OLD_MODS}/chk4tw_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/chk4tw_mod.f90
+	mv chk4tw_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/chkmodid_mod.mod: ${OLD_MODS}/chkmodid_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/chkmodid_mod.f90
+	mv chkmodid_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/clmbul_mod.mod: ${OLD_MODS}/clmbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/clmbul_mod.f90
+	mv clmbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/clrmap_mod.mod: ${OLD_MODS}/clrmap_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/clrmap_mod.f90
+	mv clrmap_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/copyvals_mod.mod: ${OLD_MODS}/copyvals_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/copyvals_mod.f90
+	mv copyvals_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/code_mod.mod: ${OLD_MODS}/code_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/code_mod.f90
+	mv code_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/condes_mod.mod: ${OLD_MODS}/condes_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/condes_mod.f90
+	mv condes_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/datchk_mod.mod: ${OLD_MODS}/datchk_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/datchk_mod.f90
+	mv datchk_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dataindx_mod.mod: ${OLD_MODS}/dataindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dataindx_mod.f90
+	mv dataindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/datim_mod.mod: ${OLD_MODS}/datim_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/datim_mod.f90
+	mv datim_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/datimgp_mod.mod: ${OLD_MODS}/datimgp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/datimgp_mod.f90
+	mv datimgp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/debufr_mod.mod: ${OLD_MODS}/debufr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/debufr_mod.f90
+	mv debufr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/decord_mod.mod: ${OLD_MODS}/decord_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/decord_mod.f90
+	mv decord_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/delspce_mod.mod: ${OLD_MODS}/delspce_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/delspce_mod.f90
+	mv delspce_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/desfxy_mod.mod: ${OLD_MODS}/desfxy_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/desfxy_mod.f90
+	mv desfxy_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dreg_mod.mod: ${OLD_MODS}/dreg_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dreg_mod.f90
+	mv dreg_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dsinfo_mod.mod: ${OLD_MODS}/dsinfo_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dsinfo_mod.f90
+	mv dsinfo_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dsopen_mod.mod: ${OLD_MODS}/dsopen_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dsopen_mod.f90
+	mv dsopen_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dt2hrs_mod.mod: ${OLD_MODS}/dt2hrs_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dt2hrs_mod.f90
+	mv dt2hrs_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/dupchk_mod.mod: ${OLD_MODS}/dupchk_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/dupchk_mod.f90
+	mv dupchk_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/eb2asc_mod.mod: ${OLD_MODS}/eb2asc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/eb2asc_mod.f90
+	mv eb2asc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ebcdic_mod.mod: ${OLD_MODS}/ebcdic_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ebcdic_mod.f90
+	mv ebcdic_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/eerror_mod.mod: ${OLD_MODS}/eerror_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/eerror_mod.f90
+	mv eerror_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/elements_mod.mod: ${OLD_MODS}/elements_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/elements_mod.f90
+	mv elements_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/enbufr_mod.mod: ${OLD_MODS}/enbufr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/enbufr_mod.f90
+	mv enbufr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/enbufv4_mod.mod: ${OLD_MODS}/enbufv4_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/enbufv4_mod.f90
+	mv enbufv4_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/encode_mod.mod: ${OLD_MODS}/encode_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/encode_mod.f90
+	mv encode_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/enhbul_mod.mod: ${OLD_MODS}/enhbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/enhbul_mod.f90
+	mv enhbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/enhexp_mod.mod: ${OLD_MODS}/enhexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/enhexp_mod.f90
+	mv enhexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/eochn_mod.mod: ${OLD_MODS}/eochn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/eochn_mod.f90
+	mv eochn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ersind_mod.mod: ${OLD_MODS}/ersind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ersind_mod.f90
+	mv ersind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ersrep_mod.mod: ${OLD_MODS}/ersrep_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ersrep_mod.f90
+	mv ersrep_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/expelm_mod.mod: ${OLD_MODS}/expelm_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/expelm_mod.f90
+	mv expelm_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/expreq_mod.mod: ${OLD_MODS}/expreq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/expreq_mod.f90
+	mv expreq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ffunit_mod.mod: ${OLD_MODS}/ffunit_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ffunit_mod.f90
+	mv ffunit_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/findftp_mod.mod: ${OLD_MODS}/findftp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/findftp_mod.f90
+	mv findftp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/findjsr_mod.mod: ${OLD_MODS}/findjsr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/findjsr_mod.f90
+	mv findjsr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/findmhs_mod.mod: ${OLD_MODS}/findmhs_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/findmhs_mod.f90
+	mv findmhs_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/findpath_mod.mod: ${OLD_MODS}/findpath_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/findpath_mod.f90
+	mv findpath_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/findrec_mod.mod: ${OLD_MODS}/findrec_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/findrec_mod.f90
+	mv findrec_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/freeblk_mod.mod: ${OLD_MODS}/freeblk_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/freeblk_mod.f90
+	mv freeblk_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getare_mod.mod: ${OLD_MODS}/getare_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getare_mod.f90
+	mv getare_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getchr_mod.mod: ${OLD_MODS}/getchr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getchr_mod.f90
+	cp getchr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getdat_mod.mod: ${OLD_MODS}/getdat_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getdat_mod.f90
+	mv getdat_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gethdr_mod.mod: ${OLD_MODS}/gethdr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gethdr_mod.f90
+	mv gethdr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getkey_mod.mod: ${OLD_MODS}/getkey_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getkey_mod.f90
+	mv getkey_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getlocd_mod.mod: ${OLD_MODS}/getlocd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getlocd_mod.f90
+	mv getlocd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getreq_mod.mod: ${OLD_MODS}/getreq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getreq_mod.f90
+	mv getreq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getstn_mod.mod: ${OLD_MODS}/getstn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getstn_mod.f90
+	mv getstn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getstr_mod.mod: ${OLD_MODS}/getstr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getstr_mod.f90
+	mv getstr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/getvals_mod.mod: ${OLD_MODS}/getstr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/getvals_mod.f90
+	mv getvals_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gribfind_mod.mod: ${OLD_MODS}/gribfind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gribfind_mod.f90
+	mv gribfind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gribindx_mod.mod: ${OLD_MODS}/gribindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gribindx_mod.f90
+	mv gribindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gribopen_mod.mod: ${OLD_MODS}/gribopen_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gribopen_mod.f90
+	mv gribopen_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gribread_mod.mod: ${OLD_MODS}/gribread_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gribread_mod.f90
+	mv gribread_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gribret_mod.mod: ${OLD_MODS}/gribret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gribret_mod.f90
+	mv gribret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/gtgrp_mod.mod: ${OLD_MODS}/gtgrp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/gtgrp_mod.f90
+	mv gtgrp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/hkstart_mod.mod: ${OLD_MODS}/hkstart_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/hkstart_mod.f90
+	mv hkstart_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/hkstop_mod.mod: ${OLD_MODS}/hkstop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/hkstop_mod.f90
+	mv hkstop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/hkupdate_mod.mod: ${OLD_MODS}/hkupdate_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/hkupdate_mod.f90
+	mv hkupdate_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/hrs2dt_mod.mod: ${OLD_MODS}/hrs2dt_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/hrs2dt_mod.f90
+	mv hrs2dt_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/iceint_mod.mod: ${OLD_MODS}/iceint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/iceint_mod.f90
+	mv iceint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/iceret_mod.mod: ${OLD_MODS}/iceret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/iceret_mod.f90
+	mv iceret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ichar2_mod.mod: ${OLD_MODS}/ichar2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ichar2_mod.f90
+	mv ichar2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ichar3_mod.mod: ${OLD_MODS}/ichar3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ichar3_mod.f90
+	mv ichar3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/icobrv_mod.mod: ${OLD_MODS}/icobrv_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/icobrv_mod.f90
+	mv icobrv_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/icolod_mod.mod: ${OLD_MODS}/icolod_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/icolod_mod.f90
+	mv icolod_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ides_mod.mod: ${OLD_MODS}/ides_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ides_mod.f90
+	mv ides_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/idmake_mod.mod: ${OLD_MODS}/idmake_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/idmake_mod.f90
+	mv idmake_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/idmtch_mod.mod: ${OLD_MODS}/idmtch_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/idmtch_mod.f90
+	mv idmtch_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/index1_mod.mod: ${OLD_MODS}/index1_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/index1_mod.f90
+	mv index1_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/index2_mod.mod: ${OLD_MODS}/index2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/index2_mod.f90
+	mv index2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/indlalo_mod.mod: ${OLD_MODS}/indlalo_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/indlalo_mod.f90
+	mv indlalo_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/initbull_mod.mod: ${OLD_MODS}/initbull_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/initbull_mod.f90
+	mv initbull_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/inquire_mod.mod: ${OLD_MODS}/inquire_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/inquire_mod.f90
+	mv inquire_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/initstor_mod.mod: ${OLD_MODS}/initstor_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/initstor_mod.f90
+	mv initstor_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/intcon_mod.mod: ${OLD_MODS}/intcon_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/intcon_mod.f90
+	mv intcon_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/int2ch_mod.mod: ${OLD_MODS}/int2ch_mod.f90
+	${FF} ${FFLAGS} -c ${OLD_MODS}/int2ch_mod.f90
+	mv int2ch_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/inxkey_mod.mod: ${OLD_MODS}/inxkey_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/inxkey_mod.f90
+	mv inxkey_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ioblks_mod.mod: ${OLD_MODS}/ioblks_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ioblks_mod.f90
+	mv ioblks_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/isrch_mod.mod: ${OLD_MODS}/isrch_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/isrch_mod.f90
+	mv isrch_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/iterat_mod.mod: ${OLD_MODS}/iterat_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/iterat_mod.f90
+	mv iterat_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ivalue_mod.mod: ${OLD_MODS}/ivalue_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ivalue_mod.f90
+	mv ivalue_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/keys_mod.mod: ${OLD_MODS}/keys_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/keys_mod.f90
+	mv keys_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/latbox_mod.mod: ${OLD_MODS}/latbox_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/latbox_mod.f90
+	mv latbox_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/locald_mod.mod: ${OLD_MODS}/locald_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/locald_mod.f90
+	mv locald_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mapelm_mod.mod: ${OLD_MODS}/mapelm_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mapelm_mod.f90
+	mv mapelm_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/maprd_mod.mod: ${OLD_MODS}/maprd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/maprd_mod.f90
+	mv maprd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mdb_mod.mod: ${OLD_MODS}/mdb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mdb_mod.f90
+	mv mdb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mdbio_mod.mod: ${OLD_MODS}/mdbio_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mdbio_mod.f90
+	mv mdbio_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mdbalc_mod.mod: ${OLD_MODS}/mdbalc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mdbalc_mod.f90
+	mv mdbalc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mdbret_mod.mod: ${OLD_MODS}/mdbret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mdbret_mod.f90
+	mv mdbret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mdbrsn_mod.mod: ${OLD_MODS}/mdbrsn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mdbrsn_mod.f90
+	mv mdbrsn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/merbitx_mod.mod: ${OLD_MODS}/merbitx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/merbitx_mod.f90
+	mv merbitx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mereqs_mod.mod: ${OLD_MODS}/mereqs_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mereqs_mod.f90
+	mv mereqs_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mersy9_mod.mod: ${OLD_MODS}/mersy9_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mersy9_mod.f90
+	mv mersy9_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/merval_mod.mod: ${OLD_MODS}/merval_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/merval_mod.f90
+	mv merval_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/metbul_mod.mod: ${OLD_MODS}/metbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/metbul_mod.f90
+	mv metbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mobsto_mod.mod: ${OLD_MODS}/mobsto_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mobsto_mod.f90
+	mv mobsto_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mermdb_mod.mod: ${OLD_MODS}/mermdb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mermdb_mod.f90
+	mv mermdb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/modlva_mod.mod: ${OLD_MODS}/modlva_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/modlva_mod.f90
+	mv modlva_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/modlvb_mod.mod: ${OLD_MODS}/modlvb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/modlvb_mod.f90
+	mv modlvb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/modela_mod.mod: ${OLD_MODS}/modela_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/modela_mod.f90
+	mv modela_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/modelb_mod.mod: ${OLD_MODS}/modelb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/modelb_mod.f90
+	mv modelb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgchop_mod.mod: ${OLD_MODS}/msgchop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgchop_mod.f90
+	mv msgchop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgdcode_mod.mod: ${OLD_MODS}/msgdcode_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgdcode_mod.f90
+	mv msgdcode_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgdsp_mod.mod: ${OLD_MODS}/msgdsp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgdsp_mod.f90
+	mv msgdsp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgdspn_mod.mod: ${OLD_MODS}/msgdspn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgdspn_mod.f90
+	mv msgdspn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgsub_mod.mod: ${OLD_MODS}/msgsub_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgsub_mod.f90
+	mv msgsub_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/msgsubn_mod.mod: ${OLD_MODS}/msgsubn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/msgsubn_mod.f90
+	mv msgsubn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrccc_mod.mod: ${OLD_MODS}/mtrccc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrccc_mod.f90
+	mv mtrccc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrcld_mod.mod: ${OLD_MODS}/mtrcld_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrcld_mod.f90
+	mv mtrcld_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrddf_mod.mod: ${OLD_MODS}/mtrddf_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrddf_mod.f90
+	mv mtrddf_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrexp_mod.mod: ${OLD_MODS}/mtrexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrexp_mod.f90
+	mv mtrexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrgrp_mod.mod: ${OLD_MODS}/mtrgrp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrgrp_mod.f90
+	mv mtrgrp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrint_mod.mod: ${OLD_MODS}/mtrint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrint_mod.f90
+	mv mtrint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrloc_mod.mod: ${OLD_MODS}/mtrloc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrloc_mod.f90
+	mv mtrloc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrper_mod.mod: ${OLD_MODS}/mtrper_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrper_mod.f90
+	mv mtrper_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrrwy_mod.mod: ${OLD_MODS}/mtrrwy_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrrwy_mod.f90
+	mv mtrrwy_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrshe_mod.mod: ${OLD_MODS}/mtrshe_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrshe_mod.f90
+	mv mtrshe_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrsky_mod.mod: ${OLD_MODS}/mtrsky_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrsky_mod.f90
+	mv mtrsky_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrtrd_mod.mod: ${OLD_MODS}/mtrtrd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrtrd_mod.f90
+	mv mtrtrd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrvht_mod.mod: ${OLD_MODS}/mtrvht_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrvht_mod.f90
+	mv mtrvht_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrwnd_mod.mod: ${OLD_MODS}/mtrwnd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrwnd_mod.f90
+	mv mtrwnd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrwtr_mod.mod: ${OLD_MODS}/mtrwtr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrwtr_mod.f90
+	mv mtrwtr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/mtrwwr_mod.mod: ${OLD_MODS}/mtrwwr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/mtrwwr_mod.f90
+	mv mtrwwr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/nchtst_mod.mod: ${OLD_MODS}/nchtst_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/nchtst_mod.f90
+	mv nchtst_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ncmbul_mod.mod: ${OLD_MODS}/ncmbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ncmbul_mod.f90
+	mv ncmbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ncmexp_mod.mod: ${OLD_MODS}/ncmexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ncmexp_mod.f90
+	mv ncmexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ncmind_mod.mod: ${OLD_MODS}/ncmind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ncmind_mod.f90
+	mv ncmind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ncmint_mod.mod: ${OLD_MODS}/ncmint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ncmint_mod.f90
+	mv ncmint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/nextfile_mod.mod: ${OLD_MODS}/nextfile_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/nextfile_mod.f90
+	mv nextfile_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/nextmsg_mod.mod: ${OLD_MODS}/nextmsg_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/nextmsg_mod.f90
+	mv nextmsg_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/nmstem_mod.mod: ${OLD_MODS}/nmstem_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/nmstem_mod.f90
+	mv nmstem_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/nxtkey_mod.mod: ${OLD_MODS}/nxtkey_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/nxtkey_mod.f90
+	mv nxtkey_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/obhour_mod.mod: ${OLD_MODS}/obhour_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/obhour_mod.f90
+	mv obhour_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ofigts_mod.mod: ${OLD_MODS}/ofigts_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ofigts_mod.f90
+	mv ofigts_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/onland_mod.mod: ${OLD_MODS}/onland_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/onland_mod.f90
+	mv onland_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/openindx_mod.mod: ${OLD_MODS}/openindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/openindx_mod.f90
+	mv openindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/oukstn_mod.mod: ${OLD_MODS}/oukstn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/oukstn_mod.f90
+	mv oukstn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/parse_mod.mod: ${OLD_MODS}/parse_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/parse_mod.f90
+	mv parse_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/pop_mod.mod: ${OLD_MODS}/pop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/pop_mod.f90
+	mv pop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/prestel_mod.mod: ${OLD_MODS}/prestel_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/prestel_mod.f90
+	mv prestel_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/push_mod.mod: ${OLD_MODS}/push_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/push_mod.f90
+	mv push_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/rainexp_mod.mod: ${OLD_MODS}/rainexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/rainexp_mod.f90
+	mv rainexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/rdbitab_mod.mod: ${OLD_MODS}/rdbitab_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/rdbitab_mod.f90
+	mv rdbitab_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/read4k_mod.mod: ${OLD_MODS}/read4k_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/read4k_mod.f90
+	mv read4k_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/readabrv_mod.mod: ${OLD_MODS}/readabrv_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/readabrv_mod.f90
+	mv readabrv_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/readcf_mod.mod: ${OLD_MODS}/readcf_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/readcf_mod.f90
+	mv readcf_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/readidx_mod.mod: ${OLD_MODS}/readidx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/readidx_mod.f90
+	mv readidx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/readlist_mod.mod: ${OLD_MODS}/readlist_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/readlist_mod.f90
+	mv readlist_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/readmap_mod.mod: ${OLD_MODS}/readmap_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/readmap_mod.f90
+	mv readmap_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/read512_mod.mod: ${OLD_MODS}/read512_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/read512_mod.f90
+	mv read512_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/repedt_mod.mod: ${OLD_MODS}/repedt_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/repedt_mod.f90
+	mv repedt_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/retpos_mod.mod: ${OLD_MODS}/retpos_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/retpos_mod.f90
+	mv retpos_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/rotarea_mod.mod: ${OLD_MODS}/rotarea_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/rotarea_mod.f90
+	mv rotarea_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/rtable_mod.mod: ${OLD_MODS}/rtable_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/rtable_mod.f90
+	mv rtable_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sambul_mod.mod: ${OLD_MODS}/sambul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sambul_mod.f90
+	mv sambul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satbbn_mod.mod: ${OLD_MODS}/satbbn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satbbn_mod.f90
+	mv satbbn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob1_mod.mod: ${OLD_MODS}/satob1_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob1_mod.f90
+	mv satob1_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob2_mod.mod: ${OLD_MODS}/satob2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob2_mod.f90
+	mv satob2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob3_mod.mod: ${OLD_MODS}/satob3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob3_mod.f90
+	mv satob3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob4_mod.mod: ${OLD_MODS}/satob4_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob4_mod.f90
+	mv satob4_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob5_mod.mod: ${OLD_MODS}/satob5_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob5_mod.f90
+	mv satob5_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satob7_mod.mod: ${OLD_MODS}/satob7_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satob7_mod.f90
+	mv satob7_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/satype_mod.mod: ${OLD_MODS}/satype_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/satype_mod.f90
+	mv satype_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/script_mod.mod: ${OLD_MODS}/script_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/script_mod.f90
+	mv script_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/setdef_mod.mod: ${OLD_MODS}/setdef_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/setdef_mod.f90
+	mv setdef_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sethed_mod.mod: ${OLD_MODS}/sethed_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sethed_mod.f90
+	mv sethed_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sfdate_mod.mod: ${OLD_MODS}/sfdate_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sfdate_mod.f90
+	mv sfdate_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sferics_mod.mod: ${OLD_MODS}/sferics_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sferics_mod.f90
+	mv sferics_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sfrexp_mod.mod: ${OLD_MODS}/sfrexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sfrexp_mod.f90
+	mv sfrexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/shpseq_mod.mod: ${OLD_MODS}/shpseq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/shpseq_mod.f90
+	mv shpseq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/shpsto_mod.mod: ${OLD_MODS}/shpsto_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/shpsto_mod.f90
+	mv shpsto_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/silent_mod.mod: ${OLD_MODS}/silent_mod.f90
+	${FF} ${FFLAGS} -c ${OLD_MODS}/silent_mod.f90
+	mv silent_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sklarr_mod.mod: ${OLD_MODS}/sklarr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sklarr_mod.f90
+	mv sklarr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/skldsp_mod.mod: ${OLD_MODS}/skldsp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/skldsp_mod.f90
+	mv skldsp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/skldspn_mod.mod: ${OLD_MODS}/skldspn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/skldspn_mod.f90
+	mv skldspn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sklsub_mod.mod: ${OLD_MODS}/sklsub_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sklsub_mod.f90
+	mv sklsub_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sklsubn_mod.mod: ${OLD_MODS}/sklsubn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sklsubn_mod.f90
+	mv sklsubn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sortch_mod.mod: ${OLD_MODS}/sortch_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sortch_mod.f90
+	mv sortch_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sortchr_mod.mod: ${OLD_MODS}/sortchr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sortchr_mod.f90
+	mv sortchr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sortn_mod.mod: ${OLD_MODS}/sortn_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sortn_mod.f90
+	mv sortn_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/sortr_mod.mod: ${OLD_MODS}/sortr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/sortr_mod.f90
+	mv sortr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/srwbul_mod.mod: ${OLD_MODS}/srwbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/srwbul_mod.f90
+	mv srwbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/srwexp_mod.mod: ${OLD_MODS}/srwexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/srwexp_mod.f90
+	mv srwexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/srwint_mod.mod: ${OLD_MODS}/srwint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/srwint_mod.f90
+	mv srwint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/ssmret_mod.mod: ${OLD_MODS}/ssmret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/ssmret_mod.f90
+	mv ssmret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stapos_mod.mod: ${OLD_MODS}/stapos_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stapos_mod.f90
+	mv stapos_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/staray_mod.mod: ${OLD_MODS}/staray_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/staray_mod.f90
+	mv staray_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stbbul_mod.mod: ${OLD_MODS}/stbbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stbbul_mod.f90
+	mv stbbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stbenc_mod.mod: ${OLD_MODS}/stbenc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stbenc_mod.f90
+	mv stbenc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stbind_mod.mod: ${OLD_MODS}/stbind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stbind_mod.f90
+	mv stbind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stdprht_mod.mod: ${OLD_MODS}/stdprht_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stdprht_mod.f90
+	mv stdprht_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stmret_mod.mod: ${OLD_MODS}/stmret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stmret_mod.f90
+	mv stmret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stnary_mod.mod: ${OLD_MODS}/stnary_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stnary_mod.f90
+	mv stnary_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stnfin_mod.mod: ${OLD_MODS}/stnfin_mod.f90 ${INCL_MOD}/stnmas_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -M ${OLD_MODS}/stnfin_mod.f90
+	mv stnfin_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stnindx_mod.mod: ${OLD_MODS}/stnindx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stnindx_mod.f90
+	mv stnindx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stnmas_mod.mod: ${OLD_MODS}/stnmas_mod.f90
+	${FF} ${FFLAGS} -c ${OLD_MODS}/stnmas_mod.f90
+	mv stnmas_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/stnret_mod.mod: ${OLD_MODS}/stnret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/stnret_mod.f90
+	mv stnret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/storbufr_mod.mod: ${OLD_MODS}/storbufr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/storbufr_mod.f90
+	mv storbufr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/storchek_mod.mod: ${OLD_MODS}/storchek_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/storchek_mod.f90
+	mv storchek_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/subper_mod.mod: ${OLD_MODS}/subper_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/subper_mod.f90
+	mv subper_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/subslocd_mod.mod: ${OLD_MODS}/subslocd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/subslocd_mod.f90
+	mv subslocd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/summary_mod.mod: ${OLD_MODS}/summary_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/summary_mod.f90
+	mv summary_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synbul_mod.mod: ${OLD_MODS}/synbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synbul_mod.f90
+	mv synbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/syncld_mod.mod: ${OLD_MODS}/syncld_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/syncld_mod.f90
+	mv syncld_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synend_mod.mod: ${OLD_MODS}/synend_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synend_mod.f90
+	mv synend_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synexp_mod.mod: ${OLD_MODS}/synexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synexp_mod.f90
+	mv synexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synfiv_mod.mod: ${OLD_MODS}/synfiv_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synfiv_mod.f90
+	mv synfiv_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synhed_mod.mod: ${OLD_MODS}/synhed_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synhed_mod.f90
+	mv synhed_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synind_mod.mod: ${OLD_MODS}/synind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synind_mod.f90
+	mv synind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synit_mod.mod: ${OLD_MODS}/synit_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synit_mod.f90
+	mv synit_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synnin_mod.mod: ${OLD_MODS}/synnin_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synnin_mod.f90
+	mv synnin_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synob_mod.mod: ${OLD_MODS}/synob_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synob_mod.f90
+	mv synob_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synqc_mod.mod: ${OLD_MODS}/synqc_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synqc_mod.f90
+	mv synqc_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synreg_mod.mod: ${OLD_MODS}/synreg_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synreg_mod.f90
+	mv synreg_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synret_mod.mod: ${OLD_MODS}/synret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synret_mod.f90
+	mv synret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synrpr_mod.mod: ${OLD_MODS}/synrpr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synrpr_mod.f90
+	mv synrpr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synseq_mod.mod: ${OLD_MODS}/synseq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synseq_mod.f90
+	mv synseq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synsto_mod.mod: ${OLD_MODS}/synsto_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synsto_mod.f90
+	mv synsto_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/syntpr_mod.mod: ${OLD_MODS}/syntpr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/syntpr_mod.f90
+	mv syntpr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synxp1_mod.mod: ${OLD_MODS}/synxp1_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synxp1_mod.f90
+	mv synxp1_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synxp2_mod.mod: ${OLD_MODS}/synxp2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synxp2_mod.f90
+	mv synxp2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synxp3_mod.mod: ${OLD_MODS}/synxp3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synxp3_mod.f90
+	mv synxp3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synxp4_mod.mod: ${OLD_MODS}/synxp4_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synxp4_mod.f90
+	mv synxp4_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/synxp5_mod.mod: ${OLD_MODS}/synxp5_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/synxp5_mod.f90
+	mv synxp5_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tabbver_mod.mod: ${OLD_MODS}/tabbver_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tabbver_mod.f90
+	mv tabbver_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tableb_mod.mod: ${OLD_MODS}/tableb_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tableb_mod.f90
+	mv tableb_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tabled_mod.mod: ${OLD_MODS}/tabled_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tabled_mod.f90
+	mv tabled_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafamd_mod.mod: ${OLD_MODS}/tafamd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafamd_mod.f90
+	mv tafamd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafbul_mod.mod: ${OLD_MODS}/tafbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafbul_mod.f90
+	mv tafbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafcnl_mod.mod: ${OLD_MODS}/tafcnl_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafcnl_mod.f90
+	mv tafcnl_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafexp_mod.mod: ${OLD_MODS}/tafexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafexp_mod.f90
+	mv tafexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafind_mod.mod: ${OLD_MODS}/tafind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafind_mod.f90
+	mv tafind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafint_mod.mod: ${OLD_MODS}/tafint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafint_mod.f90
+	mv tafint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafrep_mod.mod: ${OLD_MODS}/tafrep_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafrep_mod.f90
+	mv tafrep_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafsect_mod.mod: ${OLD_MODS}/tafsect_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafsect_mod.f90
+	mv tafsect_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tafvism_mod.mod: ${OLD_MODS}/tafvism_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tafvism_mod.f90
+	mv tafvism_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tbusbul_mod.mod: ${OLD_MODS}/tbusbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tbusbul_mod.f90
+	mv tbusbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tempexp_mod.mod: ${OLD_MODS}/tempexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tempexp_mod.f90
+	mv tempexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tesac_mod.mod: ${OLD_MODS}/tesac_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tesac_mod.f90
+	mv tesac_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tesind_mod.mod: ${OLD_MODS}/tesind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tesind_mod.f90
+	mv tesind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tessc1_mod.mod: ${OLD_MODS}/tessc1_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tessc1_mod.f90
+	mv tessc1_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tessc2_mod.mod: ${OLD_MODS}/tessc2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tessc2_mod.f90
+	mv tessc2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tessc3_mod.mod: ${OLD_MODS}/tessc3_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tessc3_mod.f90
+	mv tessc3_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tessc4_mod.mod: ${OLD_MODS}/tessc4_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tessc4_mod.f90
+	mv tessc4_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tessc5_mod.mod: ${OLD_MODS}/tessc5_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tessc5_mod.f90
+	mv tessc5_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tfmret_mod.mod: ${OLD_MODS}/tfmret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tfmret_mod.f90
+	mv tfmret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/trkbul_mod.mod: ${OLD_MODS}/trkbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/trkbul_mod.f90
+	mv trkbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/trange_mod.mod: ${OLD_MODS}/trange_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/trange_mod.f90
+	mv trange_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/trnsfr_mod.mod: ${OLD_MODS}/trnsfr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/trnsfr_mod.f90
+	mv trnsfr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/tropbul_mod.mod: ${OLD_MODS}/tropbul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/tropbul_mod.f90
+	mv tropbul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/trpint_mod.mod: ${OLD_MODS}/trpint_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/trpint_mod.f90
+	mv trpint_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/trpsto_mod.mod: ${OLD_MODS}/trpsto_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/trpsto_mod.f90
+	mv trpsto_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uabul_mod.mod: ${OLD_MODS}/uabul_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uabul_mod.f90
+	mv uabul_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uacloud_mod.mod: ${OLD_MODS}/uacloud_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uacloud_mod.f90
+	mv uacloud_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uadups_mod.mod: ${OLD_MODS}/uadups_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uadups_mod.f90
+	mv uadups_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uaedit_mod.mod: ${OLD_MODS}/uaedit_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uaedit_mod.f90
+	mv uaedit_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uahead_mod.mod: ${OLD_MODS}/uahead_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uahead_mod.f90
+	mv uahead_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uamaxw_mod.mod: ${OLD_MODS}/uamaxw_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uamaxw_mod.f90
+	mv uamaxw_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uapart_mod.mod: ${OLD_MODS}/uapart_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uapart_mod.f90
+	mv uapart_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uapstd_mod.mod: ${OLD_MODS}/uapstd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uapstd_mod.f90
+	mv uapstd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uasight_mod.mod: ${OLD_MODS}/uasight_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uasight_mod.f90
+	mv uasight_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uasigpr_mod.mod: ${OLD_MODS}/uasigpr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uasigpr_mod.f90
+	mv uasigpr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uasonde_mod.mod: ${OLD_MODS}/uasonde_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uasonde_mod.f90
+	mv uasonde_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uasort_mod.mod: ${OLD_MODS}/uasort_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uasort_mod.f90
+	mv uasort_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uatrop_mod.mod: ${OLD_MODS}/uatrop_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uatrop_mod.f90
+	mv uatrop_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uatstdp_mod.mod: ${OLD_MODS}/uatstdp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uatstdp_mod.f90
+	mv uatstdp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uatstx_mod.mod: ${OLD_MODS}/uatstx_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uatstx_mod.f90
+	mv uatstx_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uaxpand_mod.mod: ${OLD_MODS}/uaxpand_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uaxpand_mod.f90
+	mv uaxpand_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/upaind_mod.mod: ${OLD_MODS}/upaind_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/upaind_mod.f90
+	mv upaind_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uprepid_mod.mod: ${OLD_MODS}/uprepid_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uprepid_mod.f90
+	mv uprepid_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uprparts_mod.mod: ${OLD_MODS}/uprparts_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uprparts_mod.f90
+	mv uprparts_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uprret_mod.mod: ${OLD_MODS}/uprret_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uprret_mod.f90
+	mv uprret_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/uprwinds_mod.mod: ${OLD_MODS}/uprwinds_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/uprwinds_mod.f90
+	mv uprwinds_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valarea_mod.mod: ${OLD_MODS}/valarea_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valarea_mod.f90
+	mv valarea_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valarr_mod.mod: ${OLD_MODS}/valarr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valarr_mod.f90
+	mv valarr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valdat_mod.mod: ${OLD_MODS}/valdat_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valdat_mod.f90
+	mv valdat_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valddy_mod.mod: ${OLD_MODS}/valddy_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valddy_mod.f90
+	mv valddy_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valout_mod.mod: ${OLD_MODS}/valout_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valout_mod.f90
+	mv valout_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valrec_mod.mod: ${OLD_MODS}/valrec_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valrec_mod.f90
+	mv valrec_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valreq_mod.mod: ${OLD_MODS}/valreq_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valreq_mod.f90
+	mv valreq_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/value_mod.mod: ${OLD_MODS}/value_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/value_mod.f90
+	mv value_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/valusr_mod.mod: ${OLD_MODS}/valusr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/valusr_mod.f90
+	mv valusr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/wantarea_mod.mod: ${OLD_MODS}/wantarea_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/wantarea_mod.f90
+	mv wantarea_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/wantid_mod.mod: ${OLD_MODS}/wantid_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/wantid_mod.f90
+	mv wantid_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/wantobs_mod.mod: ${OLD_MODS}/wantobs_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/wantobs_mod.f90
+	mv wantobs_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/wanttime_mod.mod: ${OLD_MODS}/wanttime_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/wanttime_mod.f90
+	mv wanttime_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webair_mod.mod: ${OLD_MODS}/webair_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webair_mod.f90
+	mv webair_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webbuoyp_mod.mod: ${OLD_MODS}/webbuoyp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webbuoyp_mod.f90
+	mv webbuoyp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webdis_mod.mod: ${OLD_MODS}/webdis_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webdis_mod.f90
+	mv webdis_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webesaw_mod.mod: ${OLD_MODS}/webesaw_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webesaw_mod.f90
+	mv webesaw_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webform_mod.mod: ${OLD_MODS}/webform_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webform_mod.f90
+	mv webform_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webform2_mod.mod: ${OLD_MODS}/webform2_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webform2_mod.f90
+	mv webform2_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webgexp_mod.mod: ${OLD_MODS}/webgexp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webgexp_mod.f90
+	mv webgexp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/weblnd_mod.mod: ${OLD_MODS}/weblnd_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/weblnd_mod.f90
+	mv weblnd_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webncm_mod.mod: ${OLD_MODS}/webncm_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webncm_mod.f90
+	mv webncm_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/websamos_mod.mod: ${OLD_MODS}/websamos_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/websamos_mod.f90
+	mv websamos_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webshp_mod.mod: ${OLD_MODS}/webshp_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webshp_mod.f90
+	mv webshp_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/websrew_mod.mod: ${OLD_MODS}/websrew_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/websrew_mod.f90
+	mv websrew_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webssea_mod.mod: ${OLD_MODS}/webssea_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webssea_mod.f90
+	mv webssea_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webtadv_mod.mod: ${OLD_MODS}/webtadv_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webtadv_mod.f90
+	mv webtadv_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webtbus_mod.mod: ${OLD_MODS}/webtbus_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webtbus_mod.f90
+	mv webtbus_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webtfmet_mod.mod: ${OLD_MODS}/webtfmet_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webtfmet_mod.f90
+	mv webtfmet_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/webupr_mod.mod: ${OLD_MODS}/webupr_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/webupr_mod.f90
+	mv webupr_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/winpro_mod.mod: ${OLD_MODS}/winpro_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MODS}/winpro_mod.f90
+	mv winpro_mod.mod ${INCL_MOD}/.
+
+${INCL_MOD}/zpdate_mod.mod: ${OLD_MODS}/zpdate_mod.f90
+	${FF} ${FFLAGS} -c ${OLD_MODS}/zpdate_mod.f90
+	mv zpdate_mod.mod ${INCL_MOD}/.
+
+#-----------------------------------------------------------------------
+# Make clean
+#-----------------------------------------------------------------------
+
+clean:
+	@rm -f zpdate_mod.o ${MDB_OBJS} ${F90_OBJS} ${C_OBJS} core .Static.salf Static.sadb $(PTREPOSITORY)/*.o BLINK/* *_bld.stamp ${INCL_MOD}/*.o ${INCL_MOD}/*.mod
+

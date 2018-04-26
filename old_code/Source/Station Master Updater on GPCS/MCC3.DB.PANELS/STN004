@@ -1,0 +1,32 @@
+)ATTR
+      ! TYPE(OUTPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%--------------------- Station Master Data Display -----------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
++ STATION CHARACTERISTIC FLAGS FOR STATION !CDENT +:
++
++
+% !F1 +Reopened Station
+% !F2 +Renumbered Station                                               +
+% !F3 +Re issued Station Number
+% !F4 +Station has been Renamed
+% !F5 +Station position Corrected
+% !F6 +Station to be Chased
+% !F7 +Station has been Reallocated
+% !F8 +Aerodrome (1=Civil, 2=Military)
+% !F9 +Station Record Disposition (1=Current, 2=Historical)
+% !F10+Type (1=Manned, 2=Automatic, 3=Semi Automatic)
+% !F11+Location (1=Land stn, 2=Sea stn, 3=Coastal stn)
+% !F12+Regional/National Reporting Practices Available
+% !F13+Principal Met Station
+% !F15+Report types (1=Surface, 2=Upper Air, 3=Both)
++
++
++
++    Press the%ENTER+to continue or%END+to finish viewing details
+)INIT
+     .CURSOR = ZCMD   .HELP = STNHLP4
+)PROC
+)END
