@@ -1,0 +1,2 @@
+      REAL    DS,VS,TBTYPE,TBTBTB,
+     +        ISICE,ESES,RS,CI,SI,BI,DI,ZI

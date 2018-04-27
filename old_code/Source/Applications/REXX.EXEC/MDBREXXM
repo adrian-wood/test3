@@ -1,0 +1,28 @@
+/*                            REXX                              */
+/*                                                              */
+/* METDB REXX SCRIPT TO WRITE A MESSAGE TO SYSLOG IF A METDB    */
+/* MERGE JOB FAILED.                                            */
+/*                                                              */
+/*                                                              */
+/* 21/02/2006 ADAPTED FROM CODE WRITTEN BY DAVE POTTER BY JOHN  */
+/*            NORTON.                                           */
+/*                                                              */
+/*                                                              */
+/*  GET THE JOBNAME FROM JOB CONTROL BLOCKS                     */
+/*                                                              */
+CVT = STORAGE(10,4) /* FLCCVT-PSA DATA AREA */
+TCBP = STORAGE(D2X(C2D(CVT)),4) /* CVTTCBP */
+TCB = STORAGE(D2X(C2D(TCBP)+4),4)
+TIOT = STORAGE(D2X(C2D(TCB)+12),4) /* TCBTIO */
+JOBNAME = STRIP(STORAGE(D2X(C2D(TIOT)),8)) /* TIOCNJOB */
+/*                               */
+/* WRITE A MESSAGE TO THE OPERATOR */
+/*                                 */
+MSGIN = 'METDBMRG MERGE JOB FAILURE - JOB NAME = 'JOBNAME
+COLOUR = ',YELLOW'
+/*   SAY 'MESSAGE IS ' MSGIN       */
+MESSAGE = MSGIN||COLOUR
+"CONSPROF SOLDISP(NO) UNSOLDISP(NO)"
+   "CONSOLE ACTIVATE"
+      CALL CONSMSG MESSAGE
+   "CONSOLE DEACTIVATE"

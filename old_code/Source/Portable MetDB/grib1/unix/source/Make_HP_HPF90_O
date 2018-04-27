@@ -1,0 +1,148 @@
+#########################################################################
+#
+# FILE NAME      : Make_HP
+#
+# TYPE           : Makefile
+#
+# PURPOSE        : used to make all the neccessary files for GRIB 
+#                  package.
+#
+# REVISION INFO  :
+#
+# $Revision: 1$
+# $Date: 27/02/2007 16:40:30$
+# $Source: /home/us0400/grib/source/RCS/Make_HP_HPF90,v $
+#
+# CHANGE HISTORY :
+#
+# $Log:
+#  1    Met_DB_Project 1.0         27/02/2007 16:40:30    Stan Kellett    
+# $
+# Revision 1.1  2002/07/05 10:53:01  usmdb
+# Initial revision
+#
+#
+#
+#########################################################################                                                                  
+#
+# need to set PATH=/opt/fortran90/bin to pick up HP F90 compiler
+# 
+# Does not produce degrib utility
+#
+# Turn off default SUFFIX rules:
+# Tell compiler that .o's are dependent on .F's .f's and .c's
+
+.SUFFIXES:
+.SUFFIXES: .F .o
+.SUFFIXES: .f .o
+
+FFLAGS       = -DHP -C +r8 -lF90 -lU77 -lcl 
+FC           = /opt/fortran90/bin/f90
+LIBDIR       = /usr/local/lib
+BINDIR       = /usr/local/bin
+
+# Name of library
+LIB = libgrib_HPF90_metview.a
+
+# Fortran source including pre-processor statements, *.F
+FSRCS        = analyse.F \
+               coder.F \
+ 	       decode.F \
+	       gbyte.F \
+	       gbytes.F \
+	       grib_edtn_1_dec.F \
+	       grib_edtn_1_enc.F \
+	       limited_extract.F \
+	       sbyte.F \
+	       sbytes.F
+# Fortran source not containing pre-processor statements, *.f
+fSRCES       = ceil_log2.f \
+	       prtbk1.f \
+	       prtbk2.f \
+               confp.f \
+	       decfp.f \
+	       find_mesgs.f \
+	       findbox.f \
+	       intarr_max.f \
+	       intarr_min.f \
+	       level_desc_dec.f \
+	       level_desc_enc.f \
+	       level_desc_table.f \
+	       offset.f \
+	       orig_centre_check.f \
+	       parameter_check.f \
+	       prbkn2.f \
+	       prtbin.f \
+	       range_check.f \
+	       realarr_max.f \
+	       realarr_min.f \
+	       time_range_dec.f \
+	       time_range_enc.f \
+	       time_range_table.f \
+	       time_unit_check.f
+
+# define files for LIB objects
+LIBOBJ       = analyse.o \
+	       decode.o \
+	       prtbk1.o \
+	       prtbk2.o \
+               coder.o \
+	       gbyte.o \
+	       gbytes.o \
+	       grib_edtn_1_dec.o \
+	       grib_edtn_1_enc.o \
+	       limited_extract.o \
+	       sbyte.o \
+	       sbytes.o \
+	       ceil_log2.o \
+               confp.o \
+	       decfp.o \
+	       find_mesgs.o \
+	       findbox.o \
+	       intarr_max.o \
+	       intarr_min.o \
+	       level_desc_dec.o \
+	       level_desc_enc.o \
+	       level_desc_table.o \
+	       offset.o \
+	       orig_centre_check.o \
+	       parameter_check.o \
+	       prbkn2.o \
+	       prtbin.o \
+	       range_check.o \
+	       realarr_max.o \
+	       realarr_min.o \
+	       time_range_dec.o \
+	       time_range_enc.o \
+	       time_range_table.o \
+	       time_unit_check.o
+
+$(LIB): ${LIBOBJ}
+	rm -f $@
+	ar rv $@ ${LIBOBJ} 
+
+.F.o:	$(FSRCS)
+	$(FC) -C $(FFLAGS) -c $<
+
+.f.o:	$(fSRCES)
+	$(FC) -C -O -c $< 
+	
+	
+# Rule to update dependancy information
+
+
+	@echo
+	@echo "Makefile updated. 
+	
+
+# Workaround for bug in gcc whereby using -O causes arguments to be passed to
+# Fortran routines incorrectly.
+
+grib_get_all.o: grib_get_all.c
+	$(CC) $(C_TO_F_FLAGS) -c -o grib_get_all.o grib_get_all.c 
+
+# Rule to clean up
+
+clean:
+	rm -f *.o $(LIB) $(DECODE_PROG)
+

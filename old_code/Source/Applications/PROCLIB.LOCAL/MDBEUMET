@@ -1,0 +1,30 @@
+//MDBEUMET PROC
+//*---------------------------------------------------------------------
+//*              CHECK FOR DUPLICATE JOB SUBMISSION.
+//*---------------------------------------------------------------------
+//DUPCHK  EXEC PGM=IKJEFT01,PARM='%CHKDUPLI'
+//SYSEXEC  DD  DSN=MET.EXECLIB,DISP=SHR
+//         DD  DSN=MET.EXECFLIB,DISP=SHR
+//SYSTSPRT DD  SYSOUT=Q
+//SYSTSIN  DD  DUMMY
+//*
+//*---------------------------------------------------------------------
+//*       MET.D.B. STORAGE JOB FOR EUMETSAT BUFR WIND PRODUCTS
+//*       ----------------------------------------------------
+//*   FT06F001:  Output messages.
+//*   FT02F001:  NAMELIST input to main program.
+//*   HEADERS:   List of GTS header ranges for this job.
+//*   DATASETS:  List of Met.D.B. storage data sets.
+//*   DREGS:     Data set for DREGS messages.
+//*   SYSUDUMP:  Output for dump if job abends.
+//*---------------------------------------------------------------------
+//EUMETSAT EXEC PGM=STOREUM,REGION=7M,TIME=NOLIMIT,COND=(0,NE,DUPCHK)
+//STEPLIB   DD  DSN=MDB.LOADLIB,DISP=SHR
+//*
+//FT06F001  DD SYSOUT=Q
+//FT02F001  DD DSN=MDB.STORAGE.DATA(MDBEUMET),LABEL=(,,,IN),DISP=SHR
+//HEADERS   DD DSN=MDB.STORAGE.DATA(HDREUM),LABEL=(,,,IN),DISP=SHR
+//DATASETS  DD DSN=MDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//*DREGS     DD DSN=MDB.DREGS.MDBEUMET,DISP=SHR
+//SYSUDUMP  DD SYSOUT=Q
+//

@@ -1,0 +1,52 @@
+/* REXX -------------------------------------------------------------*
+ *
+ * Program      : mdb_start_server_tso (BPRD version)
+ *
+ *
+ * Language     : REXX
+ *
+ * Description  : Routine to start the MetDB server on bprd
+ *
+ * Note         : The TSO/E REXX script cannot be invoked by the
+ *              : calling routine mdb_start_server as it needs to
+ *              : run as a forked process in the background. This
+ *              : is not possible with the 'TSO ex' command, but 
+ *              : is possible with the call to this REXX script.
+ *
+ * Called by    : mdb_start_server
+ *
+ * Arguments    : prognum  (ip) : RPC main server program number
+ *
+ * REVISION INFO  :
+ *
+ * $Workfile: mdb_start_server_tso$ $Folder: Broker$
+ * $Date: 20/09/2011 10:38:12$
+ * $Revision: 3$
+ *
+ * $Log:
+ *  3    MetDB_Refresh 1.2         20/09/2011 10:38:12    Sheila Needham
+ *       merged with Refresh version
+ *  2    MetDB_Refresh 1.1         10/02/2011 16:51:34    Alison Weir
+ *       Comment added to ensure correct version of TSO rexx script is poited
+ *       to
+ *  1    MetDB_Refresh 1.0         09/02/2011 10:54:32    Alison Weir     New
+ *       script to call TSO rexx script that starts main server (that uses
+ *       MDBDLL)
+ * $
+ *-------------------------------------------------------------------*/
+
+parse arg prognum
+
+datim = DATE('O') TIME('N')
+say  datim 'mdb_start_server: submitting MSRPC F95 'prognum  
+
+
+/* Note: this is the test version and will change when operational  */
+/*       (eg, MDB.REXX.EXEC(MSRPC2))                                */
+
+address TSO ex  "'TSTMDB.REXX.EXEC(MSRPC95)'" || " " ||""''''prognum''''""
+
+datim = DATE('O') TIME('N')                                  
+say  datim 'mdb_start_server: 'prognum' submitted'           
+
+exit 0

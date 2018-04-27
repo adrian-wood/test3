@@ -1,0 +1,58 @@
+/* REXX -------------------------------------------------------------*
+ *
+ * Program      : mdb_start_server (BPRD test version)
+ *
+ *
+ * Language     : REXX
+ *
+ * Description  : Routine to start the MetDB server on bprd
+ *
+ * Note         : Always exit code 0 as the command executes in the
+ *              : background. If the server has not started properly,
+ *              : the situation will be trapped in the
+ *              : mdb_check_server exec.
+ *              : The path to mdb_start_server_tso may need amending,
+ *              : depending on the version.
+ *
+ * Called by    : mdb_rpc_broker
+ *
+ * Arguments    : prognum  (ip) : RPC main server program number
+ *
+ * REVISION INFO  :
+ *
+ * $Workfile: mdb_start_server$ $Folder: Broker$
+ * $Date: 20/09/2011 10:38:12$
+ * $Revision: 4$
+ *
+ * $Log:
+ *  4    MetDB_Refresh 1.3         20/09/2011 10:38:12    Sheila Needham
+ *       merged with Refresh version
+ *  3    MetDB_Refresh 1.2         11/02/2011 10:26:18    Alison Weir
+ *       Correction - path to called rexx script is needed.
+ *  2    MetDB_Refresh 1.1         09/02/2011 10:53:31    Alison Weir
+ *       Amended to call intermediate rexx script instead of directly calling
+ *       TSO rexx.
+ *  1    MetDB_Refresh 1.0         09/02/2011 10:49:21    Alison Weir
+ *       Original version
+ * $
+ *
+ *-------------------------------------------------------------------*/
+
+parse arg prognum
+
+r.2=300
+r.1=300
+address syscall "setrlimit" rlimit_cpu r.
+
+/*-------------------------------------------------------------------*
+ * The following REXX script invokes a TSO/E REXX exec which
+ * runs the mdb server startup exec MSRPC.  The command runs as a
+ * forked process in the background so control returns to the caller
+ * immediately.
+ *-------------------------------------------------------------------*/
+
+/* *** Note: ensure that the path below is correct ***  */
+
+address SH "/usr/local/mdb/rpc/bprd/test/bin/mdb_start_server_tso" prognum || " &"
+
+exit 0

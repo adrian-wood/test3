@@ -1,0 +1,76 @@
+//M12DBING JOB (M12,DB,WDS0BF),MDB.TEAM.6951,MSGCLASS=Q,PRTY=8
+//*---------------------------------------------------------------------
+//* TO INITIALISE A "TDB" INDEX DATA SET FOR DATA TYPES STORED IN GRIB.
+//*
+//*  To create (or rebuild) a test index data set:
+//*
+//*    1. If rebuilding, delete the existing data set.
+//*    2. "VIEW" rather than "EDIT" this job (to avoid saving by
+//*       accident).
+//*    3. Delete JCL for data types you don't want.
+//*    4. Make any necessary modifications to JCL you do want.
+//*    5. Submit the job.
+//*    6. For permanent JCL changes, re-open this job in "EDIT" and
+//*       make and save your changes.
+//*
+//* The following parameters should be coded on the EXEC statement:
+//*
+//*    DSN     Name of index data set (in quotes),
+//*    DISK    Disk where index data set is to be located,
+//*    TRKS    Number of tracks allocated to index data set,
+//*    BLOCK   Block size for index data set (9306 recommended),
+//*    YEARS   Data retention period in years,
+//*    GRIB    GRIB edition number of fields to be stored,
+//*    MSGS    Number of GRIB messages each data time (usually 1),
+//*    SKEL    Skeleton data set name for GRIB data sets (in quotes).
+//*
+//* Notes:  Number of records must be at least (YEARS+4). With a block
+//* ------  size of 9306, five records fit on a track on a 3390 disk.
+//*
+//*         Skeleton data set name should contain 'YY', 'MM', 'DD' and
+//*         'HH' for year, month, day and hour; e.g. for TCRTEMP,
+//*
+//*                   SKEL='TDB.DATCRTMP.DYYMMDD.THH'
+//*
+//*         If 'MSGS' is >1, the skeleton name should also contain
+//*         '##' (e.g. ending in 'THH##') to be replaced with a
+//*         message number taken from the last 2 characters of MHS
+//*         data set name.
+//*
+//*---------------------------------------------------------------------
+//*                                COMPILE AND LINK SOURCE FOR MDBINITG
+//*
+//MAKELOAD EXEC FORT2CL,FPARMS='NOFIPS,CHARLEN(28000)'
+//FORT.SYSIN   DD DSN=MDB.UTILITY.SRCE(MDBINITG),LABEL=(,,,IN),DISP=SHR
+//LKED.PROGLIB DD DSN=MET.PROGLIB,DISP=SHR
+ INCLUDE PROGLIB(CLPARM)
+/*
+//*---------------------------------------------------------------------
+//*                                        PROCEDURE TO CREATE DATA SET
+//TDBINITG PROC TRKS=
+// EXEC FORT2G,PARM='&TRKS,&BLOCK,&YEARS,''&SKEL'''
+//GO.FT01F001 DD DSN=&DSN,DISP=(,CATLG),UNIT=DISK,VOL=SER=&DISK,
+//            DCB=(RECFM=F,BLKSIZE=&BLOCK),SPACE=(TRK,&TRKS)
+// PEND
+//*---------------------------------------------------------------------
+//MFSST   EXEC TDBINITG,DSN='TDB.MFSST.INDEX',DISK=USR001,
+//        TRKS=3,BLOCK=9306,YEARS=10,GRIB=1,MSGS=3,
+//        SKEL='TDB.DAMFSST.DYYMMDD.THH##'
+//*---------------------------------------------------------------------
+//NSST100 EXEC TDBINITG,DSN='TDB.NSST100.INDEX',DISK=USR001,
+//        TRKS=3,BLOCK=9306,YEARS=10,GRIB=1,MSGS=2,
+//        SKEL='TDB.DANST100.DYYMMDD.THH##'
+//*---------------------------------------------------------------------
+//NSST50  EXEC TDBINITG,DSN='TDB.NSST50.INDEX',DISK=USR001,
+//        TRKS=3,BLOCK=9306,YEARS=10,GRIB=1,MSGS=2,
+//        SKEL='TDB.DANST50.DYYMMDD.THH##'
+//*---------------------------------------------------------------------
+//SEAICE  EXEC TDBINITG,DSN='TDB.SEAICE.INDEX',DISK=USR001,
+//        TRKS=3,BLOCK=9306,YEARS=10,GRIB=1,MSGS=1,
+//        SKEL='TDB.DASEAICE.DYYMMDD.THH'
+//*---------------------------------------------------------------------
+//TCRTEMP EXEC TDBINITG,DSN='TDB.TCRTEMP.INDEX',DISK=USR001,
+//        TRKS=3,BLOCK=9306,YEARS=10,GRIB=1,MSGS=1,
+//        SKEL='TDB.DATCRTMP.DYYMMDD.THH'
+//*---------------------------------------------------------------------
+//

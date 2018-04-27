@@ -1,0 +1,8 @@
+MODULE tabbver_mod
+  INTERFACE
+    SUBROUTINE TABBVER(IVER)
+    IMPLICIT NONE
+    INTEGER, INTENT(OUT)  ::  IVER ! Version number returned
+    END SUBROUTINE TABBVER
+  END INTERFACE
+END MODULE tabbver_mod

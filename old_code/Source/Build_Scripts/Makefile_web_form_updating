@@ -1,0 +1,543 @@
+#-----------------------------------------------------------------------
+#
+# FILE NAME      : Makefile_web_form
+#
+# TYPE           : Makefile
+#
+# PURPOSE        : Builds WEBUPDATE, WEBUPTEST & WEBUPJN in this working
+#                  directory
+#
+# NOTE 1         : Requires zpdate_mod.o to be copied to NEW_CODE folder!
+#
+# NOTE 2         : The module file _mod files are created with lower
+#                  case names. It has been found it is better to retain
+#                  to retain those lower case names for usage in f90
+#                  programs.
+#
+# REVISION INFO  :
+#
+# $Source:$
+# $Date: 03/07/2012 09:47:59$
+# $Revision: 2$
+#
+# $Author: John Norton$
+#
+# $Log:
+#  2    Met_DB_Project 1.1         03/07/2012 09:47:59    John Norton     
+#  1    Met_DB_Project 1.0         03/07/2012 09:47:34    John Norton
+#       Initial version
+# $
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+# Load module | FFLAGS settings | make command
+#             |                 |
+# WEBUPDATE   | FFLAGS          | make -f Makefile_web_form WEBUPDATE
+# WEBUPTEST   | FFLAGS          | make -f Makefile_web_form WEBUPTEST
+# WEBUPJN     | FFLAGS          | make -f Makefile_web_form WEBUPJN
+
+FF 	= f95
+CC 	= cc
+
+WEBUPDATE = WEBUPDATE
+WEBUPTEST = WEBUPTEST
+WEBUPJN   = WEBUPJN
+
+# DLLDEST = need changing whenever a new library for the executable to be sent to
+DLLTEST = "//'MCC3.JNLIB.LOADE'"
+
+#-----------------------------------------------------------------------
+# Define the compiler parameters for NAG f95 compiler
+#-----------------------------------------------------------------------
+# -DBPATH (Bufr library), -save (implicit SAVE), -g (debug flag),
+# -DMVS (for code to run under MVS)
+# -DEBCDIC (for code on GPCS)
+# -C (range checking), -maxcontin (max continuation lines),
+# -C=all (max compiler checks)
+# -gline debug traceback
+# -Wc,+z (needed to construct shared library)
+#-----------------------------------------------------------------------
+
+FFLAGS = -C=all -gline
+CFLAGS = -I/usr/local/lib/f95 -c
+
+#-----------------------------------------------------------------------
+#- made modules
+#-----------------------------------------------------------------------
+
+INCL_DIR  = /u/os/t12jn/webform_update/mods
+
+#-----------------------------------------------------------------------
+#- Standard MetDB code
+#-----------------------------------------------------------------------
+
+OLD_CODE  = /u/os/t12jn/webf
+STND_CODE = /u/os/t12db/dbrevsrc
+
+#-----------------------------------------------------------------------
+#- Standard MetDB modules
+#-----------------------------------------------------------------------
+
+OLD_MOD  = /u/os/t12jn/webf/mods
+STND_MOD = /u/os/t12db/dbrevsrc/mods
+
+#-----------------------------------------------------------------------
+#- New or updated MetDB code
+#-----------------------------------------------------------------------
+
+NEW_CODE  = /u/os/t12jn/webform_update
+
+#-----------------------------------------------------------------------
+#- New or updated modules
+#-----------------------------------------------------------------------
+
+NEW_MOD  = /u/os/t12jn/webform_update/mods
+
+#-----------------------------------------------------------------------
+#   Location of built exe file
+#-----------------------------------------------------------------------
+EXE_DIR=/u/os/t12jn/webform_update
+
+
+IFLAGS 	= -I${INCL_DIR}
+
+UPDATE_OBJS = WebRetFormMain_IBM.o \
+ WebRetFormSelectAllVersions.o \
+ WebRetFormSelectArea.o \
+ WebRetFormSelectHeader.o \
+ WebRetFormSelectIncrement.o \
+ WebRetFormSelectMaxObs.o \
+ WebRetFormSelectSondeParts.o \
+ datim.o \
+ zpdate_mod.o
+
+UPTEST_OBJS = TestWebRetFormMain_IBM.o \
+ WebRetFormSelectAllVersions.o \
+ WebRetFormSelectArea.o \
+ WebRetFormSelectHeader.o \
+ WebRetFormSelectIncrement.o \
+ WebRetFormSelectMaxObs.o \
+ WebRetFormSelectSondeParts.o \
+ datim.o \
+ zpdate_mod.o
+
+UPJN_OBJS = JNWebRetFormMain_IBM.o \
+ WebRetFormSelectAllVersions.o \
+ WebRetFormSelectArea.o \
+ WebRetFormSelectHeader.o \
+ WebRetFormSelectIncrement.o \
+ WebRetFormSelectMaxObs.o \
+ WebRetFormSelectSondeParts.o \
+ datim.o \
+ zpdate_mod.o
+
+#-----------------------------------------------------------------------
+# Rule to run builds
+#-----------------------------------------------------------------------
+ALL: $(WEBUPDATE) $(WEBUPTEST) $(WEBUPJN)
+
+#-----------------------------------------------------------------------
+# Rule to build WEBUPDATE - Main web form building
+#-----------------------------------------------------------------------
+
+$(WEBUPDATE): ${UPDATE_OBJS}
+	c89 -Wl,"MAP" -o ${EXE_DIR}/WebRetForm.exe ${UPDATE_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a > link.out
+	       @echo "****************************************************************"
+	       @echo "       Copy executable (WebRetForm.exe) to running folder "
+	       @echo "****************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build WEBUPTEST - Test web form building
+#-----------------------------------------------------------------------
+###      int2ch_mod.o \
+###     /usr/local/mdbtest/test/MDBDLL.x \
+
+$(WEBUPTEST): ${UPTEST_OBJS}
+	c89 -Wl,"MAP" -o ${EXE_DIR}/DBwebuts.exe ${UPTEST_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a > link.out
+	       @echo "****************************************************************"
+	       @echo "       Copy executable (DBwebuts.exe) to running folder "
+	       @echo "****************************************************************"
+
+#-----------------------------------------------------------------------
+# Rule to build WEBUPJN - Local folder test for web form building
+#-----------------------------------------------------------------------
+###      int2ch_mod.o \
+###     /usr/local/mdbtest/test/MDBDLL.x \
+
+$(WEBUPJN): ${UPJN_OBJS}
+	c89 -Wl,"MAP" -o ${EXE_DIR}/JNwebuJN.exe ${UPJN_OBJS} \
+        /usr/local/lib/f95/quickfit.o \
+        /usr/local/lib/f95/libf96.a > link.out
+	       @echo "****************************************************************"
+	       @echo "       Copy executable (JNwebuJN.exe) to running folder "
+	       @echo "****************************************************************"
+
+#-----------------------------------------------------------------------
+# Rules to build object code
+#-----------------------------------------------------------------------
+
+
+#
+# .F and .f source to .o
+#
+
+webair.o: ${OLD_CODE}/webair.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webair.f90
+
+webbuoyp.o: ${OLD_CODE}/webbuoyp.f90 ${INCL_DIR}/code_mod.mod \
+                                     ${INCL_DIR}/ides_mod.mod \
+                                     ${INCL_DIR}/webform2_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webbuoyp.f90
+
+webdis.o: ${OLD_CODE}/webdis.f90 ${INCL_DIR}/code_mod.mod \
+                                 ${INCL_DIR}/getchr_mod.mod \
+                                 ${INCL_DIR}/ides_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webdis.f90
+
+webesaw.o: ${OLD_CODE}/webesaw.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webesaw.f90
+
+webform.o: ${OLD_CODE}/webform.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webform.f90
+
+webform2.o: ${OLD_CODE}/webform2.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webform2.f90
+
+webgexp.o: ${OLD_CODE}/webgexp.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webgexp.f90
+
+weblnd.o: ${OLD_CODE}/weblnd.f90 ${INCL_DIR}/webform_mod.mod \
+                                 ${INCL_DIR}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/weblnd.f90
+
+webncm.o: ${OLD_CODE}/webncm.f90 ${INCL_DIR}/webform_mod.mod \
+                                 ${INCL_DIR}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webncm.f90
+
+webret.o: ${OLD_CODE}/webret.f90 ${INCL_DIR}/delspce_mod.mod \
+                                 ${INCL_DIR}/webair_mod.mod \
+                                 ${INCL_DIR}/webbuoyp_mod.mod \
+                                 ${INCL_DIR}/webdis_mod.mod \
+                                 ${INCL_DIR}/webesaw_mod.mod \
+                                 ${INCL_DIR}/webform_mod.mod \
+                                 ${INCL_DIR}/weblnd_mod.mod \
+                                 ${INCL_DIR}/webncm_mod.mod \
+                                 ${INCL_DIR}/websamos_mod.mod \
+                                 ${INCL_DIR}/webshp_mod.mod \
+                                 ${INCL_DIR}/websrew_mod.mod \
+                                 ${INCL_DIR}/webssea_mod.mod \
+                                 ${INCL_DIR}/webtadv_mod.mod \
+                                 ${INCL_DIR}/webtbus_mod.mod \
+                                 ${INCL_DIR}/webtfmet_mod.mod \
+                                 ${INCL_DIR}/webupr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webret.f90
+
+webretst.o: ${OLD_CODE}/webretst.f90 ${INCL_DIR}/delspce_mod.mod \
+                                     ${INCL_DIR}/webair_mod.mod \
+                                     ${INCL_DIR}/webbuoyp_mod.mod \
+                                     ${INCL_DIR}/webdis_mod.mod \
+                                     ${INCL_DIR}/webesaw_mod.mod \
+                                     ${INCL_DIR}/webform_mod.mod \
+                                     ${INCL_DIR}/weblnd_mod.mod \
+                                     ${INCL_DIR}/webncm_mod.mod \
+                                     ${INCL_DIR}/websamos_mod.mod \
+                                     ${INCL_DIR}/webshp_mod.mod \
+                                     ${INCL_DIR}/websrew_mod.mod \
+                                     ${INCL_DIR}/webssea_mod.mod \
+                                     ${INCL_DIR}/webtadv_mod.mod \
+                                     ${INCL_DIR}/webtbus_mod.mod \
+                                     ${INCL_DIR}/webtfmet_mod.mod \
+                                     ${INCL_DIR}/webupr_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webretst.f90
+
+websamos.o: ${OLD_CODE}/websamos.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/websamos.f90
+
+webshp.o: ${OLD_CODE}/webshp.f90 ${INCL_DIR}/webform_mod.mod \
+                                 ${INCL_DIR}/webgexp_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webshp.f90
+
+websrew.o: ${OLD_CODE}/websrew.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/websrew.f90
+
+webssea.o: ${OLD_CODE}/webssea.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webssea.f90
+
+webtadv.o: ${OLD_CODE}/webtadv.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtadv.f90
+
+webtbus.o: ${OLD_CODE}/webtbus.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtbus.f90
+
+webtfmet.o: ${OLD_CODE}/webtfmet.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webtfmet.f90
+
+webupr.o: ${OLD_CODE}/webupr.f90 ${INCL_DIR}/webform_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/webupr.f90
+
+code.o: ${OLD_CODE}/code.F90 ${INCL_DIR}/readcf_mod.mod \
+                             ${INCL_DIR}/inquire_mod.mod \
+                             ${INCL_DIR}/int2ch_mod.mod \
+                             ${INCL_DIR}/value_mod.mod \
+                             ${INCL_DIR}/bufrpath_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/code.F90
+
+delspce.o: ${OLD_CODE}/delspce.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/delspce.f90
+
+getchr.o: ${OLD_CODE}/getchr.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/getchr.f90
+
+ides.o: ${OLD_CODE}/ides.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/ides.f90
+
+inquire.o: ${OLD_CODE}/inquire.F90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/inquire.F90
+
+mdbc.o: ${OLD_CODE}/mdbc.c
+	c89 -I/usr/local/lib/f95 -DF95 -c -Wc,dll mdbc.c
+
+readcf.o: ${OLD_CODE}/readcf.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/readcf.f90
+
+value.o: ${OLD_CODE}/value.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/value.f90
+
+datim.o: ${OLD_CODE}/datim.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/datim.f90
+
+WebRetFormMain_IBM.o: ${OLD_CODE}/WebRetFormMain_IBM.f90 \              \
+                 ${INCL_DIR}/webretformselectallversions_mod.mod \
+                 ${INCL_DIR}/webretformselectarea_mod.mod \
+                 ${INCL_DIR}/webretformselectheader_mod.mod \
+                 ${INCL_DIR}/webretformselectincrement_mod.mod \
+                 ${INCL_DIR}/webretformselectmaxobs_mod.mod \
+                 ${INCL_DIR}/webretformselectsondeparts_mod.mod \
+                 ${INCL_DIR}/datim_mod.mod \
+                 ${INCL_DIR}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormMain_IBM.f90
+
+TestWebRetFormMain_IBM.o: ${OLD_CODE}/TestWebRetFormMain_IBM.f90 \      \
+                 ${INCL_DIR}/webretformselectallversions_mod.mod \
+                 ${INCL_DIR}/webretformselectarea_mod.mod \
+                 ${INCL_DIR}/webretformselectheader_mod.mod \
+                 ${INCL_DIR}/webretformselectincrement_mod.mod \
+                 ${INCL_DIR}/webretformselectmaxobs_mod.mod \
+                 ${INCL_DIR}/webretformselectsondeparts_mod.mod \
+                 ${INCL_DIR}/datim_mod.mod \
+                 ${INCL_DIR}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/TestWebRetFormMain_IBM.f90
+
+JNWebRetFormMain_IBM.o: ${NEW_CODE}/JNWebRetFormMain_IBM.f90 \          \
+                 ${INCL_DIR}/webretformselectallversions_mod.mod \
+                 ${INCL_DIR}/webretformselectarea_mod.mod \
+                 ${INCL_DIR}/webretformselectheader_mod.mod \
+                 ${INCL_DIR}/webretformselectincrement_mod.mod \
+                 ${INCL_DIR}/webretformselectmaxobs_mod.mod \
+                 ${INCL_DIR}/webretformselectsondeparts_mod.mod \
+                 ${INCL_DIR}/datim_mod.mod \
+                 ${INCL_DIR}/zpdate_mod.mod
+	${FF} ${IFLAGS} ${FFLAGS} -c ${NEW_CODE}/JNWebRetFormMain_IBM.f90
+
+WebRetFormSelectAllVersions.o: ${OLD_CODE}/WebRetFormSelectAllVersions.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectAllVersions.f90
+
+WebRetFormSelectArea.o: ${OLD_CODE}/WebRetFormSelectArea.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectArea.f90
+
+WebRetFormSelectHeader.o: ${OLD_CODE}/WebRetFormSelectHeader.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectHeader.f90
+
+WebRetFormSelectIncrement.o: ${OLD_CODE}/WebRetFormSelectIncrement.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectIncrement.f90
+
+WebRetFormSelectMaxObs.o: ${OLD_CODE}/WebRetFormSelectMaxObs.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectMaxObs.f90
+
+WebRetFormSelectSondeParts.o: ${OLD_CODE}/WebRetFormSelectSondeParts.f90
+	${FF} ${IFLAGS} ${FFLAGS} -c ${OLD_CODE}/WebRetFormSelectSondeParts.f90
+
+zpdate_mod.o: ${STND_MOD}/zpdate_mod.mod
+
+#
+# .c source code to .o
+#
+MetDB_c_utils.o: ${OLD_CODE}/MetDB_c_utils.c
+	xlc -DUNDERSCORE -c MetDB_c_utils.c
+
+#
+# Modules files, common constants
+#
+##   ${INCL_DIR}/jninit_mod.mod: ${OLD_MOD}/jninit_mod.f90
+##  	${FF} ${FFLAGS} -M ${INCL_DIR}/jninit_mod.f90
+##   	mv jninit_mod.mod ${INCL_DIR}/.
+
+#
+# Modules files, interfaces, subroutines and functions
+#	
+##${INCL_DIR}/achtst_mod.mod: ${OLD_MOD}/achtst_mod.f90
+##	${FF} ${FFLAGS} -M ${INCL_DIR}/achtst_mod.f90
+##	mv achtst_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webair_mod.mod: ${OLD_MOD}/webair_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webair_mod.f90
+	mv webair_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webbuoyp_mod.mod: ${OLD_MOD}/webbuoyp_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webbuoyp_mod.f90
+	mv webbuoyp_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webdis_mod.mod: ${OLD_MOD}/webdis_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webdis_mod.f90
+	mv webdis_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webesaw_mod.mod: ${OLD_MOD}/webesaw_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webesaw_mod.f90
+	mv webesaw_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webform_mod.mod: ${OLD_MOD}/webform_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webform_mod.f90
+	mv webform_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webform2_mod.mod: ${OLD_MOD}/webform2_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webform2_mod.f90
+	mv webform2_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webgexp_mod.mod: ${OLD_MOD}/webgexp_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webgexp_mod.f90
+	mv webgexp_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/weblnd_mod.mod: ${OLD_MOD}/weblnd_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/weblnd_mod.f90
+	mv weblnd_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webncm_mod.mod: ${OLD_MOD}/webncm_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webncm_mod.f90
+	mv webncm_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/websamos_mod.mod: ${OLD_MOD}/websamos_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/websamos_mod.f90
+	mv websamos_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webshp_mod.mod: ${OLD_MOD}/webshp_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webshp_mod.f90
+	mv webshp_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/websrew_mod.mod: ${OLD_MOD}/websrew_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/websrew_mod.f90
+	mv websrew_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webssea_mod.mod: ${OLD_MOD}/webssea_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webssea_mod.f90
+	mv webssea_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webtadv_mod.mod: ${OLD_MOD}/webtadv_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webtadv_mod.f90
+	mv webtadv_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webtbus_mod.mod: ${OLD_MOD}/webtbus_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webtbus_mod.f90
+	mv webtbus_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webtfmet_mod.mod: ${OLD_MOD}/webtfmet_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webtfmet_mod.f90
+	mv webtfmet_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webupr_mod.mod: ${OLD_MOD}/webupr_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/webupr_mod.f90
+	mv webupr_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/code_mod.mod: ${OLD_MOD}/code_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/code_mod.f90
+	mv code_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/delspce_mod.mod: ${OLD_MOD}/delspce_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/delspce_mod.f90
+	mv delspce_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/getchr_mod.mod: ${OLD_MOD}/getchr_mod.f90
+	${FF} ${FFLAGS} -M ${INCL_DIR}/getchr_mod.f90
+	cp getchr_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/ides_mod.mod: ${OLD_MOD}/ides_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/ides_mod.f90
+	cp ides_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/int2ch_mod.mod: ${OLD_MOD}/int2ch_mod.f90
+	${FF} ${FFLAGS} -c ${INCL_MOD}/int2ch_mod.f90
+	cp int2ch_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/inquire_mod.mod: ${OLD_MOD}/inquire_mod.f90
+	${FF} ${FFLAGS} -c ${INCL_MOD}/inquire_mod.f90
+	cp inquire_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/readcf_mod.mod: ${OLD_MOD}/readcf_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/readcf_mod.f90
+	cp readcf_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/value_mod.mod: ${OLD_MOD}/value_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/value_mod.f90
+	cp value_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/bufrpath_mod.mod: ${OLD_MOD}/bufrpath_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/bufrpath_mod.f90
+	cp bufrpath_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/webretformselectallversions_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectAllVersions_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectAllVersions_mod.f90
+	mv webretformselectallversions_mod.mod \
+ ${INCL_DIR}/webretformselectallversions_mod.mod
+
+${INCL_DIR}/webretformselectarea_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectArea_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectArea_mod.f90
+	mv webretformselectarea_mod.mod \
+ ${INCL_DIR}/webretformselectarea_mod.mod
+
+${INCL_DIR}/webretformselectheader_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectHeader_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectHeader_mod.f90
+	mv webretformselectheader_mod.mod \
+ ${INCL_DIR}/webretformselectheader_mod.mod
+
+${INCL_DIR}/webretformselectincrement_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectIncrement_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectIncrement_mod.f90
+	mv webretformselectincrement_mod.mod \
+ ${INCL_DIR}/webretformselectincrement_mod.mod
+
+${INCL_DIR}/webretformselectmaxobs_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectMaxObs_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectMaxObs_mod.f90
+	mv webretformselectmaxobs_mod.mod \
+ ${INCL_DIR}/webretformselectmaxobs_mod.mod
+
+${INCL_DIR}/webretformselectsondeparts_mod.mod: \
+ ${OLD_MOD}/WebRetFormSelectSondeParts_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/WebRetFormSelectSondeParts_mod.f90
+	mv webretformselectsondeparts_mod.mod \
+ ${INCL_DIR}/webretformselectsondeparts_mod.mod
+
+${INCL_DIR}/datim_mod.mod: ${OLD_MOD}/datim_mod.f90
+	${FF} ${FFLAGS} -M ${OLD_MOD}/datim_mod.f90
+	mv datim_mod.mod ${INCL_DIR}/.
+
+${INCL_DIR}/zpdate_mod.mod: ${STND_MOD}/zpdate_mod.f90
+	${FF} ${FFLAGS} -M ${STND_MOD}/zpdate_mod.f90
+	mv zpdate_mod.mod ${INCL_DIR}/.
+
+#    ${INCL_DIR}/cgi_utils_mod.mod: ${OLD_MOD}/cgi_utils_mod.f90
+#    	${FF} ${FFLAGS} -M ${OLD_MOD}/cgi_utils_mod.f90
+# 	cp bufrpath_mod.mod ${INCL_DIR}/.
+
+#-----------------------------------------------------------------------
+# Make clean
+#-----------------------------------------------------------------------
+
+clean:
+	@rm -f zpdate_mod.o ${MDB_OBJS} ${F90_OBJS} ${C_OBJS} core .Static.salf Static.sadb $(PTREPOSITORY)/*.o BLINK/* *_bld.stamp ${INCL_DIR}/*.o ${INCL_DIR}/*.mod
+

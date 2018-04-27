@@ -1,0 +1,33 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%----------------- STATION MASTER On-Line Help Display -------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++  This panel is displaying the following information :-
++
++  The station reporting practice information for chaser messages
++
++    SYNOP elements chased VV,NC,DD,FF,TT,TD,PP,WW,WP,MC,EE,8G,RR
++
++    NCM elements chased TG,TC,EE,EC,NX,NN,NR,SS,E3,E1,
++                         DH,DT,DF,DG,DS,SD,SF,DX,DN,DR,TX,TN,RT
++
++    U/A Reports 00z,06z,12z,18z
++
++    Reporting Practice
++
++    DAY   1. S = Summer, W = Winter
++          2. P = Public Holiday
++        3-9. Sunday to Saturday
++
++    HOUR 0 - 23  (last digit of each hour)
++
++    NCM Reported at 09z and/or 21z
++
++              Press%END+to go back to selection
+)INIT
+     .CURSOR = ZCMD   .HELP = STNHLP6
+)PROC
+    &ZUP=STNHLP6
+)END

@@ -1,0 +1,36 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%-------------------STATION MASTER On-Line Display------------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++
+%OPTION ===>!OPTION     +
++
++
+%         D+  (D)isplay current station details
++
+%         A+  (A)mend station details
++
+%         O+  (O)pen new station
++
+%         C+  (C)lose old station
++
+%         R+  (R)eopen Station
++
+%         N+  re(N)umber Station
++
+%         B+  (B)rowse Station List
++
+%         P+  (P)anic
++
++
++    Press%ENTER+to continue or%END+to exit STATION MASTER
+)INIT
+     .CURSOR = OPTION   &OPTION = &Z   .HELP = STNHLPU1
+)PROC
+  &ACTION =  TRUNC(&OPTION,1)
+  &ACTION=TRANS(&ACTION,d,D,a,A,o,O,c,C,r,R,n,N,b,B,*,*)
+  VER(&OPTION,NONBLANK)
+  VER(&ACTION,NONBLANK,LIST,D,A,O,C,R,N,B)
+)END

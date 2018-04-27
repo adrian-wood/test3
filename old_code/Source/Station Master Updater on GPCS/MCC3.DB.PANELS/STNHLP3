@@ -1,0 +1,32 @@
+)ATTR
+      ! TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT)
+)BODY
+%----------------- STATION MASTER On-Line Help Display -------------------------
+%COMMAND ===> _ZCMD                                                            +
++
++  This panel is displaying the following information :-
++
++    Station Number - WMO block and station number
++    DCNN           - (D)istrict, (C)ounty & number
++    ICAO           - (I)nternational (C)ivil (A)viation (O)rganisation
++    RAINFALL       - rainfall number
++
++    LATITUDE       - in degrees and minutes
++    LONGITUDE      - in degrees and minutes
++    HEIGHTS        - HP = the elevation of station in metres and is
++                          the datum level to which barometric
++                          pressure reports
++                   - H/HA = H is elevation of ground & HA is official
++                      altitude of aerodrome (both in metres)
++    REGION         - the WMO Region (associated with blk & stn number)
++    STATION NAME   - a 42 character station name
++    COUNTRY NAME   - a 32 character country name
++    STATION OPENED - the date (year,month,day,hour) stn was opened
++    STATION CLOSED - the date (year,month,day,hour) stn was closed
++
++              Press%END+to go back to selection
+)INIT
+     .CURSOR = ZCMD   .HELP = STNHLP3
+)PROC
+    &ZUP=STNHLP3
+)END

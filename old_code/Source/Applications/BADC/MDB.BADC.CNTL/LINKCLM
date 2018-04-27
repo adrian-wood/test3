@@ -1,0 +1,34 @@
+//T12SNBD1 JOB (M12,SN,WDS0BF),NEEDHAM,PRTY=??,
+// MSGCLASS=Q,NOTIFY=T12SN,TIME=(0,20)
+//*
+//*
+//*---------------------------------------------------------------------
+//*              BUILDS BADC DATA EXTRACTION MODULE RETCLM
+//*              -----------------------------------------
+//*
+//* Before running:
+//* ---------------
+//*      1.  Check details of LKED.SYSLMOD DD statement.
+//*      2.  Check job statement details.
+//*
+//* Changes:
+//* -------
+//*  16 Jul 01  Original version by Brian Barwell.
+//*
+//*---------------------------------------------------------------------
+//* $REVISION:$
+//* $DATE:$
+//* $LOG:$
+//*---------------------------------------------------------------------
+//STEPX EXEC LEF2CL,FPARMS='NOFIPS,CHARLEN(15000),DC(*)'
+//FORT.SYSIN DD DSN=MDB.BADC.FORT(RETCLM),DISP=SHR
+//LKED.SYSLMOD DD UNIT=,SPACE=,DCB=,DISP=SHR,
+//             DSN=MCC3.DBLOAD.D110418(RETCLM)
+//LKED.MET     DD DSN=MET.PROGLIB,DISP=SHR
+//LKED.MDB     DD DSN=MDB.LOADLIB,DISP=SHR
+//LKED.SYSIN   DD *
+    INCLUDE MET(ZPDATE)
+    INCLUDE MDB(MDBSHEL)
+    ENTRY   RETCLM                                                      002
+//*                                                                     000
+//                                                                      00190000

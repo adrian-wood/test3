@@ -1,0 +1,347 @@
+//M12DBFTP JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                   MDB STORAGE MONITOR JOB
+//*---------------------------------------------------------------------
+//MONITOR EXEC PGM=MONITOR,TIME=NOLIMIT,REGION=6M,
+//      PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HKEEP    DD DSN=TDB.HKDS,DISP=SHR
+//DREGS    DD DSN=TDB.DREGS.M12DBFTP,DISP=SHR
+//FT05F001 DD *
+ &INSTOR CLEAR=.TRUE., MODE=1, MHSTYPE='TEST',RENAME=.FALSE. /
+/*
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBSYN JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*    STORAGE FOR SYNOPS (LAND, MOBILE LAND AND SHIPS) AND NCM DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//SYNOPS EXEC PGM=MDBSTOR,REGION=7M,TIME=15
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBSYNOP),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBSYNOP,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBUA JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*  STORAGE FOR UPPER AIR DATA (TEMPS, PILOTS, DROPSONDES, PROFILERS)
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//UAIR EXEC PGM=MDBSTOR,TIME=6,REGION=5M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBUAIR),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBUAIR,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBAMD JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                     STORAGE FOR AMDAR DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//AMDARS EXEC PGM=MDBSTOR,TIME=16,REGION=5M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBAMDAR),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBAMDAR,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBARP JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                    STORAGE FOR AIREP DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//AIREPS EXEC PGM=MDBSTOR,TIME=5,REGION=5M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBAIREP),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBAIREP,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBTAF JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                 STORAGE FOR TAFS AND ATAFS
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//TAFS EXEC PGM=MDBSTOR,TIME=5,REGION=5M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBTAFS),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBTAFS,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBMTR JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                     STORAGE FOR METARS
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//METARS EXEC PGM=MDBSTOR,TIME=18,REGION=5M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBMETAR),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBMETAR,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBSAT JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                      STORAGE FOR SATOBS
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//SATOBS EXEC PGM=MDBSTOR,TIME=1,REGION=4M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBSATOB),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBSATOB,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBSEA JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*      STORAGE FOR OCEANIC DATA (BATHY, BUOY, TESAC, TRACKOB)
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//OCEAN EXEC PGM=MDBSTOR,TIME=4,REGION=4M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBSEA),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBSEA,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBOTH JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*               STORAGE FOR MISCELLANEOUS DATA TYPES
+//*   (CLIMAT, ESAWS, PRESTEL, SFERIC, SREW, TBUS, TROPADV, TROPCYCL)
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//OTHERS EXEC PGM=MDBSTOR,TIME=4,REGION=6M
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBOTHRS),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=TDB.DREGS.MDBOTHRS,DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBATV JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//* STORAGE FOR ATOVSG, ATOVSL, AMSUB, AVHRRG, IASIG, IASIHR AND IASIL.
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//ATOVS EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBATV', OWNER='ATOV', NDREG=0, MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRATOV),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBSSM JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*                  STORAGE FOR SSMI AND SSMIS.
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//SSMI EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBSSM', OWNER='SSMI', NDREG=0, MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRSSMI),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBEUM JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*  STORAGE FOR EUMETSAT BUFR PRODUCTS, ARGO, IMDWINDS AND RASS DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//EUMET EXEC PGM=STOREUM,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR  JOBNAME='M12DBEUM', OWNER='MDB1', GTSDATA=.TRUE.,
+          NDREG=0, MODE=1, MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDREUM),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBBF1 JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//* STORAGE FOR AIRQAL, AIRSL, AIRSWF, GPSIWV, JASON2, MODIS,
+//*             MSGAOD, OZONESAT, RADRACCM, RADRRATE, SATAOD,
+//*             SEAWINDS, WAVENET AND WISDOM DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//BUF1 EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBBF1', OWNER='BUF1', NDREG=0, MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRBUF1),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBBF2 JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//* STORAGE FOR ATDNET, CMAWINDS, GOESBUFR, GPSRO, JMAWINDS, OZONEPRF,
+//*             TRIAXYS, WFEON AND WFSSE DATA.
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//BUF2 EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBBF2', OWNER='BUF2', GTSDATA=.TRUE., MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRBUF2),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBBF3 JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*            STORAGE FOR ATMS, CRIMSS AND TAMDAR DATA
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//BUF3 EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBBF3', OWNER='BUF3', NDREG=0, MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRBUF3),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//
+//*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*
+//M12DBBF4 JOB (OP1,DB,WDS0BF),MDB.TEAM.X6951,MSGCLASS=Q,CLASS=L
+//*---------------------------------------------------------------------
+//*  STORAGE FOR ASCAT, ASCATHR, GHRSST, GOESCSR, JMACSR, MSGRAD,
+//*              MSGRADFD, MSGRADUK, OPENROAD AND WINDSAT DATA.
+//*---------------------------------------------------------------------
+//WAIT5 EXEC PGM=IKJEFT01,DYNAMNBR=5,TIME=(0,10)
+//SYSTSPRT  DD  SYSOUT=*
+//SYSTSIN   DD  DATA
+  SLEEP 5
+/*
+//BUF4 EXEC PGM=BUFRDAT,TIME=12,REGION=4M,PARM='POSIX(OFF) /'
+//STEPLIB  DD DSN=MCC3.DB.LOAD,DISP=SHR
+//SYSTEMP DD DSN=&&TEMP,DISP=(,PASS),UNIT=SYSDA,SPACE=(TRK,100)
+//FT02F001 DD *
+ &INSTOR JOBNAME='M12DBBF4', OWNER='BUF4', NDREG=0, MODE=1,
+         MHSTYPE='TEST' /
+/*
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRBUF4),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=TDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//

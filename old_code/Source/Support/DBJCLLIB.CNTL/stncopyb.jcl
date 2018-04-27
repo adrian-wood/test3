@@ -1,0 +1,20 @@
+//T12DBCPY JOB (M12,DB,WDS0BF),SDB.TEAM.6955,PRTY=??,
+//  MSGLEVEL=(1,1),MSGCLASS=Q,TIME=(,15)
+//*
+//*  *******************************************************************
+//*  * JOB TO RESTORE THE OLD STATIONMASTER DATASETS
+//*  *******************************************************************
+//*
+//SAVEI  EXEC PGM=IEBGENER
+//SYSPRINT DD SYSOUT=Q
+//SYSUT1   DD DISP=SHR,DSN=SDB.STNMAS.INDEXO,LABEL=(,,,IN)
+//SYSUT2   DD DISP=SHR,DSN=SDB.STNMAS.INDEXB
+//SYSIN    DD DUMMY
+//*
+//SAVEM  EXEC PGM=IEBGENER
+//SYSPRINT DD SYSOUT=Q
+//SYSUT1   DD DISP=SHR,DSN=SDB.STNMAS.MAINO,LABEL=(,,,IN)
+//SYSUT2   DD DISP=SHR,DSN=SDB.STNMAS.MAINB
+//SYSIN    DD DUMMY
+//*
+//

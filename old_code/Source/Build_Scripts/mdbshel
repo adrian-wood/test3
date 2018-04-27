@@ -1,0 +1,44 @@
+//T12SNBD1 JOB (M12,SN,WDS0BF),PRTY=8,
+// MSGCLASS=Q,MSGLEVEL=(1,1),NOTIFY=T12SN
+//*
+//* JCL : MDBSHEL
+//*
+//* PURPOSE: Builds MDBSHEL load module for users to include in their
+//*          MDB programs.  Compiles and links VSFortran 77 subroutine
+//*          MDBPRE with C wrapper mdbc.  The C wrapper loads and calls
+//*          the F95 MDB DLL.
+//*
+//* $Workfile: mdbshel$ $Folder: Build_Scripts$
+//* $Revision: 1$ $Date: 08/11/2010 10:18:51$
+//*
+//*
+//CMPLNK   PROC MOD=
+//FORT     EXEC PGM=FORTVS2,REGION=2100K,TIME=1,
+//         PARM=('CHARLEN(4100),OPT(0),NOFIPS,SDUMP,SOURCE')
+//STEPLIB  DD DSN=SYS1.VSF2COMP,DISP=SHR
+//SYSPRINT DD SYSOUT=*
+//SYSLIN   DD DSN=&OBJECT,UNIT=SYSDA,DISP=(MOD,PASS),
+//         SPACE=(TRK,(10,10)),
+//         DCB=(DSORG=PS,RECFM=FB,LRECL=80,BLKSIZE=3120)
+//SYSIN    DD DDNAME=SRCEIN
+//*
+//LKED     EXEC PGM=IEWL,REGION=996K,TIME=1,
+//         PARM='LET,LIST,MAP,XREF,SIZE=(256K,64K)'
+//SYSLIB   DD DISP=SHR,DSN=SYS1.SAFHFORT
+//         DD DISP=SHR,DSN=SYS1.SCEELKED
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(1,1)),DCB=BLKSIZE=1024
+//OBJECT   DD DSN=&OBJECT,UNIT=SYSDA,DISP=(OLD,DELETE)
+//USS      DD DSN=MCC3.SNLIB.LOAD,DISP=SHR  C wrapper object file
+//* target load module
+//SYSLMOD  DD DSN=MCC3.SNLIB.LOAD(&MOD),DISP=SHR
+//         PEND
+//*
+//EXEC1    EXEC CMPLNK,
+//         MOD=MDBSHEL
+//FORT.SRCEIN  DD DSN=MCC3.SNPORT.CNTL(MDBPRE),DISP=SHR
+//LKED.SYSLIN DD *
+  INCLUDE OBJECT
+  INCLUDE USS(MDBC)
+  ENTRY MDB
+//

@@ -1,0 +1,50 @@
+For use with /home/us0400/httpd/cgi-bin/PortMetDB/web_retrieval/WebRetForm/WebRetFormMain_HP.f
+
+          US  MO  DY  ID  OB  HD  LA  IN  AR  VE  09  10  11  12  13  14
+
+AIREPS     Y   O   5   8   Y   Y   Y   Y   Y   Y
+AMDARS     Y   O   5   8   Y   N   N   N   Y   N
+ATAFS      Y   O  12   4   Y   Y   Y   N   Y   N
+BATHY      Y   O  56   9   Y   Y   N   N   Y   N
+BOGUS      Y   O   2   4   Y   Y   Y   Y   Y   Y
+DRIFTR     Y   O  11   9   Y   N   N   N   Y   N
+DROPSOND   Y   O   5   9   Y   Y   N   Y   Y   Y
+BUOYPROF   Y   O  11   9   Y   N   N   N   Y   N
+ESAWS      Y   O  14   5   Y   Y   Y   N   N   Y
+HEALTHRR   Y   O  14   0   Y   Y   Y   N   N   Y
+LNDSYN     Y   O   5   5   Y   Y   Y   Y   Y   Y
+METARS     Y   O   6   4   Y   Y   Y   N   Y   N
+NCM        Y   O  14   5   Y   Y   Y   N   N   Y
+PILOT      Y   O   5   9   Y   Y   N   Y   Y   Y
+SAMOSX     Y   O  40   5   Y   Y   Y   N   Y   N
+SEAICE     N   O  31   6   Y   N   Y   N   N   N
+SHPSYN     Y   O   5   9   Y   Y   Y   Y   Y   Y
+SREW       Y   O  14   5   Y   Y   Y   N   N   Y
+TAFS       Y   O  12   4   Y   Y   Y   N   Y   N
+TBUS       Y   O  14   5   Y   Y   N   N   N   N
+TEMP       Y   O   5   9   Y   Y   N   Y   Y   Y
+TESAC      Y   O  56   9   Y   Y   N   N   Y   N
+TROPADV    Y   O  15   4   Y   Y   Y   N   N   N
+LIST_END
+
+Comments below (including explanation of columns)
+
+US  Use this subtype? 'T' or 'F'
+MO  Mode: Operational 'O' or Test 'T'
+DY  Number of days on-line for retrieval
+ID  Identifier input field width
+OB  Option to choose a maximum of obs to retrieve?
+HD  Option to switch MetDB headers on/off?
+LA  Option to use the LATEST keyword?
+IN  Option to use the INCREMENT keyword?
+AR  Option to use the AREA keyword?
+VE  Option to use the VERSION ALL keyword?
+09
+10
+11
+12
+13
+14
+
+$Source: /home/us0400/mdb/op/lib/web_source/RCS/WebRetFormLookup_opnl_HP.txt,v $
+$Date: 20/09/2006 16:10:40$ $Revision: 1$

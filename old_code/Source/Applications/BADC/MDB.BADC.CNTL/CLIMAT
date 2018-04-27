@@ -1,0 +1,109 @@
+//MDBBADCB JOB (OP1,DB,CBRBDC),METDB,CLASS=I,USER=T12DB,
+// MSGCLASS=Q
+//*
+//* REMEMBER to SET OPC VARIABLES for MANUAL RERUNS
+//*
+//* ============================================================
+//* Data Extraction for BADC
+//* ============================================================
+//* Contact: MetDB Team via Remedy
+//* Documentation:
+//* http://www01/metdb/documentation/other/badc_extraction.html
+//* ------------------------------------------------------------
+//* Problem Solutions: This job may be rerun
+//*     MetDB team will be notified of failure automatically
+//*
+//* ------------------------------------------------------------
+//* (C) CROWN COPYRIGHT 2010 - MET OFFICE. All Rights Reserved.
+//*
+//* Met Office, United Kingdom
+//*
+//* The use, duplication and disclosure of this code is strictly
+//* prohibited without the permission of T&IS (Core).
+//*---------------------------------------------------------------------
+//* $Workfile: CLIMAT$ $Folder: MDB.BADC.CNTL$
+//* $Revision: 1$ $Date: 23/07/2013 14:47:46$
+//*
+//* CHANGE RECORD
+//*
+//* $Log:
+//*  1    Met_DB_Project 1.0         23/07/2013 14:47:46    John Norton
+//*       Copied from 'SYS1.OPSPROD.JOBLIB(MDBBADCB)'
+//* $
+//*
+//* -------------------------------------------------------------
+//* Delete previous output dataset (if it exists)
+//* -------------------------------------------------------------
+//DEL EXEC PGM=IEFBR14
+//DELETE DD DSN=MDB.BADC.CLIMAT.OUT,DISP=(MOD,DELETE),SPACE=(TRK,1)
+//*
+//* -------------------------------------------------------------
+//* Extract all CLIMAT data since the last run
+//* -------------------------------------------------------------
+//MAIN EXEC PGM=RETCLM,REGION=8M
+//STEPLIB DD DSN=MDB.BADC.LOAD,DISP=SHR
+//        DD DSN=SYS1.SCEERUN,DISP=SHR
+//FT06F001 DD SYSOUT=Q
+//FT10F001 DD DSN=MDB.BADC.CLIMAT.OUT,DISP=(NEW,CATLG),
+//    STORCLAS=SCDATPRK,MGMTCLAS=MCSNC4,SPACE=(CYL,(10,1)),
+//    DCB=(RECFM=FB,LRECL=1620,BLKSIZE=27540)
+//FT22F001 DD DSN=MDB.BADC.CLIMAT.CONTROL,DISP=SHR
+//*
+//*---------------------------------------------------------------------
+//* Send data to BADC
+//*---------------------------------------------------------------------
+//CHKEXT IF (MAIN.RC EQ 0) THEN
+//*
+//*%OPC SCAN
+//*
+//SEND EXEC PGM=FTP,REGION=4M,PARM='(EXIT'
+//OUTPUT DD SYSOUT=*
+//SYSPRINT DD SYSOUT=*
+//INPUT DD *
+dart.metoffice.gov.uk
+cd /metdb/txt
+ascii
+put 'MDB.BADC.CLIMAT.OUT' mdb.climat.tmp
+rename mdb.climat.tmp ukmo-metdb_climat_%CYYYYMM.%CDD.%CHHMM..txt
+quit
+/*
+//NETRC  DD DSN=MDB.BADC.NETRC,DISP=SHR,LABEL=(,,,IN)
+//ENDEXT ENDIF
+//*---------------------------------------------------------------------
+//* Send message if there are any failures
+//* -------------------------------------------------------------------
+//MAILCHK IF (RC > 0 OR ABEND) THEN
+//*
+//* Extract EJES output
+//*
+//EXTJOB  EXEC PGM=EJESLNK,REGION=4M,DYNAMNBR=10
+//EJESOUT   DD SYSOUT=*,DCB=(RECFM=FB,LRECL=132)
+//EJESEXT   DD DSN=&&TEMPOUT,DISP=(NEW,PASS),UNIT=DISK,
+//    STORCLAS=SCDATPRK,MGMTCLAS=MCSNC1,SPACE=(CYL,(1,1)),
+//    DCB=(RECFM=VBA,LRECL=137,BLKSIZE=27998)
+//EJESIN    DD DATA,DLM='$$'
+ECHO OFF
+:J=MDBBA
+SORT TIME D
+ST
+CONFIRM OFF
+FIND MDBBADCB
+:E
+$$
+//ERROR  EXEC PGM=IKJEFT01
+//SYSTSPRT DD SYSOUT=Q
+//SYSEXEC  DD DISP=SHR,DSN=MET.EXECLIB   SYSTEM REXX COMMANDS
+//         DD DISP=SHR,DSN=MET.EXECFLIB  SYSTEM REXX FUNCTIONS
+//MAILMSG1 DD DSN=&&TEMPOUT,DISP=(OLD,DELETE)
+//MAILHDR  DD *
+REPLY-TO: SHEILA NEEDHAM<sheila.needham@metoffice.gov.uk>
+X-MAILER: MOMAIL V1.2
+/*
+//SYSTSIN  DD *
+MAILX  MSG(MAILMSG1) +
+SUBJECT(BADC CLIMAT error reported) +
+HEADERS(MAILHDR) +
+TO(sheila.needham@metoffice.gov.uk)
+//*
+//ENDMAIL ENDIF
+//

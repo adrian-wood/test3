@@ -1,0 +1,45 @@
+/* This program will list the amount of free space (and the largest  */
+/* amount of contiguous free space) on all MetDB disks. To run the   */
+/* job, copy the following command to the TSO command line and press */
+/* ENTER:                                                            */
+/*            TSO EXEC 'MCC3.DBJCLLIB.CNTL(MDBDISKS)'                */
+
+DSPACE OPR002
+DSPACE OPR007
+DSPACE OPR011
+DSPACE OPR100
+DSPACE OPR103
+DSPACE OPR126
+DSPACE OPR128
+DSPACE OPR134
+DSPACE OPR135
+DSPACE OPR202
+DSPACE OPR203
+DSPACE OPR204
+DSPACE OPR205
+DSPACE OPR206
+DSPACE OPR209
+DSPACE OPR210
+DSPACE OPR211
+DSPACE OPR212
+DSPACE OPR213
+DSPACE OPR214
+DSPACE OPR215
+DSPACE OPR216
+DSPACE OPR217
+DSPACE OPR218
+DSPACE OPR219
+DSPACE OPR220
+DSPACE OPR221
+DSPACE OPR222
+DSPACE OPR223
+DSPACE OPR224
+DSPACE OPR225
+DSPACE OPR226
+DSPACE MDB001
+DSPACE MDB002
+DSPACE MDB003
+DSPACE MDB004
+
+/* $Workfile: mdbdisks.clist$ $Folder: DBJCLLIB.CNTL$ */
+/* $Revision: 4$ $Date: 14/04/2010 16:19:09$ */

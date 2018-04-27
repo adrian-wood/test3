@@ -1,0 +1,404 @@
+<html>
+
+
+
+<head>
+
+<title>MetDB Station Search Utility documentation</title>
+
+</head>
+
+
+
+<body>
+
+
+
+<h3 align="center">Programmers Documentation for updating Web page and source code to
+
+search the Station Master</h3>
+
+
+
+<p>&nbsp;</p>
+
+
+
+<h4>Index</h4>
+
+<OL>
+
+<LI>Introduction</LI>
+
+<LI>File Locations</LI>
+
+<LI>Operational Changes</LI>
+
+</OL>
+
+
+
+<p>&nbsp;</p>
+
+<OL>
+
+<LI><h4>Introduction</h4></LI>
+
+
+
+<p>This is a tool to search the MetDB Station Master for details on a station or Stations.
+
+<br>
+
+On entry you need to pick what type of search you want to do. <br>
+
+This can either be based on the WMO number, ICAO indicator, or on the name.</p>
+
+
+
+<p>If WMO number is picked another form opens which waits for the user to enter <br>
+
+a 5 digit WMO number. <br>
+
+1 to 5 digits may be entered and will bring back all matches for the particular input. <br>
+
+<b>example:</b> <br>
+
+entering 03 will list all the 03 block stations from the abbreviated Station Master. <br>
+
+Within this results page clicking on any of the wmo numbers listed will produced a <br>
+
+more detailed search for that particular station from the Full Station Master list, which <br>
+
+will list all the details held here for that station.</p>
+
+
+
+<p>If the ICAO option is picked then a string is expected from 1 to 4 characters, <br>
+
+a search is made of the abbreviated ICAO producing a results page of all matches. <br>
+
+Again clicking on the ICAO indicator of any of the stations will produce a search of <br>
+
+the Full Station Master for that particular station displaying the full details when that <br>
+
+Station is found. </p>
+
+
+
+<p>With the Name search a character string is entered between 1 and 38 characters, and all
+
+<br>
+
+matches from of the string within any stations name will be returned. <br>
+
+A search is made in both the abbreviated list and ICAO list, and again clicking on the <br>
+
+relevant link will produce a search of the Full Station Master for that particular <br>
+
+station, displaying the full results.&nbsp; </p>
+
+
+
+<p>The link to access this facility can be found at <a
+
+href="http://us0400/~usmdb/station_details/stnmas.html">http://us0400/~usmdb/station_details/stnmas.html</a></p>
+
+
+
+<p>&nbsp;</p>
+
+
+
+<LI><h4>File Locations</h4></LI>
+
+
+
+<p>Web Page: /home/us0400/usmdb/public_html/station_details/stnmas.html <br>
+
+<br>
+
+CGI-SCRIPT: /home/us0400/httpd/cgi-bin/station_search/wmo_search.sh
+
+/home/us0400/httpd/cgi-bin/station_search/icao_search.sh
+
+/home/us0400/httpd/cgi-bin/station_search/name_search.sh
+
+/home/us0400/httpd/cgi-bin/station_search/search_full_list.sh
+
+/home/us0400/httpd/cgi-bin/station_search/search_full_icaolist.sh <br>
+
+<br>
+
+Operational .exe files /home/us0400/httpd/cgi-bin/station_search/wmo_search.exe
+
+/home/us0400/httpd/cgi-bin/station_search/icao_search.exe
+
+/home/us0400/httpd/cgi-bin/station_search/name_search.exe
+
+/home/us0400/httpd/cgi-bin/station_search/display_full_wmo_details.exe
+
+/home/us0400/httpd/cgi-bin/station_search/display_full_icao_details.exe <br>
+
+<br>
+
+Fortran Source Code: /home/us0400/usmdb/station_search/source/check_pattern.F
+
+/home/us0400/usmdb/station_search/source/icao_search.F
+
+/home/us0400/usmdb/station_search/source/name_search.F
+
+/home/us0400/usmdb/station_search/source/wmo_search.F
+
+/home/us0400/usmdb/station_search/source/write_abbv_details.F
+
+/home/us0400/usmdb/station_search/source/write_html_head.F
+
+/home/us0400/usmdb/station_search/source/write_html_tail.F
+
+/home/us0400/usmdb/station_search/source/write_icao_details.F
+
+/home/us0400/usmdb/station_search/source/write_name_details.F <br>
+
+<br>
+
+C Source Code: /home/us0400/usmdb/station_search/source/display_full_icao_details.c
+
+/home/us0400/usmdb/station_search/source/display_full_wmo_details.c
+
+/home/us0400/usmdb/station_search/source/part_string.c
+
+/home/us0400/usmdb/station_search/source/write_full_icao_details.c
+
+/home/us0400/usmdb/station_search/source/write_full_wmo_details.c <br>
+
+<br>
+
+The development .exe files are created in folder /home/us0400/usmdb/station_search/exe/
+
+these are then copied to the operational folder. <br>
+
+<br>
+
+<b>Note:</b> <br>
+
+<i>The object files produced by compiling write_html_head.F write_html_tail.F and
+
+part_string.c are used by other routines and if changes made one of these, then any other
+
+programs which make use of them will also need re-linking.</i> </p>
+
+
+
+<p>&nbsp;</p>
+
+
+
+<LI><h4>Operational Changes</h4></LI>
+
+
+
+<p><br>
+
+<br>
+
+The main web page stnmas.html first of all gives the user a choice of how the user would
+
+like to search the master. <br>
+
+The user makes a selection and the relevent form is produced to make the search. <br>
+
+The input to this form will then call the relevent script to produce a search. <br>
+
+The script will run the relevent .exe file from within passing across the search details. <br>
+
+Scripts used on this page are: <br>
+
+<br>
+
+<b>/home/us0400/httpd/cgi-bin/station_search/wmo_search.sh</b> <br>
+
+This Script is run when the option to search on WMO number is picked. <br>
+
+The exe file ran from here is /home/us0400/httpd/cgi-bin/station_search/wmo_search.exe The
+
+breakdown of this program is: </p>
+
+
+
+<pre>
+
+                                   wmo_search
+
+                                      |
+
+                    -------------------------------------
+
+                    |                 |                 |
+
+           write_html_head   write_abbv_details   write_html_tail
+
+</pre>
+
+
+
+<p><br>
+
+<br>
+
+<b>/home/us0400/httpd/cgi-bin/station_search/icao_search.sh</b> <br>
+
+This Script is run when the option to search on ICAO identifier is picked. <br>
+
+The exe file ran from here is /home/us0400/httpd/cgi-bin/station_search/icao_search.exe
+
+The breakdown of this program is: </p>
+
+
+
+<pre>
+
+                                 icao_search
+
+                                      |   
+
+                    -------------------------------------
+
+                    |                 |                 |
+
+           write_html_head   write_icao_details   write_html_tail
+
+</pre>
+
+
+
+<p><br>
+
+<br>
+
+<b>/home/us0400/httpd/cgi-bin/station_search/name_search.sh</b> <br>
+
+This Script is run when the option to search for a character string within a name is
+
+picked. <br>
+
+The exe file ran from here is /home/us0400/httpd/cgi-bin/station_search/name_search.exe
+
+The breakdown of this program is: </p>
+
+
+
+<pre>
+
+                                      name_search
+
+                                          |
+
+                 ----------------------------------------------------
+
+                 |               |                 |                |
+
+         write_html_head   check_pattern  write_name_details   write_html_tail
+
+</pre>
+
+
+
+<p><br>
+
+<b>/home/us0400/httpd/cgi-bin/station_search/search_full_listsh</b> <br>
+
+This Script is run when the option to search for the full details of a station from its
+
+WMO number is picked. <br>
+
+The exe file ran from here is
+
+/home/us0400/httpd/cgi-bin/station_search/display_full_wmo_details.exe The breakdown of
+
+this program is: </p>
+
+
+
+<pre>
+
+                              display_full_wmo_details
+
+                                          |
+
+                 ----------------------------------------------------
+
+                 |                        |                         |
+
+         write_html_head          write_full_wmo_details      write_html_tail
+
+                                          |         
+
+                                     part_string                        
+
+</pre>
+
+
+
+<p><br>
+
+<b>/home/us0400/httpd/cgi-bin/station_search/search_full_icaolistsh</b> <br>
+
+This Script is run when the option to search for the full details of a station from its
+
+ICAO identifier is picked. <br>
+
+The exe file ran from here is
+
+/home/us0400/httpd/cgi-bin/station_search/display_full_icao_details.exe The breakdown of
+
+this program is: </p>
+
+
+
+<pre>
+
+                              display_full_icao_details
+
+                                          |
+
+                 ----------------------------------------------------
+
+                 |                        |                         |
+
+         write_html_head          write_full_icao_details      write_html_tail
+
+                                          |         
+
+                                     part_string                        </pre>
+
+
+
+<p><br>
+
+<br>
+
+The Source Code, MAkefile and Scripts are Revision controlled using RCS as layed <br>
+
+out in the operational changes documentation. <br>
+
+<br>
+
+When source code has been changed it needs to be compiled and linked to create the
+
+relevant&nbsp; exe files<br>
+
+which is done by running the Makefile within the source directory.<br>
+
+<br>
+
+exe files will be created in the exe folder, and after testing these are copied to the <br>
+
+cgi-bin directory to make operational. </p>
+
+</OL>
+
+</body>
+
+</html>
+

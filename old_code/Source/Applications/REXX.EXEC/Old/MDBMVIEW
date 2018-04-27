@@ -1,0 +1,243 @@
+/* REXX ----------------------------------------------------------
+
+Called by REXX on open edition. Receives 2 arguments parm1 and
+hfsfile. parm1 is a MARS request, hfsfile is a hfs file into which
+MDBMVIEW will put BUFR messages that satisfy the request in parm1.
+
+MDBMVIEW extracts obstype, date, time, range and area from parm1.
+It reads the MDB-ECMWF mapping table to match obstype. If a match
+is found, it allocates the conversion table referenced.
+
+MDBMVIEW names and allocates MVS datasets to write BUFR messages
+and any FT06 output from MDB fortran routines to. MDBMVIEW then calls
+the load module MCC3.SCLOAD(MDBMVIEW). The main program in this load
+module reads the parameters obstype, date, time, range and area
+using REXXVAR calls.
+
+On return from METVIEW, the MVS dataset containing the BUFR messages
+is copied to hfsfile using the OCOPY command and MDBMVIEW returns to
+the calling open edition REXX.
+
+$Revision: 1$
+$Date: 28/02/2006 10:12:10$
+$Source: /home/us0400/mdb/op/lib/metview/RCS/mdbmview.rexx,v $
+
+------------------------------------------------------------------
+$Log:
+ 1    Met_DB_Project 1.0         28/02/2006 10:12:10    Sheila Needham  
+$
+Revision 1.9  2003/03/27 11:46:48  usmdb
+Replace LOCALELM allocations with a single TABLE allocation
+as BUFR local table B is being made obsolete - S.Cox
+
+Revision 1.8  2001/03/07 11:09:43  usmdb
+Change to qc_model. Can now expect 4 characters rather than
+3. Left justify the string i.e. 'QCM' will be left justified
+to 'QCM '. Also correct say statement - S.Cox
+
+Revision 1.7  2000/02/23 13:49:36  usmdb
+Correct write statement "About to call ...." - S.Cox
+
+Revision 1.6  2000/02/23  13:46:50  13:46:50  usmdb (Generic MDB account)
+Correct ALLOC of ATOVS/SSMI LOCALB for merge retrieval.
+MDB.METVIEW.ATOVSSMI becomes MDB.METVIEW.LOCALB.ATOVSSMI - S.Cox
+
+Revision 1.5  2000/02/15  16:06:16  16:06:16  usmdb (Generic MDB account)
+Call load module on SYS1.SDBLOAD - S.Cox
+
+Revision 1.4  2000/02/15  15:53:59  15:53:59  usmdb (Generic MDB account)
+Will now delete IBM BUFR dataset on successful
+transfer to unix partition. Also added some
+return code checks - S.Cox
+
+Revision 1.3  99/11/11  11:25:11  11:25:11  usmdb (Generic MDB account)
+Added messy fudge to allocate a BUFR Local B table for merge
+data retrieval - S.Cox
+
+Revision 1.2  99/11/11  10:48:09  10:48:09  usmdb (Generic MDB account)
+Now reads QC_MODEL info from MDB.METVIEW.TABLES and
+uses it to decide whether model data is available for
+the subtype. MDB.METVIEW.TABLES contains pointers to
+separate BUFR sequence libraries for merged & non-merged
+data - S.Cox
+
+Revision 1.1  99/11/11  09:50:03  09:50:03  usmdb (Generic MDB account)
+Initial revision
+------------------------------------------------------------------ */
+
+/*-----------------------------------------------------------------
+  MDBMVIEW expects 2 arguments (parm1 and hfsfile) - get these.
+  -----------------------------------------------------------------*/
+
+parse arg parm1 hfsfile
+
+datim = date('O') time('N')
+say datim 'MDBMVIEW: MetDB retrieval for Metview called'
+say datim 'MDBMVIEW: input arg parm1    = ' parm1
+say datim 'MDBMVIEW: input arg hfsfile = ' hfsfile
+
+/*-------------------------------------------------------------------
+  remove all spaces from parm1. Then parse parm1 to extract
+  variables obstype, date, time, range & area. Variables are
+  delimitted by ","
+  -------------------------------------------------------------------*/
+
+parm1 = space(parm1,0)
+
+parse upper var parm1 1 . 'OBSTYPE='  obstype ',' . ,
+                      1 . 'DATE='     date ',' . ,
+                      1 . 'TIME='     time ',' . ,
+                      1 . 'RANGE='    range ',' . ,
+                      1 . 'AREA='     area ',' . ,
+                      1 . 'QC_MODEL=' qc_model ',' .
+
+/*-------------------------------------------------------------------
+  Right justify variables (left padded with spaces). The REXXVAR
+  calls in the METVIEW load module specify string lengths.
+  -------------------------------------------------------------------*/
+
+obstype    = justify(obstype,12,' ')
+date       = justify(date,8,' ')
+time       = justify(time,4,' ')
+range      = justify(range,6,' ')
+area       = justify(area,40,' ')
+qc_model   = left(qc_model,4,' ')      /* left justify */      /* 1.8 */
+
+datim = date('O') time('N')
+say datim 'MDBMVIEW: obstype  = ' obstype
+say datim 'MDBMVIEW: date     = ' date
+say datim 'MDBMVIEW: time     = ' time
+say datim 'MDBMVIEW: range    = ' range
+say datim 'MDBMVIEW: area     = ' area
+say datim 'MDBMVIEW: qc_model = ' qc_model
+
+/*-------------------------------------------------------------------
+  generate unique dataset for the MVS BUFR output and any FT06
+  output from the MDBMVIEW load module. Allocate the datasets
+  -------------------------------------------------------------------*/
+
+dat = date(o)
+tim = time(l)
+
+lq123 = 'PUBLIC.MDB.MV'
+lq4   = '.D'||substr(dat,1,2)||substr(dat,4,2)||substr(dat,7,2)
+lq5   = '.T'||substr(tim,1,2)||substr(tim,4,2)||substr(tim,7,2)
+lq6   = '.M'||substr(tim,10,6)
+
+ft06  = lq123||'FT06'||lq4||lq5||lq6
+bufr  = lq123||'BUFR'||lq4||lq5||lq6
+
+"ALLOC DA('"ft06"') FI(FT06F001) NEW LRECL(133)
+ BLK(1330) RECFM(F B) SPACE(25 25) TRACKS RELEASE"
+
+if RC \= 0 then do
+  say 'MDBMVIEW: ERROR: Could not allocate 'ft06
+  exit 1
+end
+
+"ALLOC DA('"bufr"') FI(FT45F001) NEW LRECL(512)
+ BLK(32256) RECFM(F B) SPACE(500 500) TRACKS RELEASE"
+
+if RC \= 0 then do
+  say 'MDBMVIEW: ERROR: Could not allocate 'bufr
+  exit 1
+end
+
+/*-------------------------------------------------------------------
+  read the MDB-ECMWF obstype look-up table. This holds a list of
+  ECMWF obstypes, with corresponding MDB subtypes and conversion
+  tables
+  -------------------------------------------------------------------*/
+
+"ALLOC FI(TABLEDS) DA('MDB.METVIEW.TABLES') SHR"
+
+"execio * diskr TABLEDS (stem tables. finis)"
+"FREE FI(TABLEDS)"
+
+/*-------------------------------------------------------------------
+  Match up the i/p obstype and the i/p qc_model with those in the
+  lookup table. If a match is found, allocate the appropriate
+  conversion table and call the MDB METVIEW load module
+  -------------------------------------------------------------------*/
+
+obstype_match  = 0
+qc_model_match = 0
+do i = 9 to tables.0
+  if obstype = word(tables.i,1) then do
+    obstype_match = 1
+    if qc_model = word(tables.i,2) then do
+      qc_model_match = 1
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: obstype matched. obstype = ' obstype
+      dsn = word(tables.i,4)
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: using table ' dsn
+
+      "ALLOC DA('"dsn"') FI(MDBUFSEQ) SHR"
+
+/*-------------------------------------------------------------------
+  Allocate Metview TABLEB.
+  -------------------------------------------------------------------*/
+
+      "ALLOC FI(TABLEB) DA('MDB.METVIEW.TABLEB') SHR INPUT"   /* 1.9 */
+
+/*-------------------------------------------------------------------
+  Call MDBMVIEW load module.
+  -------------------------------------------------------------------*/
+
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: About to call SYS1.SDBLOAD(MDBMVIEW)'
+
+      "CALL 'SYS1.SDBLOAD(MDBMVIEW)'"
+
+      if RC \= 0 then do
+        say 'MDBMVIEW: ERROR in MDBMVIEW load module'
+      end
+
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: After SYS1.SDBLOAD(MDBMVIEW)'       /* 1.8 */
+
+      "FREE FI(TABLEB)"                                        /* 1.9 */
+
+/*-------------------------------------------------------------------
+  ocopy the MVS bufr dataset to HFS file on open edition. Name of
+  file in argument hfsfile to this routine. If copy successful,
+  delete MVS bufr dataset.
+  -------------------------------------------------------------------*/
+
+      "ALLOC FI(OEFILE) PATH('"hfsfile"') PATHOPTS(ORDWR,OCREAT)",
+      "PATHMODE(SIRWXU,SIRWXG,SIRWXO) PATHDISP(KEEP,KEEP)"
+
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: About to ocopy ' bufr ' to ' hfsfile
+
+      "OCOPY INDD(FT45F001) OUTDD(OEFILE) BINARY"
+
+      if RC = 0 then do
+        "DELETE '"bufr"'"
+      end
+
+      datim = date('O') time('N')
+      say datim 'MDBMVIEW: After ocopy and delete'
+
+      "FREE FI(OEFILE MDBUFSEQ FT06F001)"
+
+      leave
+    end    /* qc_model match block */
+  end    /* obstype match block */
+end    /* i loop */
+
+if obstype_match = 0 then do
+  datim = date('O') time('N')
+  say datim 'MDBMVIEW: metview obstype not found. obstype = ' obstype
+end
+
+if qc_model_match = 0 then do
+  datim = date('O') time('N')
+  say datim 'MDBMVIEW: No 'qc_model ' data for obstype = 'obstype
+end
+
+datim = date('O') time('N')
+say datim 'MDBMVIEW: End of routine'
+
+EXIT 0

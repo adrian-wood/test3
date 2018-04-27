@@ -1,0 +1,17 @@
+00 13 * * 2 /net/home/h01/usmdb/GetBufrTables/GetBufrTables.sh 1>/dev/null 2>&1
+00,30 * * * * /net/home/h01/httpd/cgi-bin/amdar_flight_info/remove.sh 1>/dev/null 2>&1
+00 07 * * * /net/home/h01/mdb_new/op/stats/stats_compare.pl 1>/dev/null 2>&1
+03 03 * * * /net/home/h01/mdb_new/scripts/ci_register 1>/net/home/h01/mdb_new/scripts/ci_error 2>&1
+00 11 * * 2 /net/home/h01/mdb_new/scripts/get_abrvstnlist.sh  1>/net/home/h01/mdb_new/scripts/get_abrvstnlist_log 2>&1
+00 11 * * 2 /net/home/h01/mdb_new/scripts/get_icaolist.sh    1>/net/home/h01/mdb_new/scripts/get_icaolist_log 2>&1
+00 12 * * 2 /net/home/h01/mdb_new/scripts/get_fullstnlist.sh    1>/net/home/h01/mdb_new/scripts/get_fullstnlist_log 2>&1
+30 11 * * 2 /net/home/h01/usmdb/public_html/station/position.pl 1>/net/home/h01/usmdb/public_html/station/position.log 2>&1
+00 23 * * 2 /net/home/h01/usmdb/GetMdbSource/GetMdbSource.sh 1>/dev/null 2>/net/home/h01/usmdb/GetMdbSource/errorlog
+00 00 * * * /net/home/h01/mdb_new/op/scripts/stop_restart_storage 1>/var/tmp/usmdb/storage_log 2>&1
+
+# List of find commands used  to search for old files not required anymore and then delete them.
+# 05 01 * * * /usr/bin/find /net/home/h01/usmdb/public_html/tmo/data -atime +1 -exec rm -rf {} \;
+
+# run daily retrieval tests to compare preprod with prod
+30 07 * * * /home/h01/usmdb/moods/parallel_tests/scripts/daily_run.sh preprod >/dev/null 2>&1 &
+

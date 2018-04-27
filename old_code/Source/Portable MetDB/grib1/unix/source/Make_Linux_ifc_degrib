@@ -1,0 +1,452 @@
+#########################################################################
+#
+# FILE NAME      : Make_Linux_ifc_degrib
+#
+# TYPE           : Makefile
+#
+# PURPOSE        : used to make all the neccessary files for GRIB 
+#                  package.
+#
+# REVISION INFO  :
+#
+# $Revision: 2$
+# $Date: 18/01/2008 10:03:11$
+# $Folder: source$
+#
+# CHANGE HISTORY :
+#
+# $Log:
+#  2    Met_DB_Project 1.1         18/01/2008 10:03:11    Alison Weir
+#       Compiler options amended so that degrib compiles correctly.
+#  1    Met_DB_Project 1.0         06/07/2007 10:36:20    Alison Weir
+#       Version of Linux makefile for the GRIB package. This is like
+#       Make_Linux_ifc but includes the building of the degrib utility. As it
+#       stands, this part doesn't quite work, but did a few months ago, so
+#       included for info.
+# $
+#
+#########################################################################                                                                  
+#
+# Turn off default SUFFIX rules:
+# Tell compiler that .o's are dependent on .F's .f's and .c's
+
+.SUFFIXES:
+.SUFFIXES: .F .o
+.SUFFIXES: .f .o
+.SUFFIXES: .c .o
+
+DEFINES      = -DMAKEDEPEND -DLINUX_IFC_R4 -DUNDERSCORE
+CC           = gcc 
+CFLAGS       = -g  -I'./.' -O $(DEFINES) -Dprtbk1=prtbk1_ -Dprtbk2=prtbk2_ -Ddecode=decode_ 
+C_TO_F_FLAGS = -g -I'./.' -O $(DEFINES) -Dprtbk1=prtbk1_ -Dprtbk2=prtbk2_ -Ddecode=decode_ 
+FFLAGS       = $(DEFINES) -g -CA -CB -CS -CU
+FC           = ifc -w90 -w95 -nofor_main
+LIBDIR       = /usr/local/lib
+BINDIR       = /usr/local/bin
+# Name of library
+LIB = libgrib_ifc.a
+
+# Fortran source including pre-processor statements, *.F
+FSRCS        = analyse.F \
+               coder.F \
+ 	       decode.F \
+	       gbyte.F \
+	       gbytes.F \
+	       grib_edtn_1_dec.F \
+	       grib_edtn_1_enc.F \
+	       limited_extract.F \
+	       sbyte.F \
+	       sbytes.F
+# Fortran source not containing pre-processor statements, *.f
+fSRCES       = ceil_log2.f \
+	       prtbk1.f \
+	       prtbk2.f \
+               confp.f \
+	       decfp.f \
+	       find_mesgs.f \
+	       findbox.f \
+	       intarr_max.f \
+	       intarr_min.f \
+	       level_desc_dec.f \
+	       level_desc_enc.f \
+	       level_desc_table.f \
+	       offset.f \
+	       orig_centre_check.f \
+	       parameter_check.f \
+	       prbkn2.f \
+	       prtbin.f \
+	       range_check.f \
+	       realarr_max.f \
+	       realarr_min.f \
+	       time_range_dec.f \
+	       time_range_enc.f \
+	       time_range_table.f \
+	       time_unit_check.f
+# C source code *.c
+C_SOURCES    = degrib.c \
+               gd_free.c \
+	       gd_from_param_blocks.c\
+	       gd_new.c \
+	       gd_print.c \
+	       grib_chars_matched.c \
+	       grib_edtn_0_read.c \
+	       grib_free.c \
+	       grib_get_all.c \
+	       grib_handle_read_error.c \
+	       grib_insert_byte.c \
+	       grib_insert_byte.c \
+	       grib_new.c \
+	       grib_read.c \
+	       grib_read_block.c \
+	       grib_read_bytes.c \
+	       gribflags_to_flags.c \
+	       gribint_to_u_int.c \
+	       gribint_to_u_long.c \
+	       pd_free.c \
+	       pd_from_param_blocks.c \
+	       pd_new.c \
+	       pd_print.c \
+	       process_grib_file.c	       
+# define files for LIB objects
+LIBOBJ       = analyse.o \
+	       decode.o \
+	       prtbk1.o \
+	       prtbk2.o \
+               coder.o \
+	       gbyte.o \
+	       gbytes.o \
+	       grib_edtn_1_dec.o \
+	       grib_edtn_1_enc.o \
+	       limited_extract.o \
+	       sbyte.o \
+	       sbytes.o \
+	       ceil_log2.o \
+               confp.o \
+	       decfp.o \
+	       find_mesgs.o \
+	       findbox.o \
+	       intarr_max.o \
+	       intarr_min.o \
+	       level_desc_dec.o \
+	       level_desc_enc.o \
+	       level_desc_table.o \
+	       offset.o \
+	       orig_centre_check.o \
+	       parameter_check.o \
+	       prbkn2.o \
+	       prtbin.o \
+	       range_check.o \
+	       realarr_max.o \
+	       realarr_min.o \
+	       time_range_dec.o \
+	       time_range_enc.o \
+	       time_range_table.o \
+	       time_unit_check.o
+COBJ         = degrib.o \
+               gd_free.o \
+	       gd_from_param_blocks.o\
+	       gd_new.o \
+	       gd_print.o \
+	       grib_chars_matched.o \
+	       grib_edtn_0_read.o \
+	       grib_free.o \
+	       grib_get_all.o \
+	       grib_handle_read_error.o \
+	       grib_insert_byte.o \
+	       grib_insert_byte.o \
+	       grib_new.o \
+	       grib_read.o \
+	       grib_read_block.o \
+	       grib_read_bytes.o \
+	       gribflags_to_flags.o \
+	       gribint_to_u_int.o \
+	       gribint_to_u_long.o \
+	       pd_free.o \
+	       pd_from_param_blocks.o \
+	       pd_new.o \
+	       pd_print.o \
+	       process_grib_file.o
+
+
+# Name of decoding program
+DECODE_PROG = degrib
+
+DECODE_OBJS = degrib.o process_grib_file.o grib_read.o grib_edtn_0_read.o \
+              grib_read_block.o grib_read_bytes.o grib_handle_read_error.o \
+              gribint_to_u_int.o gribint_to_u_long.o gribflags_to_flags.o \
+              grib_free.o grib_new.o grib_chars_matched.o \
+              grib_insert_byte.o pd_from_param_blocks.o pd_print.o pd_free.o \
+              pd_new.o gd_from_param_blocks.o gd_print.o gd_free.o gd_new.o
+
+all:           $(LIB) $(DECODE_PROG)
+
+
+# Rule to make decoder program
+
+
+# Default rule, to make everything
+
+$(DECODE_PROG):  grib_get_all.o $(DECODE_OBJS) $(LIB)
+	$(FC) $(FFLAGS) -o $(DECODE_PROG) $(DECODE_OBJS) grib_get_all.o $(LIB) 
+
+
+$(LIB): ${LIBOBJ}
+	rm -f $@
+	ar rv $@ ${LIBOBJ} 
+
+.F.o:	$(FSRCS)
+	$(FC) $(FFLAGS) -c $<
+
+.f.o:	$(fSRCES)
+	$(FC) $(FFLAGS) -c $< 
+	
+.c.o:   ${C_SOURCES}
+	$(CC) $(CFLAGS) -c -o $*.o $*.c -I /opt/nag/lib/
+
+# clean is not a real target.
+.PHONY : clean
+
+# Rule to update dependancy information
+
+depend:
+	makedepend -fMake_Linux_ifc -I. -o .o -- $(CFLAGS) --  \
+            $(C_SOURCES)
+	@echo
+	@echo "Makefile updated."
+	
+
+# Workaround for bug in gcc whereby using -O causes arguments to be passed to
+# Fortran routines incorrectly.
+
+grib_get_all.o: grib_get_all.c
+	$(CC) $(C_TO_F_FLAGS) -c -o grib_get_all.o grib_get_all.c -I /opt/nag/lib/
+
+# Rule to clean up
+
+clean:
+	rm -f *.o $(LIB) $(DECODE_PROG)
+
+# Rule to install software (probably need to be root to invoke this)
+
+# install:              all
+#	cpset $(LIB)         $(LIBDIR) 644 bin bin
+#	cpset $(DECODE_PROG) $(BINDIR) 755 bin bin
+
+# The following is generated by makedepend(1). Use 'make depend' to update.
+# e.g.
+# makedepend -fMake_Linux_ifc -I. *.f *.c *.F
+
+# DO NOT DELETE
+
+degrib.o: /usr/include/stdio.h /usr/include/features.h
+degrib.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+degrib.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+degrib.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+degrib.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+degrib.o: /usr/include/_G_config.h /usr/include/wchar.h
+degrib.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+degrib.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+degrib.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+degrib.o: /usr/include/stdlib.h /usr/include/errno.h
+degrib.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
+degrib.o: /usr/include/asm/errno.h ./boolean.h ./stringterm.h
+gd_free.o: /usr/include/stdlib.h /usr/include/features.h
+gd_free.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+gd_free.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+gd_free.o: ./grid_description.h ./minmax.h ./portability.h
+gd_free.o: /usr/include/endian.h /usr/include/bits/endian.h
+gd_from_param_blocks.o: /usr/include/stdlib.h /usr/include/features.h
+gd_from_param_blocks.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+gd_from_param_blocks.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+gd_from_param_blocks.o: ./grid_description.h ./minmax.h ./portability.h
+gd_from_param_blocks.o: /usr/include/endian.h /usr/include/bits/endian.h
+gd_from_param_blocks.o: ./array.h
+gd_new.o: /usr/include/stdlib.h /usr/include/features.h
+gd_new.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+gd_new.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+gd_new.o: ./grid_description.h ./minmax.h ./portability.h
+gd_new.o: /usr/include/endian.h /usr/include/bits/endian.h
+gd_print.o: /usr/include/stdio.h /usr/include/features.h
+gd_print.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+gd_print.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+gd_print.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+gd_print.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+gd_print.o: /usr/include/_G_config.h /usr/include/wchar.h
+gd_print.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+gd_print.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+gd_print.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+gd_print.o: ./grid_description.h ./minmax.h ./portability.h
+gd_print.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_edtn_0_read.o: /usr/include/stdio.h /usr/include/features.h
+grib_edtn_0_read.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_edtn_0_read.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_edtn_0_read.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+grib_edtn_0_read.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_edtn_0_read.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_edtn_0_read.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_edtn_0_read.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_edtn_0_read.o: /usr/include/bits/stdio_lim.h
+grib_edtn_0_read.o: /usr/include/bits/sys_errlist.h ./grib.h ./portability.h
+grib_edtn_0_read.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_edtn_0_read.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_edtn_0_read.o: ./gribflags.h ./boolean.h ./array.h
+grib_free.o: /usr/include/stdlib.h /usr/include/features.h
+grib_free.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_free.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_free.o: ./grib.h /usr/include/stdio.h /usr/include/bits/types.h
+grib_free.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+grib_free.o: /usr/include/libio.h /usr/include/_G_config.h
+grib_free.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+grib_free.o: /usr/include/gconv.h
+grib_free.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_free.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+grib_free.o: ./portability.h /usr/include/endian.h /usr/include/bits/endian.h
+grib_free.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_get_all.o: /usr/include/math.h /usr/include/features.h
+grib_get_all.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_get_all.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+grib_get_all.o: /usr/include/bits/mathcalls.h ./grib.h /usr/include/stdio.h
+grib_get_all.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_get_all.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+grib_get_all.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_get_all.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_get_all.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_get_all.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_get_all.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+grib_get_all.o: ./portability.h /usr/include/endian.h
+grib_get_all.o: /usr/include/bits/endian.h ./product_definition.h
+grib_get_all.o: ./grid_description.h ./minmax.h ./boolean.h
+grib_handle_read_error.o: /usr/include/stdio.h /usr/include/features.h
+grib_handle_read_error.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_handle_read_error.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_handle_read_error.o: /usr/include/bits/types.h
+grib_handle_read_error.o: /usr/include/bits/wordsize.h
+grib_handle_read_error.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_handle_read_error.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_handle_read_error.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_handle_read_error.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_handle_read_error.o: /usr/include/bits/stdio_lim.h
+grib_handle_read_error.o: /usr/include/bits/sys_errlist.h ./grib.h
+grib_handle_read_error.o: ./portability.h /usr/include/endian.h
+grib_handle_read_error.o: /usr/include/bits/endian.h ./product_definition.h
+grib_handle_read_error.o: ./grid_description.h ./minmax.h
+grib_insert_byte.o: /usr/include/math.h /usr/include/features.h
+grib_insert_byte.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_insert_byte.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+grib_insert_byte.o: /usr/include/bits/mathcalls.h /usr/include/stdlib.h
+grib_insert_byte.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_insert_byte.o: ./grib.h /usr/include/stdio.h /usr/include/bits/types.h
+grib_insert_byte.o: /usr/include/bits/wordsize.h
+grib_insert_byte.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_insert_byte.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_insert_byte.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_insert_byte.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_insert_byte.o: /usr/include/bits/stdio_lim.h
+grib_insert_byte.o: /usr/include/bits/sys_errlist.h ./portability.h
+grib_insert_byte.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_insert_byte.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_insert_byte.o: ./boolean.h
+grib_insert_byte.o: /usr/include/math.h /usr/include/features.h
+grib_insert_byte.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_insert_byte.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+grib_insert_byte.o: /usr/include/bits/mathcalls.h /usr/include/stdlib.h
+grib_insert_byte.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_insert_byte.o: ./grib.h /usr/include/stdio.h /usr/include/bits/types.h
+grib_insert_byte.o: /usr/include/bits/wordsize.h
+grib_insert_byte.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_insert_byte.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_insert_byte.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_insert_byte.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_insert_byte.o: /usr/include/bits/stdio_lim.h
+grib_insert_byte.o: /usr/include/bits/sys_errlist.h ./portability.h
+grib_insert_byte.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_insert_byte.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_insert_byte.o: ./boolean.h
+grib_new.o: /usr/include/math.h /usr/include/features.h
+grib_new.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_new.o: /usr/include/bits/huge_val.h /usr/include/bits/mathdef.h
+grib_new.o: /usr/include/bits/mathcalls.h /usr/include/stdlib.h
+grib_new.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_new.o: ./grib.h /usr/include/stdio.h /usr/include/bits/types.h
+grib_new.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+grib_new.o: /usr/include/libio.h /usr/include/_G_config.h
+grib_new.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+grib_new.o: /usr/include/gconv.h
+grib_new.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_new.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+grib_new.o: ./portability.h /usr/include/endian.h /usr/include/bits/endian.h
+grib_new.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_read.o: /usr/include/stdio.h /usr/include/features.h
+grib_read.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_read.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_read.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+grib_read.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_read.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_read.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_read.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_read.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+grib_read.o: /usr/include/string.h ./grib.h ./portability.h
+grib_read.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_read.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_read.o: ./gribint.h
+grib_read_block.o: /usr/include/stdio.h /usr/include/features.h
+grib_read_block.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_read_block.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_read_block.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+grib_read_block.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_read_block.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_read_block.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_read_block.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_read_block.o: /usr/include/bits/stdio_lim.h
+grib_read_block.o: /usr/include/bits/sys_errlist.h ./grib.h ./portability.h
+grib_read_block.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_read_block.o: ./product_definition.h ./grid_description.h ./minmax.h
+grib_read_block.o: ./gribint.h
+grib_read_bytes.o: /usr/include/stdio.h /usr/include/features.h
+grib_read_bytes.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+grib_read_bytes.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+grib_read_bytes.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+grib_read_bytes.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+grib_read_bytes.o: /usr/include/_G_config.h /usr/include/wchar.h
+grib_read_bytes.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+grib_read_bytes.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+grib_read_bytes.o: /usr/include/bits/stdio_lim.h
+grib_read_bytes.o: /usr/include/bits/sys_errlist.h ./grib.h ./portability.h
+grib_read_bytes.o: /usr/include/endian.h /usr/include/bits/endian.h
+grib_read_bytes.o: ./product_definition.h ./grid_description.h ./minmax.h
+gribflags_to_flags.o: ./gribflags.h ./boolean.h
+gribint_to_u_int.o: ./gribint.h
+gribint_to_u_long.o: ./gribint.h
+pd_free.o: /usr/include/stdlib.h /usr/include/features.h
+pd_free.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+pd_free.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+pd_free.o: ./product_definition.h ./portability.h /usr/include/endian.h
+pd_free.o: /usr/include/bits/endian.h
+pd_from_param_blocks.o: ./product_definition.h ./portability.h
+pd_from_param_blocks.o: /usr/include/endian.h /usr/include/features.h
+pd_from_param_blocks.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+pd_from_param_blocks.o: /usr/include/bits/endian.h ./array.h
+pd_new.o: /usr/include/stdlib.h /usr/include/features.h
+pd_new.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+pd_new.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+pd_new.o: ./product_definition.h ./portability.h /usr/include/endian.h
+pd_new.o: /usr/include/bits/endian.h
+pd_print.o: ./product_definition.h ./portability.h /usr/include/endian.h
+pd_print.o: /usr/include/features.h /usr/include/sys/cdefs.h
+pd_print.o: /usr/include/gnu/stubs.h /usr/include/bits/endian.h
+process_grib_file.o: /usr/include/stdio.h /usr/include/features.h
+process_grib_file.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+process_grib_file.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stddef.h
+process_grib_file.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+process_grib_file.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+process_grib_file.o: /usr/include/_G_config.h /usr/include/wchar.h
+process_grib_file.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+process_grib_file.o: /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/include/stdarg.h
+process_grib_file.o: /usr/include/bits/stdio_lim.h
+process_grib_file.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+process_grib_file.o: /usr/include/errno.h /usr/include/bits/errno.h
+process_grib_file.o: /usr/include/linux/errno.h /usr/include/asm/errno.h
+process_grib_file.o: /usr/include/string.h ./boolean.h ./grib.h
+process_grib_file.o: ./portability.h /usr/include/endian.h
+process_grib_file.o: /usr/include/bits/endian.h ./product_definition.h
+process_grib_file.o: ./grid_description.h ./minmax.h

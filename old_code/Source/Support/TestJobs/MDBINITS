@@ -1,0 +1,90 @@
+//M12DBINT JOB (M12,DB,WDS0BF),MDB.TEAM.6951,MSGCLASS=Q,PRTY=8
+//*---------------------------------------------------------------------
+//*  JOB TO INITIALISE ONE OR MORE TEST MET.D.B. STORAGE DATA SETS IN
+//*  OLD FORMAT WHICH HAVE BUFR SEQUENCE RECORDS IN RECORD 2.  THE SIZE
+//*  OF THE OVERFLOW POOL WILL BE ADJUSTED TO INCLUDE ANY BLOCKS WHICH
+//*  WOULD OTHERWISE NOT BE USED, SO ONLY A ROUGH NUMBER IS NEEDED.
+//*
+//*  TO CREATE (OR REBUILD) A TEST STORAGE DATA SET:
+//*
+//*    1. IF REBUILDING, DELETE THE EXISTING DATA SET.
+//*    2. "VIEW" RATHER THAN "EDIT" THIS JOB (TO AVOID SAVING BY
+//*       ACCIDENT).
+//*    3. UNCOMMENT THE JCL FOR THE DATA TYPE(S) YOU WANT.
+//*    4. MAKE ANY NECESSARY MODIFICATIONS TO JCL.
+//*    5. SUBMIT THE JOB.
+//*    6. FOR PERMANENT JCL CHANGES, RE-OPEN THIS JOB IN "EDIT" AND
+//*       MAKE AND SAVE YOUR CHANGES.
+//*---------------------------------------------------------------------
+//*                                                    MAKE LOAD MODULE
+//MDBINITS EXEC FORT2CL,FPARMS='NOFIPS,CHARLEN(28000)'
+//FORT.SYSIN DD DSN=MDB.TESTJOBS(INITSRCE),DISP=SHR
+//           DD DSN=MDB.SOURCE(CHAR2),DISP=SHR
+//LKED.MPROG DD DSN=MET.PROGLIB,DISP=SHR
+//LKED.SYSIN DD *
+ INCLUDE MPROG(CLPARM)
+/*
+//*---------------------------------------------------------------------
+//INITS PROC CYLS=                     PROCEDURE TO INITIALISE DATA SET
+// EXEC FORT2G,
+// PARM='&CYLS,&BLOCK,&ENTRYLEN,&INDBLOKS,&HRSINBLK,&OFFSET,&OVERFLOS/'
+//GO.FT01F001 DD DSN=&DSN,DISP=(,CATLG),UNIT=DISK,VOL=SER=OPR011,
+//            DCB=(RECFM=F,BLKSIZE=&BLOCK),SPACE=(CYL,&CYLS)
+//LOCALSEQ DD DISP=SHR,DSN=SDB.BUFR.LOCALSEQ(&LOCSEQ)
+// PEND
+//*---------------------------------------------------------------------
+//*AIREPS EXEC INITS,DSN='TDB.AIREPS',CYLS=7,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=47,HRSINBLK=1,OFFSET=0,OVERFLOS=30,LOCSEQ='AIREPS'
+//*---------------------------------------------------------------------
+//*AMDARS EXEC INITS,DSN='TDB.AMDARS',CYLS=100,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=47,HRSINBLK=1,OFFSET=0,OVERFLOS=0,LOCSEQ='AMDARS'
+//*---------------------------------------------------------------------
+//*BUOYS  EXEC INITS,DSN='TDB.BUOY',CYLS=20,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=47,HRSINBLK=1,OFFSET=0,OVERFLOS=0,LOCSEQ='BUOY'
+//*---------------------------------------------------------------------
+//*ERSURA EXEC INITS,DSN='TDB.ERSURA',CYLS=3,BLOCK=23476,ENTRYLEN=12,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=3,OVERFLOS=0,LOCSEQ='ERSURA'
+//*---------------------------------------------------------------------
+//*ERSUWA EXEC INITS,DSN='TDB.ERSUWA',CYLS=2,BLOCK=23476,ENTRYLEN=12,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=3,OVERFLOS=0,LOCSEQ='ERSUWA'
+//*---------------------------------------------------------------------
+//*ESAWS  EXEC INITS,DSN='TDB.ESAWS',CYLS=4,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=0,OVERFLOS=90,LOCSEQ='ESAWS'
+//*---------------------------------------------------------------------
+//*LNDSYN EXEC INITS,DSN='TDB.LNDSYN',CYLS=90,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=0,OVERFLOS=800,LOCSEQ='SRFSYNOP'
+//*---------------------------------------------------------------------
+//*MOBSYN EXEC INITS,DSN='TDB.MOBSYN',CYLS=12,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=17,HRSINBLK=3,OFFSET=0,OVERFLOS=60,LOCSEQ='MOBSYN'
+//*---------------------------------------------------------------------
+//*PAOBS  EXEC INITS,DSN='TDB.PAOBS',CYLS=1,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=7,HRSINBLK=24,OFFSET=0,OVERFLOS=0,LOCSEQ='PAOBS'
+//*---------------------------------------------------------------------
+//*SATOBS EXEC INITS,DSN='TDB.SATOBS',CYLS=1,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=3,OVERFLOS=0,LOCSEQ='SATOB'
+//*---------------------------------------------------------------------
+//*SFERIC EXEC INITS,DSN='TDB.SFERICS',CYLS=8,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=4,HRSINBLK=24,OFFSET=0,OVERFLOS=0,LOCSEQ='SFERICS'
+//*---------------------------------------------------------------------
+//*SFLOC  EXEC INITS,DSN='TDB.SFLOC',CYLS=2,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=3,HRSINBLK=24,OFFSET=0,OVERFLOS=0,LOCSEQ='SFLOC'
+//*---------------------------------------------------------------------
+//*SHPSYN EXEC INITS,DSN='TDB.SHPSYN',CYLS=46,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=17,HRSINBLK=3,OFFSET=0,OVERFLOS=160,LOCSEQ='SHPSYNOP'
+//*---------------------------------------------------------------------
+//*SUBSEA EXEC INITS,DSN='TDB.SUBSEA',CYLS=25,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=8,HRSINBLK=24,OFFSET=0,OVERFLOS=0,LOCSEQ='BATHTESA'
+//*---------------------------------------------------------------------
+//*TRAKOB EXEC INITS,DSN='TDB.TRACKOB',CYLS=3,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=17,HRSINBLK=3,OFFSET=0,OVERFLOS=0,LOCSEQ='TRACKOB'
+//*---------------------------------------------------------------------
+//*TROPCL EXEC INITS,DSN='TDB.TROPCYCL',CYLS=1,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=7,HRSINBLK=24,OFFSET=0,OVERFLOS=0,LOCSEQ='TROPCYCL'
+//*---------------------------------------------------------------------
+//*UPRAIR EXEC INITS,DSN='TDB.UPRAIR',CYLS=22,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=4,HRSINBLK=12,OFFSET=9,OVERFLOS=220,LOCSEQ='UPPERAIR'
+//*---------------------------------------------------------------------
+//*WINPRO EXEC INITS,DSN='TDB.WINPRO',CYLS=10,BLOCK=27998,ENTRYLEN=23,
+//*       INDBLOKS=9,HRSINBLK=6,OFFSET=0,OVERFLOS=0,LOCSEQ='WINPRO'
+//*---------------------------------------------------------------------
+//

@@ -1,0 +1,21 @@
+MODULE valreq_mod
+  INTERFACE
+    SUBROUTINE VALREQ(ITYPE,FOUND,ITIME,IRECV,ICT,ITOD,IFAIL, &   !2.0
+                      CERR)
+
+    IMPLICIT NONE
+
+! Subroutine arguments:
+
+    INTEGER,      INTENT(INOUT) ::  ITYPE
+    LOGICAL,      INTENT(INOUT) ::  FOUND(:)
+    INTEGER,      INTENT(INOUT) ::  ITIME(9)
+    INTEGER,      INTENT(INOUT) ::  IRECV(10)
+    INTEGER,      INTENT(INOUT) ::  ICT(8)
+    INTEGER,      INTENT(INOUT) ::  ITOD
+    INTEGER,      INTENT(OUT) ::  IFAIL
+    CHARACTER(*), INTENT(OUT) ::  CERR
+
+    END SUBROUTINE VALREQ
+  END INTERFACE
+END MODULE valreq_mod

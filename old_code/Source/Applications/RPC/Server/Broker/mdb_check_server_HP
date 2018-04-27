@@ -1,0 +1,61 @@
+#---------------------------------------------------------------------
+#
+# Program      : mdb_check_server (HP version)
+#
+#              : NOTE: Revision name = mdb_check_server_HP, but routine
+#              :       must be renamed to mdb_check_server for usage.
+#
+# Language     : unix
+#
+# Description  : routine run on the HP to check if a main RPC server
+#              : has started or not. It performs a rpcinfo on the 
+#              : program number and checks the return. It will try 
+#              : 10 times, sleeping 1 second between retries, then
+#              : return to the caller if the server has not responded,
+#              : assuming a problem as the server should start within
+#              : 5 secs.
+#
+#
+# Called by    : mdb_rpc_broker
+#
+# Calls        :
+#
+# Arguments    : prognum  (ip) : program number to orpcinfo on
+#              : server   (ip) : server ip id e.g. ukmet, us0400
+#              : 0 or 1   (op) : 1 = server ready, 0 = not
+#
+# $Revision: 1$
+# $Date: 11/10/2006 11:35:22$
+# $Source: /home/us0400/mdb/op/lib/RPC/server/broker/RCS/mdb_check_server_HP,v $
+#
+# Changes      :
+#
+# 04-01-2001  Adapted from IBM REXX version
+#---------------------------------------------------------------------
+
+export prognum=`echo $1`
+export server=`echo $2`
+retries=10
+
+count=0
+while [ "${count}" -lt retries ]
+do
+  count=`expr ${count} + 1`
+  datim=`date -u +%y/%m/%d' '%H:%M:%S`
+  echo ${datim} 'mdb_check_server: check '${count}' of '${retries}' for server '${prognum}' on '${server}
+  rpcinfo -u ${server} ${prognum} >/dev/null 2>&1
+
+  if [ $? -eq 0 ]
+  then
+    datim=`date -u +%y/%m/%d' '%H:%M:%S`
+    echo ${datim} 'mdb_check_server: server '${prognum}' responds okay'
+    exit 1
+  else
+    datim=`date -u +%y/%m/%d' '%H:%M:%S`
+    echo ${datim} 'mdb_check_server: server '${prognum}' not ready, sleeping...'
+   sleep 1  
+  fi
+done
+
+exit 0
+

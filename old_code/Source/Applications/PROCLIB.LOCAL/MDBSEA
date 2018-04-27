@@ -1,0 +1,36 @@
+//MDBSEA PROC
+//*---------------------------------------------------------------------
+//*              CHECK FOR DUPLICATE JOB SUBMISSION.
+//*---------------------------------------------------------------------
+//DUPCHK  EXEC PGM=IKJEFT01,PARM='%CHKDUPLI'
+//SYSEXEC  DD  DSN=MET.EXECLIB,DISP=SHR
+//         DD  DSN=MET.EXECFLIB,DISP=SHR
+//SYSTSPRT DD  SYSOUT=Q
+//SYSTSIN  DD  DUMMY
+//*
+//*---------------------------------------------------------------------
+//*              MET.D.B. STORAGE JOB FOR OCEANIC DATA
+//*              -------------------------------------
+//*              (BUOY, BATHY, TESAC, TRACKOB, SEAICE)
+//*
+//*   FT02F001:  NAMELIST INPUT FOR THIS JOB.
+//*   FT06F001:  OUTPUT MESSAGES.
+//*   DATASETS:  LIST OF MET.D.B. STORAGE DATA SETS.
+//*   GTSHEAD:   LIST OF GTS HEADER RANGES SUPPLIED TO MONITOR JOB.
+//*   HEADERS:   TEMPORARY DATA SET FOR LIST OF GTS HEADER RANGES
+//*              USED BY THIS JOB.
+//*   DREGS:     DATA SET FOR DREGS MESSAGES.
+//*   SYSUDUMP:  OUTPUT FOR DUMP IF JOB ABENDS.
+//*---------------------------------------------------------------------
+//SEADATA EXEC PGM=MDBSTOR,REGION=4M,TIME=NOLIMIT,COND=(0,NE,DUPCHK)
+//STEPLIB  DD  DSN=MDB.LOADLIB,DISP=SHR
+//*
+//FT02F001 DD DSN=MDB.STORAGE.DATA(MDBSEA),LABEL=(,,,IN),DISP=SHR
+//FT06F001 DD SYSOUT=Q
+//DATASETS DD DSN=MDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//GTSHEAD  DD DSN=MDB.STORAGE.DATA(HDRSDB1),LABEL=(,,,IN),DISP=SHR
+//HEADERS  DD UNIT=SYSDA,SPACE=(TRK,(1,1),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=1920)
+//DREGS    DD DSN=MDB.DREGS.MDBSEA,DISP=SHR
+//SYSUDUMP DD SYSOUT=Q
+//

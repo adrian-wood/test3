@@ -1,0 +1,29 @@
+//MDBGOES PROC
+//*---------------------------------------------------------------------
+//*              CHECK FOR DUPLICATE JOB SUBMISSION.
+//*---------------------------------------------------------------------
+//DUPCHK  EXEC PGM=IKJEFT01,PARM='%CHKDUPLI'
+//SYSEXEC  DD  DSN=MET.EXECLIB,DISP=SHR
+//         DD  DSN=MET.EXECFLIB,DISP=SHR
+//SYSTSPRT DD  SYSOUT=Q
+//SYSTSIN  DD  DUMMY
+//*
+//*---------------------------------------------------------------------
+//*              MET.D.B. STORAGE JOB FOR GOESAMW DATA
+//*              -------------------------------------
+//*
+//*   FT06F001:  OUTPUT MESSAGES.
+//*   HEADERS:   LIST OF GTS HEADER RANGES FOR THIS JOB.
+//*   DATASETS:  LIST OF MET.D.B. STORAGE DATA SETS.
+//*   DREGS:     DATA SET FOR DREGS MESSAGES.
+//*   SYSUDUMP:  OUTPUT FOR DUMP IF JOB ABENDS.
+//*---------------------------------------------------------------------
+//GOESAMW EXEC PGM=GOESAMW,REGION=4M,TIME=NOLIMIT,COND=(0,NE,DUPCHK)
+//STEPLIB  DD  DSN=MDB.LOADLIB,DISP=SHR
+//*
+//FT06F001 DD SYSOUT=Q
+//HEADERS  DD DSN=MDB.STORAGE.DATA(HDRGAMW),LABEL=(,,,IN),DISP=SHR
+//DATASETS DD DSN=MDB.DATASETS,LABEL=(,,,IN),DISP=SHR
+//*DREGS    DD DSN=MDB.DREGS.MDBGOES,DISP=SHR
+//SYSUDUMP DD SYSOUT=Q
+//
