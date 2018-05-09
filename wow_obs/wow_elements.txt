@@ -1,0 +1,22 @@
+1 : Id                           :  id_from(WMO_BLCK_NMBR,WMO_STTN_NMBR)
+2 : Site Id                      :  sites.lookup(WMO_BLCK_NMBR,WMO_STTN_NMBR)
+3 : Site Authentication Key      :  %194699209197 
+4 : Report Date / Time           :  date_from(YEAR,MNTH,DAY,HOUR,MINT)
+5 : Max. Temp. (last 24hr)       :  get_daily_temp(MXMM_SRFC_AIR_TMPR,MXMM_SRFC_AIR_TMPR_PERD)
+6 : Total Cloud Cover            :  TOTL_CLOD_AMNT
+7 : Wind Gust                    :  convert_to_kts(MXMM_SRFC_GUST)
+8 : Present Weather              :  convert_ww(CRNT_WTHR_TYPE)
+9 : Ground State                 :  GRND_STAT_IDNY
+10: Grass Temp.                  :  convert_to_celsius(MNMM_GRSS_TMPR)
+11: Sunshine                     :  Q24HOUR_SUN_AMNT
+12: Mean Sea-Level Pressure      :  convert_to_mb(MSL_PESR)
+13: Pressure (At Station)        :  convert_to_mb(STTN_PESR)
+14: Relative Humidity            :  SRFC_RLTV_HUMDY
+15: Rainfall Accumulation        :  get_daily_rain(PRCTN_AMNT_SCTN1,PRCTN_PERD_SCTN1)
+16: Visibility                   :  convert_vis(HRZL_VSBLY)
+17: Min. Temp. (last 24hr)       :  get_daily_temp(MNMM_SRFC_AIR_TMPR,MNMM_SRFC_AIR_TMPR_PERD)
+18: Wind Direction               :  SRFC_WIND_DRCTN
+19: Wind Speed                   :  convert_to_kts(SRFC_WIND_SPED)
+20: Air Temperature              :  convert_to_celsius(SRFC_AIR_TMPR)
+21: Snow Depth                   :  convert_to_cm(SNOW_DPTH)
+22: Dew Point                    :  convert_to_celsius(SRFC_DEW_PONT_TMPR)
