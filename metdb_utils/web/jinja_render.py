@@ -1,9 +1,11 @@
-def jinja_render(directory, template_name, **kwargs):
+def jinja_render(directory, template_name, header='', **kwargs):
     """Render a web page using a Jinja2 template.
 
     Args:
         directory: the directory where the template is located.
         template_name: name of the Jinja2 template file.
+        header: optional content-type text field - required if calling from cgi
+             script.
         **kwargs: dictionary of keyword arguments used by the Jinja2 template.
 
      Returns:
@@ -13,5 +15,5 @@ def jinja_render(directory, template_name, **kwargs):
     loader = FileSystemLoader(directory)
     env = Environment(loader=loader)
     template = env.get_template(template_name)
-    output = template.render(**kwargs)
+    output = header + template.render(**kwargs)
     return output

@@ -1,0 +1,14 @@
+# environment variables for integration testing - must be full paths 
+
+BASE=/var/moods/regression
+SYS1=mdbap-preprod
+SYS2=mdbapus-prod
+TESTPLAN=/var/moods/regression/TestPlan.txt   
+TESTRESULTS=/var/moods/regression/TestResults.txt
+SCRIPTS=/var/moods/regression/scripts
+INDIR=/var/moods/regression/input
+OUTDIR=/var/www/html/regression/output
+BINDIR=/var/moods/regression/bin
+WEBROOT=/var/www/html/regression/
+WEBLINK=/mdb-apps/regression/archive
+ARCHIVEDIR=/var/www/html/regression/archive

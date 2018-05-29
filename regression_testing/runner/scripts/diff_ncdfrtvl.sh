@@ -11,14 +11,14 @@ echo "SCRIPTS $SCRIPTS"
 echo "INDIR $INDIR"
 echo "OUTDIR $OUTDIR"
 echo "BINDIR $BINDIR"
-
 if [ $# -ne 3 ]
 then
-  echo 'Usage:diff_grbrtvl.sh <input request> <system one> <system two>'
+  echo 'Usage:diff_ncdfrtvl.sh <input request> <system one> <system two>'
   exit 1
 fi  
 
 REQUEST=$1
+ln -sf $REQUEST INPUT
 inp=${REQUEST##/*/}
 SYS=( $2 $3 )
 
@@ -30,18 +30,17 @@ for system in ${SYS[*]}
 do
   echo "Running retrieval on $system"
   out_dir=$OUTDIR/$system/$datedir
-  out_dirs[$count]=$out_dir
+  out_dirs[$count]=$out_dir 
   mkdir -p $out_dir
 
   echo "set up RPC using set_rpc.sh $system"
   . $SCRIPTS/set_rpc.sh $system
   env | grep METDB
-  rm -f $out_dir/$inp.log
-  $BINDIR/getgrib.exe \
-               $out_dir/$inp.out \
-	       < $REQUEST \
-	        $out_dir/$inp.out >> $out_dir/$inp.log 2>&1
-  count=$(( count + 1 ))		
+  rm -f OUTPUT
+  $BINDIR/ncdfrtvl.exe \
+               >> $out_dir/$inp.log 2>&1
+  cp OUTPUT $out_dir/$inp.out             
+  count=$(( count + 1 ))	       
 done 
 echo "Retrievals complete"
 echo "Comparing outputs"
@@ -50,5 +49,7 @@ diff ${out_dirs[0]}/$inp.out ${out_dirs[1]}/$inp.out >/dev/null 2>&1
 rc=$?
 echo "diff rc is $rc"
 echo "complete"
+rm -f INPUT
+rm -f OUTPUT
 exit $rc
 
