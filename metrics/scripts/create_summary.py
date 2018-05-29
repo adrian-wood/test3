@@ -15,6 +15,7 @@
 #
 #
 # $Log:
+# MB-1743: Moved to mdb-apps.                                      SN
 # MB-1608: Version for Nagios XI graphs, based on code previously held
 #          in metdb-apps/metrics.                                  SN
 # $
@@ -43,18 +44,18 @@ def readcommand():
     parser = OptionParser(description=description)
 
     parser.add_option("-b", dest="base",
-                      default="/home/h01/usmdb/public_html/moods/sla_stats/",
+                      default="/var/www/html/metrics/",
                       help="Base directory.")
 
     parser.add_option("-t", dest="template",
-                      default="/html/summary_template.html",
+                      default="/summary_template.html",
                       help="Template HTML file relative to BASE dir.")
 
     parser.add_option("-d", dest="date",
                       help="date of PDF files yyyymmdd.")
 
     parser.add_option("-o", "--outfile", dest="outfile",
-                      default="/html/monthly_summary_%YYYYMMDD%.html",
+                      default="/monthly_summary_%YYYYMMDD%.html",
                       help="output file relative to BASE dir.")
 
     (options, args) = parser.parse_args()
@@ -119,7 +120,7 @@ def main():
         print "Error missing file: " + graph
         sys.exit(8)
 
-    webBase = "http://www-metdb/~usmdb/moods/sla_stats/"
+    webBase = "http://mdb-apps/metrics/"
     sla_report = webBase + sla
     graph_report = webBase + graph
 
