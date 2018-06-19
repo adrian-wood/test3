@@ -45,30 +45,26 @@ fi
 
 base_dir=$(grep ^base_dir $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
 
-if [[ ! -d $base_dir ]]; then
-  echo "Error: invalid config - base_dir=$base_dir"
-  exit 8
-fi
 
 # Get the output directory from the config file in a similar fashion
 output_dir=$(grep ^output_dir $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
 
-if [[ ! -d $output_dir ]]; then
-  echo "Error: invalid config - output_dir=$output_dir"
-  exit 8
-fi
+# Get the python path from the config file
+pypath=$(grep ^pythonpath $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
+echo 'pypath is '$pypath
+export PYTHONPATH=$PYTHONPATH:$pypath
 
 #
 # Run the retrieval
 #
-python $base_dir/get_data_for_wow.py -c $CONFIG
+python $base_dir/python/get_data.py -c $CONFIG
 
 exit
 # Not ready for this bit yet
 #
 # transfer output files to...
 #
-for f in $output_dir/wow*.csv
+for f in $output_dir/testwow*.csv
 do
 
   echo "copying $f to ..."

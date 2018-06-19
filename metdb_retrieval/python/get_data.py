@@ -1,11 +1,10 @@
 # ----------------------------------------------------------------------
 #
-# PROGRAM       : get_data_for_wow.py
+# PROGRAM       : get_data.py
 #
-# PURPOSE       : Retrieves metdb data and outputs a csv file in WOW
-#                 format.
+# PURPOSE       : Retrieves metdb data and outputs a csv file
 #
-# USAGE         : get_data_for_wow.py -c config.cfg
+# USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
 # MB-1683: May 2018 Original.                            Sheila Needham
@@ -24,6 +23,7 @@ import ConfigParser
 import csv
 import datetime as dt
 import getopt
+import importlib
 import metdb
 import numpy as np
 import string
@@ -151,218 +151,6 @@ class Elements():
 
 
 # ----------------------------------------------------------------------
-class Sites():
-    '''Class containing site details read from a site file (in csv format
-       with a header line).  Details are held in a dictionary where key
-       is WMO block/station (string) and value is the WOW site ID.
-    '''
-
-    def __init__(self, site_file):
-
-        self.site_lookup = {}
-        fp = open(site_file)
-        try:
-            with fp as sites:
-                site_reader = csv.DictReader(sites)
-                for site in site_reader:
-                    mo_site = site['Met_Office_Id']
-                    if mo_site in self.site_lookup:
-                        print 'WARNING: duplicate site in ', site_file,\
-                            mo_site
-                    else:
-                        self.site_lookup[mo_site] = site['Site Id']
-        except:
-            print 'ERROR: reading site data from ', site_file
-            sys.exit(2)
-        finally:
-            fp.close()
-        self.count = len(self.site_lookup)
-
-    def lookup(self, block, station):
-        '''Returns WOW site id for the given block and station number, or
-           None if not found.
-        '''
-
-        id = Local_funcs.id_from(block, station)
-        if id in self.site_lookup:
-            return self.site_lookup.get(id)
-        else:
-            return None
-
-    def required(self, obs, i):
-        '''Checks if the Ith observation is in the site table and returns
-           true or False accordingly.
-        '''
-        block = obs['WMO_BLCK_NMBR'][i]
-        station = obs['WMO_STTN_NMBR'][i]
-        if block == MDI or station == MDI:
-            return False
-        else:
-            id = self.lookup(block, station)
-            if id:
-                return True
-            else:
-                return False
-
-
-# ---------------------------------------------------------------------
-# This section has all the individual conversion functions that can be
-# called from the elements table.
-# ---------------------------------------------------------------------
-class Local_funcs():
-    @staticmethod
-    def convert_ww(code):
-        '''Returns a present weather code value from WMO table 4677 mapped
-           from BUFR table 020003.
-        '''
-        value = ''
-        if code is not MDI:
-            num = int(code)
-            if num in range(0, 101):  # up to but not including 101
-                value = str(code)
-            elif num in range(101, 200):
-                num = num - 100
-                value = str(num)
-            elif num in range(200, 508):
-                value = ''
-            elif num == 508:
-                value = '100'
-            else:
-                value = ''
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def convert_to_mb(pressure):
-        '''Returns a string representation of pressure in hPa (mb)
-           from an input pressure in Pa.
-        '''
-        value = ''
-        if pressure is not MDI:
-            value = '{:6.2f}'.format(pressure * 0.01)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def convert_to_kts(speed):
-        '''Converts from m/s to knots.
-        '''
-        value = ''
-        if speed is not MDI:
-            value = '{:.2f}'.format(speed * MPS2KTS)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def convert_to_cm(depth):
-        '''Converts snow depth in metres to cm.
-        '''
-        value = ''
-        if depth is not MDI:
-            if depth > 0:
-                depth = depth * 100.0
-            value = '{:.1f}'.format(depth)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def id_from(block, station):
-        '''Returns a string representation of WMO block and station
-           number from integer inputs of block and station.
-        '''
-        value = '{:02d}{:03d}'.format(block, station)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def convert_to_celsius(temp):
-        '''Returns a string representation of temperature in degrees
-           celsius from input real number in Kelvin.
-        '''
-        value = ''
-        if temp is not MDI:
-            value = '{:5.2f}'.format(temp - 273.15)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def get_daily_temp(temp, period):
-        '''Returns temperature in Celsius if the period is 12 hours.
-           Max temp over last 12 hours is reported at 18Z
-           Min temp over last 12 hours is reported at 06Z
-           Otherwise, missing data.
-        '''
-        value = ''
-        if period is not MDI:
-            if int(period) == -12:
-                if temp is not MDI:
-                    value = '{:.2f}'.format(temp - 273.15)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def get_daily_rain(rain, period):
-        '''Returns rainfall amount if the accumulation period is 24 hours.
-           Otherwise, missing data.
-        '''
-        value = ''
-        if period is not MDI:
-            if int(period) == -24:
-                if rain is not MDI:
-                    value = '{:.2f}'.format(rain)
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def convert_vis(num):
-        '''Returns a visibility code.
-        '''
-        value = ''
-        if num is not MDI:
-            if num >= 40000:
-                value = '9'
-            elif num >= 20000:
-                value = '8'
-            elif num >= 10000:
-                value = '7'
-            elif num >= 4000:
-                value = '6'
-            elif num >= 2000:
-                value = '5'
-            elif num >= 1000:
-                value = '4'
-            elif num >= 400:
-                value = '3'
-            elif num >= 200:
-                value = '2'
-            elif num >= 100:
-                value = '1'
-            else:
-                value = '0'
-
-        return value
-
-
-# ----------------------------------------------------------------------
-    @staticmethod
-    def date_from(year, month, day, hour, minute):
-        '''Returns a string representation of the date and time in the
-           wow csv format from input date/time in integers.
-        '''
-        value = '{:02d}/{:02d}/{:04d} {:02d}:{:02d}'.\
-            format(day, month, year, hour, minute)
-        return value
-
-
-# ----------------------------------------------------------------------
 def time_from_ref(ref, hour=None, start=True):
     '''Creates a MetDB format date/time string using the given
        parameters:
@@ -421,34 +209,19 @@ def process_function(expression, obs, i):
         func = None
     else:
         func = parts[0]
-
     if func:
         try:
-            if '.' in func:  # then it's a function from a specific instance
-                f = eval(func)
-                value = process(f, *args)
-            else:                  # it's one of the conversion functions
-                if hasattr(Local_funcs, func):
-                    f = getattr(Local_funcs, func)
-                    value = process(f, *args)
-                else:
-                    print 'Invalid function:', func
-                    sys.exit(2)
+            f = eval(func)
+            value = f(*args)
 
-        except TypeError:
-            print 'Wrong number of arguments for function', func
+        except:
+            print 'Error calling function', func
             sys.exit(2)
     else:
         num = args[0]
         if num is not MDI:
             value = str(num)
     return value
-
-
-# ----------------------------------------------------------------------
-def process(f, *args):
-    '''First argument is a function, the rest are arguments'''
-    return f(*args)
 
 
 # ----------------------------------------------------------------------
@@ -487,10 +260,20 @@ def main():
     print 'Config file - ', config_file
     print settings
 
-# Read site details into a dictionary whose key is WMO Id
+# Load any external modules
+    if hasattr(settings, 'package'):
+        pkg = settings.package
+	global package
+	package = importlib.import_module(pkg)
+	    
 
-    sites = Sites(settings.site_file)
-    print sites.count, ' sites read from', settings.site_file
+# Read site details if supplied                          
+    if hasattr(settings, 'site_file'):
+        site_file = settings.site_file
+        sites = package.sites.Sites(settings.site_file)
+        print sites.count, ' sites read from', settings.site_file
+    else:
+        sites = None
 
 # Read element details
 
@@ -511,8 +294,11 @@ def main():
     hours = settings.start_time
     hour_list = [int(t) for t in hours.split(',')]
 
-    platforms = settings.platform
-    platforms = platforms.replace(',', ' ')
+    if hasattr(settings, 'platform'):
+        platforms = settings.platform
+        platforms = platforms.replace(',', ' ')
+    else:
+        platforms = None
 
     nobs = 0       # counts the total number of obs retrieved
     csv_list = []  # list of lines to output
@@ -527,9 +313,12 @@ def main():
 
         keywords = ['START TIME ' + start_time,
                     'END TIME ' + end_time,
-                    'RECEIVED AFTER ' + rcpt_time,
-                    'PLATFORM ' + platforms]
+                    'RECEIVED AFTER ' + rcpt_time]
+	if platforms:
+	    keywords.append('PLATFORM ' + platforms)
+
         try:
+	    print 'Calling metdb',keywords,elements_list
             obs = metdb.obs(settings.contact,
                             settings.subtype,
                             keywords,
@@ -541,10 +330,13 @@ def main():
             continue  # with next hour
 
 # Loop over observations
-
+        print 'Looping',
         for i in range(len(obs)):
+	    if i%100 == 0:
+	        print '.',
+		sys.stdout.flush()
             output_csv = {}
-            if sites.required(obs, i):
+	    if (sites and sites.required(obs, i)) or sites is None:
                 for k, v in elements.element_map.iteritems():
                     expression = v[1]
                     output_csv[k] = process_function(expression, obs, i)
