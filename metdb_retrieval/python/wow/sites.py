@@ -1,7 +1,7 @@
 import sys
 import csv
 import numpy as np
-MDI = np.ma.masked
+
 
 # ----------------------------------------------------------------------
 class Sites():
@@ -56,5 +56,3 @@ class Sites():
                 return True
             else:
                 return False
-
-

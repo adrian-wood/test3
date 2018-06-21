@@ -2,14 +2,7 @@
     .. moduleauthor:: Sheila Needham
 """
 import numpy as np
-MDI = np.ma.masked
-MPS2KTS = 3600./1852.
-
-def valid_id(reg):
-    value = "AIRCRAFT"
-    if len(reg.strip()) > 0:
-        value = reg
-    return value
+from unit_utils import *
 
 
 # ---------------------------------------------------------------------
@@ -50,7 +43,7 @@ def convert_to_kts(speed):
     """
     value = ""
     if speed is not MDI:
-        value = "{:.2f}".format(speed * MPS2KTS)
+        value = "{:.2f}".format(mps_to_kts(speed))
     return value
 
 
@@ -82,7 +75,7 @@ def convert_to_celsius(temp):
     """
     value = ""
     if temp is not MDI:
-        value = "{:5.2f}".format(temp - 273.15)
+        value = "{:5.2f}".format(kelvin_to_celsius(temp))
     return value
 
 
@@ -97,7 +90,7 @@ def get_daily_temp(temp, period):
     if period is not MDI:
         if int(period) == -12:
             if temp is not MDI:
-                value = "{:.2f}".format(temp - 273.15)
+                value = "{:.2f}".format(kelvin_to_celsius(temp))
     return value
 
 
@@ -151,10 +144,3 @@ def date_from(year, month, day, hour, minute):
     value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}".\
         format(day, month, year, hour, minute)
     return value
-
-if __name__ == "__main__":
-    print "Testing unit_utils.convert"
-    print MPS2KTS
-    print "convert_to_kts", convert_to_kts(12)    
-    print "date_from", date_from(2018,6,1,12,34)
-    print "convert_to_mb", convert_to_mb(98010)

@@ -28,10 +28,9 @@ import metdb
 import numpy as np
 import string
 import sys
+from unit_utils import *
 
 TFMT = '%Y-%m-%dT%H:%M:%S'   # time format string
-MDI = np.ma.masked           # numPy missing data indicator
-MPS2KTS = 3600./1852.        # m/s to knots conversion
 sites = MDI
 
 
@@ -42,6 +41,7 @@ class Settings():
        names.'''
 
     def __init__(self, cfg):
+        """Read config file and initialise attributes from it."""
         self.parser = ConfigParser.SafeConfigParser()
         try:
             self.parser.read(cfg)
@@ -54,14 +54,14 @@ class Settings():
             sys.exit(2)
 
     def reset(self, sections):
-        '''Updates the config file. sections is a dictionary of name, value
+        """Update the config file. sections is a dictionary of name, value
            pairs.
-        '''
+        """
         for name, value in sections.iteritems():
             self.parser.set('REQUEST', name, value)
 
     def write_cfg(self, cfg):
-        '''Writes to a config file.'''
+        """Write to a config file."""
         try:
             with open(cfg, 'wb') as configfile:
                 self.parser.write(configfile)
@@ -69,9 +69,9 @@ class Settings():
             print 'Error writing config file ', cfg
 
     def __repr__(self):
-        '''This produces a nicely formatted string of config settings
+        """Produce a nicely formatted string of config settings
            for printing.
-        '''
+        """
         output = ''
         for section in self.parser.sections():
             for name, value in self.parser.items(section):
@@ -81,10 +81,13 @@ class Settings():
 
 # ----------------------------------------------------------------------
 class Elements():
-    '''Elements class contains details read from the element mapping
-       file.  This includes the CSV output column name and the MetDB
+    """Element details.
+
+       Contains details read from the element mapping file.
+       This includes the CSV output column name and the MetDB
        elements and/or functions needed to produce data for that
        column.
+
        The element file consists of three columns separated by colons:
          number - gives the order of the output fields        - row[0]
          csv column name - as defined by the wow csv format   - row[1]
@@ -93,11 +96,17 @@ class Elements():
        in upper-case.  Items preceded by % are fixed values.
        No nested functions (yet).
 
-       The element_map is a dictionary with key = the csv column
-       and value = a list of order and function.
-    '''
+       Attributes:
+           element_map (dict): key = the csv column and value = a
+                               list of order and function.
+    """
 
     def __init__(self, elem):
+        """Read elements file and initialise dictionary.
+
+           Args:
+               elem (str): element filename
+        """
         self.element_map = {}
         try:
             f = open(elem, 'r')
@@ -120,9 +129,14 @@ class Elements():
 
     @staticmethod
     def parse_elements(line):
-        '''Parses a string containing a mix of functions and element
-           names and returns a list of the element names.
-        '''
+        """Parse function text for upper-case element names.
+
+           Args:
+               line (str): line of text
+
+           Returns:
+               List of upper-case words
+        """
         s = line.translate(None, string.ascii_lowercase)  # del lower-case
         s = s.translate(None, '().')                       # del brackets
         s = s.strip('_')                                   # del _
@@ -130,9 +144,11 @@ class Elements():
         return s.split(',')
 
     def get_element_names(self):
-        '''This produces a list of unique element names by extracting
-           the upper-case words from all functions in the mapping table.
-        '''
+        """Extract unique set of element names for the metdb request.
+
+           Returns:
+               List of unique element names
+        """
         elements_list = []
         for k, v in self.element_map.iteritems():
             if '%' not in v[1]:
@@ -141,9 +157,12 @@ class Elements():
         return elements_list
 
     def __repr__(self):
-        '''This produces a nicely formatted string containing the
-           element details for printing.
-        '''
+        """Format element dictionary.
+
+           Returns:
+              String containing a nicely formatted table of element
+              details for printing.
+        """
         output = ''
         for k, v in self.element_map.iteritems():
             output += '{:35s}{:5s}{:40s}\n'.format(k, ' --- ', v[1])
@@ -152,8 +171,8 @@ class Elements():
 
 # ----------------------------------------------------------------------
 def time_from_ref(ref, hour=None, start=True):
-    '''Creates a MetDB format date/time string using the given
-       parameters:
+    """Create a MetDB format date/time string.
+
        Ref    - is a datetime object.
        hour   - is optional, if not given then ref is used.
        start  - is optional, default is True.
@@ -161,7 +180,7 @@ def time_from_ref(ref, hour=None, start=True):
        otherwise an end time is assumed and minutes is set to 59.
        If the requested hour is in the future then it uses the
        day before the ref date instead.
-    '''
+    """
     copy_ref = ref
     if hour is None:
         hr = ref.hour
@@ -180,13 +199,13 @@ def time_from_ref(ref, hour=None, start=True):
 
 # -------------------------------------------------------------------
 def process_function(expression, obs, i):
-    '''Gets arguments for the given function, evaluates it and
+    """Get arguments for the given function, evaluate it and
        returns the results as a string representation.
+
        obs is a numpy masked array as returned by the metdb call
        (therefore it can be indexed by element name).
-    '''
+    """
     global sites
-#   import pdb; pdb.set_trace()
 
 # get the variable names from the expression...
 
@@ -225,9 +244,8 @@ def process_function(expression, obs, i):
 
 
 # ----------------------------------------------------------------------
-def main():
-    '''Main program.
-    '''
+def get_data():
+    """Main program."""
 
 # sites is a global variable so that its functions can be used in the
 # generic process_function call without having to pass the instance
@@ -263,11 +281,10 @@ def main():
 # Load any external modules
     if hasattr(settings, 'package'):
         pkg = settings.package
-	global package
-	package = importlib.import_module(pkg)
-	    
+        global package
+        package = importlib.import_module(pkg)
 
-# Read site details if supplied                          
+# Read site details if supplied
     if hasattr(settings, 'site_file'):
         site_file = settings.site_file
         sites = package.sites.Sites(settings.site_file)
@@ -314,11 +331,11 @@ def main():
         keywords = ['START TIME ' + start_time,
                     'END TIME ' + end_time,
                     'RECEIVED AFTER ' + rcpt_time]
-	if platforms:
-	    keywords.append('PLATFORM ' + platforms)
+        if platforms:
+            keywords.append('PLATFORM ' + platforms)
 
         try:
-	    print 'Calling metdb',keywords,elements_list
+            print 'Calling metdb', keywords, elements_list
             obs = metdb.obs(settings.contact,
                             settings.subtype,
                             keywords,
@@ -327,16 +344,12 @@ def main():
             nobs += len(obs)
         except IOError:
             print 'WARNING non-zero return from MetDB'
-            continue  # with next hour
+            continue  # with next period
 
 # Loop over observations
-        print 'Looping',
         for i in range(len(obs)):
-	    if i%100 == 0:
-	        print '.',
-		sys.stdout.flush()
             output_csv = {}
-	    if (sites and sites.required(obs, i)) or sites is None:
+            if (sites and sites.required(obs, i)) or sites is None:
                 for k, v in elements.element_map.iteritems():
                     expression = v[1]
                     output_csv[k] = process_function(expression, obs, i)
@@ -373,4 +386,4 @@ def main():
     settings.write_cfg(config_file)
 
 if __name__ == '__main__':
-    main()
+    get_data()
