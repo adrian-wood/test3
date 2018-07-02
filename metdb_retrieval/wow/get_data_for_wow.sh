@@ -14,6 +14,7 @@
 # ARGUMENTS     : (1) config file
 #
 # REVISION INFO :
+# MB-1780: Jul 2018 FTP and notifications added.        Sheila Needham
 # MB-1638: May 2018 Original.                           Sheila Needham
 #
 #-----------------------------------------------------------------------
@@ -45,38 +46,68 @@ fi
 
 base_dir=$(grep ^base_dir $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
 
+if [[ ! -e "$base_dir" ]]; then
+  echo "Error: invalid base_dir" $base_dir
+  exit 8
+fi
 
 # Get the output directory from the config file in a similar fashion
 output_dir=$(grep ^output_dir $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
 
 # Get the python path from the config file
 pypath=$(grep ^pythonpath $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
-echo 'pypath is '$pypath
 export PYTHONPATH=$PYTHONPATH:$pypath
 
 #
 # Run the retrieval
 #
 python $base_dir/python/get_data.py -c $CONFIG
+rc=$?
+if [[ $rc -ne 0 ]]; then
+  echo "Errors in retrieval"
+  mailx -s "African WOW retrieval error" metdb@metoffice.gov.uk < $base_dir/wow/email.txt
+  exit 8
+fi
 
-exit
-# Not ready for this bit yet
 #
-# transfer output files to...
+# transfer output files to Dart
 #
-for f in $output_dir/testwow*.csv
-do
+num_files=$(ls -1 $output_dir/wow*.csv 2>/dev/null | wc -l)
+echo "$num_files files to transfer"
 
-  echo "copying $f to ..."
-  sftp dart.metoffice.gov.uk <<EOF
-cd /metdb/wow
+#  ... check that there are some to copy
+
+if [ "$num_files" -gt 0 ]
+then
+
+  ftplog=$(mktemp /tmp/ftplog.wow.XXXXXX)
+  echo "ftp logging to $ftplog"
+
+# Copy one at a time - to a temporary name first 
+
+  for f in $output_dir/wow*.csv
+  do
+    output=${f##/*/}
+    echo "copying $f to FTPCDN:$output"
+
+ftp -v excftpcdn <<EOF > $ftplog
 ascii
-put $f $f.tmp
-rename $f.tmp $f
+put $f $output.tmp
+rename $output.tmp $output
 quit
 EOF
+    cat $ftplog
+    grep 'Rename successful' $ftplog >/dev/null 2>&1
+    rc=$?
+    echo "rc from ftp = $rc"
+    if [ "$rc" -eq 0 ]
+    then
+      echo "deleting $f"
+      rm $f
+    fi
 
-  rm $f
-done
+  done
 
+
+fi
 

@@ -7,6 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1780: Jul 2018 Added _strptime to avoid import lock error.     SN
 # MB-1683: May 2018 Original.                            Sheila Needham
 #
 # ----------------------------------------------------------------------
@@ -26,6 +27,7 @@ import getopt
 import importlib
 import metdb
 import numpy as np
+import _strptime
 import string
 import sys
 from unit_utils import *

@@ -1,0 +1,7 @@
+Non-zero retrun code from get_data_for_wow.sh.
+Please see error logs in mdb-app:/tmp/get_wow_<yyyymmdd>_<hhmmss>.log
+
+Further documentation at https://metnet2/content/metdb-provision-data-wow-server
+
+sent from: mdb-apps
+
