@@ -1,6 +1,8 @@
 #!/bin/bash                                                                      
 #------------------------------------------------------------------------        
-# PURPOSE : Script to perform housekeeping for the moodsf account.
+# PURPOSE : Performs housekeeping for the moodsf account on mdb-apps.
+#------------------------------------------------------------------------
+# MB-1763 : Initial version.                               Andy Moorhouse
 #------------------------------------------------------------------------
 
 echo "$0: starting at `date`"
@@ -17,8 +19,7 @@ cd /var/moods/housekeeping
 echo "> Tidying up retrieved data_access.log files..."
 AGE=32
 BASE=/var/www/html/mdb_activity/data_access_logs/
-#SERVERS="mdbdb-prod mdbapop-prod mdbapus-prod"
-SERVERS="mdbdb-prod"
+SERVERS="mdbdb-prod mdbapop-prod mdbapus-prod"
 for SERVER in $SERVERS; do
 
     echo ">> tidying data_access.log files for $SERVER:"
@@ -41,7 +42,7 @@ for SERVER in $SERVERS; do
 
     # This may leave empty <MM> directories, so remove them if so
     echo ">> removing empty directories for $SERVER:"
-    find ./ -type d -empty -print
+    find ./ -type d -empty -print -delete
 
 done
 
@@ -50,7 +51,7 @@ done
 # /var/moods/mdb_activity/data/data_access_logs, so remove
 # any broken links there...
 echo ">> removing broken symlinks from processing area:"
-find -L /var/moods/mdb_activity/data/data_access_logs -type l -print
+find -L /var/moods/mdb_activity/data/data_access_logs -type l -print -delete
     
 echo "> ...done!"
 
