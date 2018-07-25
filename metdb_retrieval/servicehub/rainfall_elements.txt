@@ -1,0 +1,9 @@
+1 : Site ID                                      :            :  SITE_ID
+2 : Site Name                                    :            :  SITE_NAME
+3 : Region                                       :            :  REGN       
+4 : Latitude (angular degrees)                   : deg        :  LTTD                                     
+5 : Longitude (angular degrees)                  : deg        :  LNGD              
+6 : Report Date/Time (dd/mm/yyyy hh\:mm\:ssZ)    :            :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)
+7 : Event Type (code table 013206)               :            :  code_lookup(%013206,PRCTN_EVNT_TYPE)
+8 : Time period (minutes)                        : min        :  PRCTN_TIME_PERD 
+7 : Rainfall amount (kilograms per square meter) : kg/m2      :  package.convert.get_rain(PRCTN_AMNT)
