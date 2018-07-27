@@ -1,0 +1,8 @@
+1 : Station ID                                         :            :  package.convert.id_from(WMO_STTN_INDX_NMBR)
+2 : Bulletin ID                                        :            :  BLTN_IDNY
+3 : Collecting centre                                  :            :  COLTN_CNTR
+4 : Latitude (angular degrees)                         : deg        :  LTTD                                     
+5 : Longitude (angular degrees)                        : deg        :  LNGD              
+6 : Report date/time (dd/mm/yyyy hh\:mmZ)              :            :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR)
+7 : Hourly rainfall amount (kilogram per square meter) : kg/m2      :  package.convert.get_rain(Q1HOUR_PRCTN_AMNT)
+8 : Correction number                                  :            :  CORTN_NMBR
