@@ -4,7 +4,7 @@
 
 This suite of programs performs retrievals from MetDB, creates flat files from the retrieved observations and FTPs the files to BADC via DART.
 
-For full details see 
+For full details see https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
 
 ### Fortran Code
 
@@ -16,7 +16,8 @@ The directory structure is as follows:
     retbadc.f90
     retclm.f90
     amdout.f90
-    ... ```
+    ... 
+```
 
 To create the executables:
 ``` cd BADC/source
@@ -34,13 +35,15 @@ gfortran -c amdout.f90
 ...
 gfortran retbadc.o datim_mod.o datim.o zpdate_mod.o mdbret.o amdout.o shpout.o lndout.o pltout.o ozpout.o ozsout.o rasout.o tmpout.o winout.o mtrout.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retbadc.exe
 gfortran -c retclm.f90
-gfortran retclm.o datim_mod.o datim.o zpdate_mod.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retclm.exe```
+gfortran retclm.o datim_mod.o datim.o zpdate_mod.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retclm.exe
+```
 
 Three executables will be created:
 ```ls -l *.exe
 -rwxrwxr-x. 1 ajmoorho ajmoorho 27544 Jul 30 15:42 cntlchk.exe
 -rwxrwxr-x. 1 ajmoorho ajmoorho 98304 Jul 30 15:42 retbadc.exe
--rwxrwxr-x. 1 ajmoorho ajmoorho 63680 Jul 30 15:42 retclm.exe```
+-rwxrwxr-x. 1 ajmoorho ajmoorho 63680 Jul 30 15:42 retclm.exe
+```
 
 ### `cylc` Scripts and Files
 
@@ -74,7 +77,8 @@ BADC/
     samples/
       amdars.ctl
       shpsyn.ctl
-      ...```
+      ...
+```
 
 To create a `cylc` suite to execute the programs:
 1. Copy the suite.rc files into the users `~/cylc-run` directory.
