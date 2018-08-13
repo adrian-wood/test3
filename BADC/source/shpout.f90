@@ -2,7 +2,7 @@
                           NELEM,NOBS,CSTR,IERR)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : SHPOUT
+! SUBROUTINE    : SHPOUT
 !
 ! PURPOSE       : OUTPUT SHIP SYNOP DATA FOR BADC
 !
@@ -67,30 +67,31 @@
 
       IMPLICIT NONE
 
-      INTEGER       MAXELS     ! MAX NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       MAXOBS     ! MAX NUMBER OF OBS IN INPUT ARRAY
-      INTEGER       NELEM      ! NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       NOBS       ! NUMBER OF OBSERVATIONS IN INPUT ARRAY
+! Subroutine arguments:
+      REAL, INTENT(IN)         :: RARRAY(MAXOBS,MAXELS)
+      INTEGER, INTENT(IN)      :: MAXOBS
+      INTEGER, INTENT(IN)      :: MAXELS
+      INTEGER, INTENT(IN)      :: NELEM
+      INTEGER, INTENT(IN)      :: NOBS
+      CHARACTER(*), INTENT(IN) :: CSTR(MAXOBS)
+      INTEGER, INTENT(OUT)     :: IERR
+
+! Local declarations:
       INTEGER       I,J,K      ! LOOP COUNTERS
-      INTEGER       IERR       ! Return code
       INTEGER       OBNUM      ! MAIN LOOP COUNTER
 
       INTEGER       N_HEADER_ELEMS     ! NUMBER HEADER ELEMS
       INTEGER       N_LEVELS           ! NUMBER LEVELS
       INTEGER       NELEMS_PER_LINE    ! NUMBER ELEMS PER LINE
-      CHARACTER*9   CALLSIGN
-      CHARACTER*4   CCCC               ! Collecting Centre
-      CHARACTER*4   BULLID             ! Bulletin ID
+      CHARACTER(9)  CALLSIGN
+      CHARACTER(4)  CCCC               ! Collecting Centre
+      CHARACTER(4)  BULLID             ! Bulletin ID
       INTEGER       IOS                ! OUTPUT STATUS
       INTEGER       DATE(5)            ! DATE ARRAY
       INTEGER       TOR1(5)            ! TIME OF RECEIPT ARRAY 1
       INTEGER       QCFLAGS(186)       ! Actual flags
       INTEGER       QCINDEX(30)        ! positions of flags
       INTEGER       INDX               ! used as array index
-
-      REAL          RARRAY(MAXOBS,MAXELS) ! INPUT OBSERVATIONS ARRAY
-
-      CHARACTER*80  CSTR(MAXOBS)          ! FOR CHARACTER ELEMENTS
 
       DATA QCINDEX/41,43,45,47,51,55,59,61,63,75,79,97,99, &
                    153,155,157,159,161,163,165,167,169,171, &
@@ -129,7 +130,7 @@
 
         DO J=1,30
           INDX=QCINDEX(J)
-          IF(RARRAY(OBNUM,INDX).LT.0)THEN
+          IF (RARRAY(OBNUM,INDX) < 0) THEN
             QCFLAGS(INDX+1)=-1
           ELSE
             QCFLAGS(INDX+1)=NINT(RARRAY(OBNUM,INDX))

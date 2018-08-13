@@ -53,11 +53,11 @@ use zpdate_mod
       PARAMETER      (IRECLEN=1620)  !output record length
       PARAMETER      (STRLEN=15000)  !max length of report string
 
-      CHARACTER*8    CSUBT
-      CHARACTER*100  CREQ
-      CHARACTER*9    CSTR(IOBS)
-      CHARACTER*14   ARUN
-      CHARACTER*(STRLEN) CREP(IOBS)
+      CHARACTER(8)   CSUBT
+      CHARACTER(100) CREQ
+      CHARACTER(9)   CSTR(IOBS)
+      CHARACTER(14)  ARUN
+      CHARACTER(STRLEN) CREP(IOBS)
       REAL           ARRAY(IOBS,IELS)
       INTEGER        NOBS
       INTEGER        NELEM
@@ -127,10 +127,10 @@ use zpdate_mod
 
           CALL MDB(CSUBT,CREQ,ARRAY,NOBS,NELEM,ISTAT,CSTR,CREP)
 
-          IF (ISTAT.LE.4 .AND. NOBS.GT.0) THEN
+          IF (ISTAT <= 4 .AND. NOBS > 0) THEN
             DO I=1,NOBS
               ILEN=ARRAY(I,1)
-              IF(ILEN.GT.STRLEN)THEN
+              IF( ILEN > STRLEN) THEN
                 WRITE(6,*)'WARNING:Report too long',ILEN
               ELSE
                 MNTHTOT=MNTHTOT+1
@@ -146,7 +146,7 @@ use zpdate_mod
             END DO
           ENDIF
 
-          IF (ISTAT.EQ.0) GOTO 9999
+          IF (ISTAT == 0) GOTO 9999
         ENDDO
 
         WRITE(6,*)'CLIMAT: Error in MetDB, ISTAT = ',ISTAT
@@ -159,7 +159,7 @@ use zpdate_mod
 !   decrement date by a month
 
         TIME(7)=TIME(7)-1
-        IF(TIME(7).EQ.0)THEN
+        IF (TIME(7) == 0) THEN
           TIME(7)=12
           TIME(8)=TIME(8)-1
         ENDIF
@@ -168,7 +168,7 @@ use zpdate_mod
 
 !  end of loop over months
 
-      IF (TOT .EQ. 0)THEN
+      IF (TOT == 0) THEN
         ISTAT = 8
       ELSE
         ISTAT=0
@@ -183,7 +183,7 @@ use zpdate_mod
       WRITE(6,'( 1X,''ISTAT      = '',I5)')ISTAT
       WRITE(6,'( 1X,''TOTAL      = '',I5)')TOT
 
-      IF(ISTAT.GT.0) call exit(ISTAT)
+      IF (ISTAT > 0) call exit(ISTAT)
 
       STOP
       END

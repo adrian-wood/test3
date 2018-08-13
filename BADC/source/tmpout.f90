@@ -2,7 +2,7 @@
                     NELEM,NOBS,CSTR,IERR)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : TMPOUT
+! SUBROUTINE    : TMPOUT
 !
 ! PURPOSE       : Output TEMP data for BADC
 !
@@ -40,16 +40,21 @@
 !
       IMPLICIT NONE
 
-      INTEGER       MAXELS     ! MAX NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       MAXOBS     ! MAX NUMBER OF OBS IN INPUT ARRAY
-      INTEGER       NELEM      ! NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       NOBS       ! NUMBER OF OBSERVATIONS IN INPUT ARRAY
-      INTEGER       IERR       ! Return Code
+! Subroutine arguments:
+      REAL, INTENT(IN)         :: RARRAY(MAXOBS,MAXELS)
+      INTEGER, INTENT(IN)      :: MAXOBS
+      INTEGER, INTENT(IN)      :: MAXELS
+      INTEGER, INTENT(IN)      :: NELEM
+      INTEGER, INTENT(IN)      :: NOBS
+      CHARACTER(*), INTENT(IN) :: CSTR(MAXOBS)
+      INTEGER, INTENT(OUT)     :: IERR
+
+! Local declarations:
       INTEGER       I,J,K,L,M  ! Loop counters
       INTEGER       OBNUM      ! Main loop counter
-      CHARACTER*9   CALLSIGN   !
-      CHARACTER*4   CCCC       ! Collecting centre
-      CHARACTER*4   BULLID     ! Bulletin ID.
+      CHARACTER(9)  CALLSIGN   !
+      CHARACTER(4)  CCCC       ! Collecting centre
+      CHARACTER(4)  BULLID     ! Bulletin ID.
 
       INTEGER       N_HEADER_ELEMS     ! NUMBER HEADER ELEMS
       INTEGER       N_LEVELS           ! NUMBER LEVELS
@@ -60,12 +65,7 @@
       INTEGER       REP_START          ! Ptr to start of replicated
                                        ! section
       INTEGER       MAX_LEVELS         ! defined in request string
-      CHARACTER*9   BLANK
-!     DATA BLANK/X'FFFFFFFFFFFFFFFFFF'/
-
-      REAL          RARRAY(MAXOBS,MAXELS) ! INPUT OBSERVATIONS ARRAY
-                                          !  ARRAY
-      CHARACTER*(*) CSTR(MAXOBS)          ! FOR CHARACTER ELEMENTS
+      CHARACTER(9)  BLANK
 
       DATA REP_START/58/
       DATA MAX_LEVELS/300/
@@ -92,9 +92,9 @@
 
 
         CALLSIGN='NULL'
-        IF(RARRAY(OBNUM,31).GT.-9999999.0)THEN
-          IF(CSTR(OBNUM)(1:9).NE.'         '.AND.  &
-                CSTR(OBNUM)(1:9).NE.BLANK)THEN
+        IF (RARRAY(OBNUM,31) > -9999999.0) THEN
+          IF (CSTR(OBNUM)(1:9) /= '         ' .AND.  &
+                CSTR(OBNUM)(1:9) /= BLANK) THEN
              CALLSIGN=CSTR(OBNUM)(1:9)
           ENDIF
         ENDIF
@@ -107,7 +107,7 @@
 ! have been returned - so just loop round max_levels.
 !-----------------------------------------------------------------------
 
-        IF(NINT(RARRAY(OBNUM,56)).EQ.0)THEN
+        IF (NINT(RARRAY(OBNUM,56)) == 0) THEN
           N_LEVELS=NINT(RARRAY(OBNUM,57))
         ELSE
           N_LEVELS=MAX_LEVELS

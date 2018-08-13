@@ -60,14 +60,14 @@ use datim_mod
       INTEGER       J       ! Loop counter
       INTEGER       TIME(8) ! Current date and time
       INTEGER       TIMNOW  ! Current century hour
-      CHARACTER*8   MODE    ! Type of run NORMAL,CATCHUP,SENDONLY
+      CHARACTER(8)  MODE    ! Type of run NORMAL,CATCHUP,SENDONLY
 
 
-      CHARACTER*14  ASTART  ! Start time for request
-      CHARACTER*14  AEND    ! End time for request
+      CHARACTER(14) ASTART  ! Start time for request
+      CHARACTER(14) AEND    ! End time for request
       INTEGER       NFREQ   ! Frequency of runs in hours
       INTEGER       TIMLAG  ! Period required before next retrieval
-      CHARACTER*16  ARUN    ! Date/time job ran
+      CHARACTER(16) ARUN    ! Date/time job ran
       INTEGER       ICOND   ! COND CODE from previous run
       INTEGER       TOTOBS  ! total obs from previous run
 
@@ -85,7 +85,7 @@ use datim_mod
       WRITE(6,*)'Mode is ',MODE
       IRC=0
 
-      IF(MODE.EQ.'SENDONLY')THEN
+      IF (MODE == 'SENDONLY') THEN
         WRITE(6,*)'Skipping date checks'
         IRC=10
         GOTO 999
@@ -122,7 +122,7 @@ use datim_mod
       READ(ASTART,'(i4,i2,i2,1x,i2,i2)')IY,IM,ID,IH,IMIN
       CALL DATE31(ID,IM,IY,ICD)
       ICH = (ICD-1)*24 + IH
-      IF(ICOND.EQ.0)THEN   ! increment hour
+      IF (ICOND == 0) THEN  ! increment hour
         ICH = ICH + NFREQ   ! increment hour
         IH=MOD(ICH,24)
         ICD = (ICH-IH)/24 + 1
@@ -130,7 +130,7 @@ use datim_mod
         WRITE(ASTART,'(i4.4,i2.2,i2.2,''/'',i2.2,i2.2,''Z'')'), &
                        IY,  IM,  ID,      IH,  IMIN
       ENDIF
-      IF (ICH+TIMLAG.GT.TIMNOW)THEN
+      IF (ICH+TIMLAG > TIMNOW) THEN
         WRITE(6,*)'Too early for this retrieval'
         IRC=1
         GOTO 999
@@ -141,7 +141,7 @@ use datim_mod
       READ(AEND,'(i4,i2,i2,1x,i2,i2)')IY,IM,ID,IH,IMIN
       CALL DATE31(ID,IM,IY,ICD)
       ICH = (ICD-1)*24 + IH
-      IF(ICOND.EQ.0)THEN                ! increment hour
+      IF (ICOND == 0) THEN                ! increment hour
         ICH = ICH + NFREQ
         IH=MOD(ICH,24)
         ICD = (ICH-IH)/24 + 1
@@ -149,18 +149,18 @@ use datim_mod
         WRITE(AEND,'(i4.4,i2.2,i2.2,''/'',i2.2,i2.2,''Z'')'), &
                      IY,  IM,  ID,      IH,  IMIN
       ENDIF
-      IF (ICH+TIMLAG.GT.TIMNOW)THEN
+      IF (ICH+TIMLAG > TIMNOW) THEN
         WRITE(6,*)'Too early for this retrieval'
         IRC=2
         GOTO 999
       ENDIF
 999   CONTINUE
-      IF(MODE.NE.'SENDONLY')THEN
+      IF (MODE /= 'SENDONLY') THEN
         WRITE(6,*)'New start:',astart
         WRITE(6,*)'New end  :',aend
       ENDIF
 
-      IF(IRC.GT.0) call exit(IRC)
+      IF (IRC > 0) call exit(IRC)
       STOP
 
       END

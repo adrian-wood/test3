@@ -2,7 +2,7 @@
                     NELEM,NOBS,CSTR,IERR)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : AMDOUT
+! SUBROUTINE    : AMDOUT
 !
 ! PURPOSE       : Output AMDAR data for BADC
 !
@@ -40,26 +40,27 @@
 !
       IMPLICIT NONE
 
-      INTEGER       MAXELS     ! MAX NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       MAXOBS     ! MAX NUMBER OF OBS IN INPUT ARRAY
-      INTEGER       NELEM      ! NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       NOBS       ! NUMBER OF OBSERVATIONS IN INPUT ARRAY
-      INTEGER       IERR       ! Return Code
+! Subroutine arguments:
+      REAL, INTENT(IN)         :: RARRAY(MAXOBS,MAXELS)
+      INTEGER, INTENT(IN)      :: MAXOBS
+      INTEGER, INTENT(IN)      :: MAXELS
+      INTEGER, INTENT(IN)      :: NELEM
+      INTEGER, INTENT(IN)      :: NOBS
+      CHARACTER(*), INTENT(IN) :: CSTR(MAXOBS)
+      INTEGER, INTENT(OUT)     :: IERR
+
+! Local declarations:
       INTEGER       I,J,K      ! Loop counters
       INTEGER       OBNUM      ! Main loop counter
 
       INTEGER       N_HEADER_ELEMS     ! NUMBER HEADER ELEMS
       INTEGER       N_LEVELS           ! NUMBER LEVELS
       INTEGER       NELEMS_PER_LINE    ! NUMBER ELEMS PER LINE
-      CHARACTER*8   CALLSIGN
-      CHARACTER*8   REGID              ! Registration number
+      CHARACTER(8)  CALLSIGN
+      CHARACTER(8)  REGID              ! Registration number
       INTEGER       IOS                ! File status
       INTEGER       DATE(6)            ! DATE ARRAY
       INTEGER       TOR1(5)            ! TIME OF RECEIPT ARRAY
-
-      REAL          RARRAY(MAXOBS,MAXELS) ! INPUT OBSERVATIONS ARRAY
-                                          !  ARRAY
-      CHARACTER*(*) CSTR(MAXOBS)          ! FOR CHARACTER ELEMENTS
 
       NELEMS_PER_LINE=0  ! Not needed for 1-D data
       N_HEADER_ELEMS=0   !
@@ -70,14 +71,14 @@
 
       DO OBNUM =1,NOBS                        ! REPORTS LOOP
         REGID='AIRCRAFT'        !Registration number
-        IF(RARRAY(OBNUM,12).GT.-9999999.0)THEN
-          IF(CSTR(OBNUM)(1:8).NE.'        ') &
+        IF (RARRAY(OBNUM,12) > -9999999.0) THEN
+          IF (CSTR(OBNUM)(1:8) /= '        ') &
                  REGID=CSTR(OBNUM)(1:8)
         ENDIF
 
         CALLSIGN='AIRCRAFT'        !Callsign
-        IF(RARRAY(OBNUM,13).GT.-9999999.0)THEN
-          IF(CSTR(OBNUM)(9:16).NE.'        ') &
+        IF (RARRAY(OBNUM,13) > -9999999.0) THEN
+          IF (CSTR(OBNUM)(9:16) /= '        ') &
                  CALLSIGN=CSTR(OBNUM)(9:16)
         ENDIF
 
@@ -100,8 +101,6 @@
         (RARRAY(OBNUM,J),J=14,35)
 
       END DO                                  ! REPORTS LOOP
-
-!      close(10)
 
       RETURN
 

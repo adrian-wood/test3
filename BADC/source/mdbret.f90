@@ -1,7 +1,7 @@
       SUBROUTINE MDBRET(CSUBT,CREQ,NELEM,ERRCOD,TOTOBS)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : MDBRET
+! SUBROUTINE    : MDBRET
 !
 ! PURPOSE       : Extracts data from the MDB and calls individual
 !                 output subroutines
@@ -112,9 +112,6 @@
             ELSEIF(CSUBT(1:6).EQ.'OZONEP')THEN
               CALL OZPOUT(RARRAY,MAXOBS,MAXELS, &
                           NELEM,NOBS,CSTR,IERR)
-            ELSEIF(CSUBT(1:6).EQ.'OZONES')THEN
-              CALL OZSOUT(RARRAY,MAXOBS,MAXELS, &
-                         NELEM,NOBS,CSTR,IERR)
             ELSEIF(CSUBT(1:6).EQ.'RASS  ')THEN
                CALL RASOUT(RARRAY,MAXOBS,MAXELS, &
                           NELEM,NOBS,CSTR,IERR)

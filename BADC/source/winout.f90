@@ -2,7 +2,7 @@
                     NELEM,NOBS,CSTR,IERR)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : WINOUT
+! SUBROUTINE    : WINOUT
 !
 ! PURPOSE       : Output WINPRO data for BADC
 !
@@ -40,11 +40,16 @@
 !
       IMPLICIT NONE
 
-      INTEGER       MAXELS     ! MAX NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       MAXOBS     ! MAX NUMBER OF OBS IN INPUT ARRAY
-      INTEGER       NELEM      ! NUMBER ELEMENTS IN INPUT ARRAY
-      INTEGER       NOBS       ! NUMBER OF OBSERVATIONS IN INPUT ARRAY
-      INTEGER       IERR       ! Return Code
+! Subroutine arguments:
+      REAL, INTENT(IN)         :: RARRAY(MAXOBS,MAXELS)
+      INTEGER, INTENT(IN)      :: MAXOBS
+      INTEGER, INTENT(IN)      :: MAXELS
+      INTEGER, INTENT(IN)      :: NELEM
+      INTEGER, INTENT(IN)      :: NOBS
+      CHARACTER(*), INTENT(IN) :: CSTR(MAXOBS)
+      INTEGER, INTENT(OUT)     :: IERR
+
+! Local declarations:
       INTEGER       I,J,K,L    ! Loop counters
       INTEGER       OBNUM      ! Main loop counter
 
@@ -57,13 +62,8 @@
       INTEGER       REP_START          !Start of replicated section
       INTEGER       MAX_LEVELS         !no of levels in req string
 
-      REAL          RARRAY(MAXOBS,MAXELS) ! INPUT OBSERVATIONS ARRAY
-                                          !  ARRAY
-      CHARACTER*(*) CSTR(MAXOBS)          ! FOR CHARACTER ELEMENTS
-
       DATA REP_START/30/
       DATA MAX_LEVELS/150/
-
 
       NELEMS_PER_LINE=11 !
       N_HEADER_ELEMS= 32 !   4 + 2*5 + 18

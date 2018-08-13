@@ -1,7 +1,7 @@
       SUBROUTINE MTROUT(MAXOBS,NOBS,CREP,IERR)
 !-----------------------------------------------------------------------
 !
-! PROGRAM       : MTROUT
+! SUBROUTINE    : MTROUT
 !
 ! PURPOSE       : Output METAR data for BADC
 !
@@ -36,14 +36,15 @@
 !
       IMPLICIT NONE
 
-      INTEGER       MAXOBS     ! Max number of obs
-      INTEGER       NOBS       ! NUMBER OF OBSERVATIONS IN INPUT ARRAY
-      INTEGER       IERR       ! Return Code
-      INTEGER       OBNUM      ! Loop counter
+! Subroutine arguments:
+      INTEGER, INTENT(IN)      :: MAXOBS
+      INTEGER, INTENT(IN)      :: NOBS
+      CHARACTER(*), INTENT(IN) :: CREP(MAXOBS)
+      INTEGER, INTENT(OUT)     :: IERR
 
+! Local declarations:
+      INTEGER       OBNUM      ! Loop counter
       INTEGER       IOS        ! File status
-                                          !  ARRAY
-      CHARACTER*(*) CREP(MAXOBS)          ! Report text
 
 
       IERR = 0

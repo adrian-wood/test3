@@ -56,44 +56,34 @@ use zpdate_mod
 
       IMPLICIT NONE
 
-      CHARACTER*14  AEND    ! End time for request
-      CHARACTER*16  ARUN    ! Date/time job ran
-      CHARACTER*14  ASTART  ! Start time for request
-      CHARACTER*14  AFTER   ! Date for RECEIVED AFTER keyword
-      CHARACTER*8   CSUBT   ! MetDB data subtype
-      LOGICAL       ENDODAT !  True when all input lines have been read
-      INTEGER       ERRCOD  ! Output error code
-      CHARACTER*80  HEAD    ! Source version details
-      INTEGER       I1      ! pointer to position in req string
-      INTEGER       ICOND   ! COND CODE from previous run
-      INTEGER       IY      ! year
-      INTEGER       IM      ! month
-      INTEGER       ID      ! day
-      INTEGER       IH      ! hour
-      INTEGER       IMIN    ! minute
-      INTEGER       ICD     ! century day
-      INTEGER       ICH     ! century hour
-      INTEGER       J       ! Loop counter
-      CHARACTER*80  LINE    ! One line of input request
-      INTEGER       NELEM   ! Number of elements to be retrieved
-      INTEGER       NFREQ   ! Frequency of runs in hours
-      INTEGER       NOBS    ! Total number of obs received
-      INTEGER       REQLEN  ! Length of request string
-      INTEGER       TIME(8) ! Current date and time
-      INTEGER       TIMLAG  ! not used in this program
-      CHARACTER*4000 TREQ   ! Request string for MetDB call
-      CHARACTER*4000 TEMPREQ ! Req string from ELEMENTS onwards
-      CHARACTER*7   MODE    ! 'CATCHUP' or 'NORMAL' on FT05
-
-
-!     HEAD='$Workfile: RETBADC$' //
-!    &     '$Revision: 2$ ' //
-!    &     '$Date: 02/06/2009 13:16:07$ '
-
-
-!***********************************************************************
-! END OF HEADER
-!***********************************************************************
+      CHARACTER(14) AEND      ! End time for request
+      CHARACTER(16) ARUN      ! Date/time job ran
+      CHARACTER(14) ASTART    ! Start time for request
+      CHARACTER(14) AFTER     ! Date for RECEIVED AFTER keyword
+      CHARACTER(8)  CSUBT     ! MetDB data subtype
+      LOGICAL       ENDODAT   !  True when all input lines have been read
+      INTEGER       ERRCOD    ! Output error code
+      CHARACTER(80) HEAD      ! Source version details
+      INTEGER       I1        ! pointer to position in req string
+      INTEGER       ICOND     ! COND CODE from previous run
+      INTEGER       IY        ! year
+      INTEGER       IM        ! month
+      INTEGER       ID        ! day
+      INTEGER       IH        ! hour
+      INTEGER       IMIN      ! minute
+      INTEGER       ICD       ! century day
+      INTEGER       ICH       ! century hour
+      INTEGER       J         ! Loop counter
+      CHARACTER(80) LINE      ! One line of input request
+      INTEGER       NELEM     ! Number of elements to be retrieved
+      INTEGER       NFREQ     ! Frequency of runs in hours
+      INTEGER       NOBS      ! Total number of obs received
+      INTEGER       REQLEN    ! Length of request string
+      INTEGER       TIME(8)   ! Current date and time
+      INTEGER       TIMLAG    ! not used in this program
+      CHARACTER(4000) TREQ    ! Request string for MetDB call
+      CHARACTER(4000) TEMPREQ ! Req string from ELEMENTS onwards
+      CHARACTER(7)  MODE      ! 'CATCHUP' or 'NORMAL' on FT05
 
 
       ERRCOD= 0  ! BADC OUTPUT ERROR CODE
@@ -101,7 +91,7 @@ use zpdate_mod
 
       READ(5,'(A7)',END=10)MODE
 10    CONTINUE
-      IF(MODE.NE.'NORMAL'.AND.MODE.NE.'CATCHUP')THEN
+      IF (MODE /= 'NORMAL' .AND. MODE /= 'CATCHUP') THEN
         WRITE(6,*)'Invalid mode ',MODE,'. Running with NORMAL.'
         MODE='NORMAL'
       ENDIF
@@ -122,7 +112,7 @@ use zpdate_mod
       ENDODAT=.FALSE.
       DO WHILE (.NOT.ENDODAT)
         READ(21,'(A80)')LINE
-        IF(LINE(1:9) .EQ. 'ENDOFDATA') THEN
+        IF (LINE(1:9) == 'ENDOFDATA') THEN
           ENDODAT = .TRUE.
         ELSE
           TREQ(I1:)=LINE
@@ -161,7 +151,7 @@ use zpdate_mod
 !*==========================================================
 ! Calculate new start and end times
 !*==========================================================
-      IF(MODE.EQ.'NORMAL')THEN   ! calculate new dates
+      IF (MODE == 'NORMAL') THEN   ! calculate new dates
 
 ! Start date
 
@@ -199,10 +189,10 @@ use zpdate_mod
       WRITE(6,'(''Ending at   '',A)')AEND
 ! If this is a rerun and previous run was sucessful, add keyword
 ! to restrict retrieval to extra data only
-      IF(MODE.EQ.'CATCHUP'.AND.ICOND.EQ.0)THEN
+      IF (MODE == 'CATCHUP' .AND. ICOND == 0) THEN
         AFTER=ARUN(1:13)//'Z'
         I1=INDEX(TREQ,'ELEMENTS')
-        IF (I1.GT.0)THEN
+        IF (I1 > 0) THEN
           TEMPREQ=TREQ(I1:)
           TREQ(I1:)='RECEIVED AFTER '//AFTER//' '
           TREQ(I1+31:)=TEMPREQ
@@ -214,14 +204,14 @@ use zpdate_mod
       ENDIF
 
       I1=INDEX(TREQ,'START TIME')
-      IF (I1.GT.0)THEN
+      IF (I1 > 0) THEN
          TREQ(I1+11:I1+24) = ASTART
       ELSE
         ERRCOD=2111
         GOTO 999
       ENDIF
       I1=INDEX(TREQ,'END TIME')
-      IF (I1.GT.0)THEN
+      IF (I1 > 0) THEN
          TREQ(I1+9:I1+22) = AEND
       ELSE
         ERRCOD=2112
@@ -235,9 +225,9 @@ use zpdate_mod
 !*==========================================================
 
       CALL MDBRET(CSUBT,TREQ,NELEM,ERRCOD,NOBS)
-      IF(ERRCOD.GT.0)THEN
+      IF (ERRCOD > 0) THEN
         WRITE(6,*)'ERROR: Returned from MDBRET ',ERRCOD
-        IF(ERRCOD.EQ.1008.AND.MODE.EQ.'CATCHUP')THEN
+        IF (ERRCOD == 1008 .AND. MODE == 'CATCHUP') THEN
           WRITE(6,*)'Resetting NO DATA error because this is a CATCHUP'
           ERRCOD=0
         ENDIF
@@ -267,7 +257,7 @@ use zpdate_mod
       close(22)
 
 
-      IF(ERRCOD.GT.0) call exit(ERRCOD)  
+      IF (ERRCOD > 0) call exit(ERRCOD)  
 
       STOP
       END
