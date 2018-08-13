@@ -33,7 +33,7 @@ gfortran -c datim_mod.f90
 gfortran -c mdbret.f90
 gfortran -c amdout.f90
 ...
-gfortran retbadc.o datim_mod.o datim.o zpdate_mod.o mdbret.o amdout.o shpout.o lndout.o pltout.o ozpout.o ozsout.o rasout.o tmpout.o winout.o mtrout.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retbadc.exe
+gfortran retbadc.o datim_mod.o datim.o zpdate_mod.o mdbret.o amdout.o shpout.o lndout.o pltout.o ozpout.o rasout.o tmpout.o winout.o mtrout.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retbadc.exe
 gfortran -c retclm.f90
 gfortran retclm.o datim_mod.o datim.o zpdate_mod.o /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a -o retclm.exe
 ```
@@ -47,7 +47,7 @@ Three executables will be created:
 
 ### `cylc` Scripts and Files
 
-The BADC suite is run on `,db-apps` by `cylc`. The `BADC/cylc` directory containes the various `suite.rc` files, shell scripts etc that are required to configure `cylc` to run the suites at the appropriate times.
+The BADC suite is run on `mdb-apps` by `cylc`. The `BADC/cylc` directory containes the various `suite.rc` files, shell scripts etc that are required to configure `cylc` to run the suites at the appropriate times.
 
 The directory structure is as follows:
 
@@ -82,5 +82,5 @@ BADC/
 
 To create a `cylc` suite to execute the programs:
 1. Copy the suite.rc files into the users `~/cylc-run` directory.
-1. `cylc start BADC/AMDARS`
-1. ...
+1. Amend the control files as necessary
+1. `cylc start BADC/AMDARS` etc
