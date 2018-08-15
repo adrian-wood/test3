@@ -92,7 +92,7 @@ use zpdate_mod
               'Date:',TIME(6),TIME(7),TIME(8),TIME(5),TIME(4)
 
 !  Get date and time of last run
-
+      open(22,file="FT22F001",action="readwrite",form="formatted")
       READ(22,'(A14)')ARUN
       WRITE(6,*)'Previous run was at ',ARUN
       CREQ(66:79)=ARUN
@@ -179,6 +179,7 @@ use zpdate_mod
       WRITE(22,'(A14)')ARUN
       WRITE(22,'(I4)')ISTAT
       WRITE(22,'(I8)')TOT
+      close(22)
 
       WRITE(6,'( 1X,''ISTAT      = '',I5)')ISTAT
       WRITE(6,'( 1X,''TOTAL      = '',I5)')TOT
