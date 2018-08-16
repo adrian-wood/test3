@@ -80,7 +80,8 @@ use zpdate_mod
       TOT = 0
       CSUBT = 'CLIMAT  '
 
-      CREQ='START TIME YYYYMM01/0000Z END TIME YYYYMMDD/2359Z  &
+      CREQ='START TIME YYYYMM01/0000Z &
+           &END TIME YYYYMMDD/2359Z &
            &RECEIVED AFTER YYYYMMDD/HHMMZ &
            &ELEMENTS &
            &RPRT_TEXT '
@@ -167,6 +168,9 @@ use zpdate_mod
       END DO
 
 !  end of loop over months
+
+      ISTAT=99  ! Kill the server
+      CALL MDB(CSUBT,CREQ,ARRAY,NOBS,NELEM,ISTAT,CSTR,CREP)
 
       IF (TOT == 0) THEN
         ISTAT = 8
