@@ -105,6 +105,7 @@ then
       if [ "$rc" -ne 0 ]
       then
         echo "FTP failed on both servers"
+        mailx -s "ServiceHub RAINFALL FTP error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
       else
         rm $infile
       fi
