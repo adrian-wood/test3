@@ -124,6 +124,8 @@ use zpdate_mod
 ! Keep calling MetDB while ISTAT = 0 or 4
 !---------------------------------------------------------
 
+        open(10,file="FT10F001",action="write",form="formatted",position="append")
+
         DO WHILE (ISTAT.LE.4)
 
           CALL MDB(CSUBT,CREQ,ARRAY,NOBS,NELEM,ISTAT,CSTR,CREP)
@@ -171,6 +173,7 @@ use zpdate_mod
 
       ISTAT=99  ! Kill the server
       CALL MDB(CSUBT,CREQ,ARRAY,NOBS,NELEM,ISTAT,CSTR,CREP)
+      close(10)
 
       IF (TOT == 0) THEN
         ISTAT = 8
