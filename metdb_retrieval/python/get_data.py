@@ -512,9 +512,6 @@ def get_data():
             hour_list = [int(t) for t in hours.split(',')]
             if all(h < 0 for h in hour_list):
                 hour_list = hours_back_from(now, hour_list)
-            else:
-                print 'Error: missed start_time formats-',hours
-                sys.exit(2) 
                     
     if len(hour_list) == 0:
         hour_list = [now.hour]
@@ -583,6 +580,9 @@ def get_data():
 
         if nobs > 0:
             outdir = settings.output_dir
+            # create output directory if neccessary
+            if not os.path.exists(outdir):
+                os.makedirs(outdir)
             output = outdir + '/' + settings.output_file
             output = output.replace('<timestamp>', timestamp)
             output = output.replace('<dt>', ob_dt)

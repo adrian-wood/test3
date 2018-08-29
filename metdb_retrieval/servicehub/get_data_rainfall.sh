@@ -2,16 +2,18 @@
 
 #-----------------------------------------------------------------------
 #
-# SCRIPT        : get_99_metars_data.sh   
+# SCRIPT        : get_data_rainfall.sh   
 #
-# PURPOSE       : Run python retrieval script to get METARS data for
-#                 ServiceHub. Non-UK stations.
+# PURPOSE       : Run python retrieval script to get RAINFALL data for
+#                 ServiceHub.
 #
 # CALLED BY     : moodsf cron  
 #
 # ARGUMENTS     : (1) config file
 #
 # REVISION INFO :
+#
+# MB-1790: Added FTP step
 #
 #-----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2018 - MET OFFICE. All Rights Reserved.
@@ -26,7 +28,7 @@
 module load scitools
 module display scitools 
 
-. /home/h01/ussn/metdb-misc/metdb_retrieval/servicehub/sendfile.sh
+. /var/moods/metdb_retrieval/servicehub/sendfile.sh
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <full_path_to_config_file>"
@@ -54,8 +56,9 @@ echo 'pypath is '$pypath
 export PYTHONPATH=$PYTHONPATH:$pypath
 
 # Path to ecCodes code/flag tables
-export ECCODES_DEFINITION_PATH=/home/h01/usmdb/eccodes/share/eccodes/definitions:\
-/home/h01/ussn/metdb-misc/metdb_retrieval/local_defs/
+export ECCODES_DEFINITION_PATH=/var/moods/eccodes/share/eccodes/definitions:\
+/var/moods/metdb_retrieval/local_defs/
+
 
 #
 # Run the retrieval
@@ -66,7 +69,7 @@ rc=$?
 
 if [[ $rc -ne 0 ]]; then
   echo "Errors in retrieval"
-  mailx -s "ServiceHub METARS retrieval error" metdb@metoffice.gov.uk < $base_dir/sevicehub/email.txt
+  mailx -s "ServiceHub RAINFALL retrieval error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
   exit 8
 fi
 
@@ -75,9 +78,9 @@ fi
 #
 CTS1=ssaftp01-zvopaph1
 CTS2=ssaftp02-zvopaph2
-DEST=metar-international-csv
+DEST=ea-rain-csv
 
-num_files=$(ls -1 $output_dir/99_metars_data*.csv 2>/dev/null | wc -l)
+num_files=$(ls -1 $output_dir/rainfall*.csv 2>/dev/null | wc -l)
 echo "$num_files files to transfer"
 
 #  ... check that there are some to copy
@@ -88,10 +91,9 @@ then
 # Copy one at a time - trying the secondary server if the first
 # one fails.
 
-  for infile in $output_dir/99_metars_data*.csv
+  for infile in $output_dir/rainfall*.csv
   do
-    temp=${infile##/*/}
-    outfile=${temp#*_}
+    outfile=${infile##/*/}
     sendfile $CTS1 $infile $DEST $outfile
     rc=$?
 
@@ -103,6 +105,7 @@ then
       if [ "$rc" -ne 0 ]
       then
         echo "FTP failed on both servers"
+        mailx -s "ServiceHub RAINFALL FTP error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
       else
         rm $infile
       fi

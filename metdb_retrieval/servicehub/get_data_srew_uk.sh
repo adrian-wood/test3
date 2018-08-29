@@ -2,10 +2,10 @@
 
 #-----------------------------------------------------------------------
 #
-# SCRIPT        : get_metars_data.sh   
+# SCRIPT        : get_data_srew_uk.sh   
 #
-# PURPOSE       : Run python retrieval script to get METARS data for
-#                 ServiceHub. UK stations only (EG)
+# PURPOSE       : Run python retrieval script to get SREW data for
+#                 ServiceHub. Block 03 only.
 #
 # CALLED BY     : moodsf cron  
 #
@@ -13,6 +13,7 @@
 #
 # REVISION INFO :
 #
+# MB-1790: Added FTP Step.                  
 #-----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2018 - MET OFFICE. All Rights Reserved.
 #
@@ -26,8 +27,9 @@
 module load scitools
 module display scitools 
 
-. /home/h01/ussn/metdb-misc/metdb_retrieval/servicehub/sendfile.sh
+. /var/moods/metdb_retrieval/servicehub/sendfile.sh
 
+# Check arguments
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <full_path_to_config_file>"
   exit 8
@@ -53,20 +55,15 @@ pypath=$(grep ^pythonpath $CONFIG | cut -d'=' -f2 | sed 's/^ *//;s/ *$//')
 echo 'pypath is '$pypath
 export PYTHONPATH=$PYTHONPATH:$pypath
 
-# Path to ecCodes code/flag tables
-export ECCODES_DEFINITION_PATH=/home/h01/usmdb/eccodes/share/eccodes/definitions:\
-/home/h01/ussn/metdb-misc/metdb_retrieval/local_defs/
-
 #
 # Run the retrieval
 #
 python $base_dir/python/get_data.py -c $CONFIG
-
 rc=$?
 
 if [[ $rc -ne 0 ]]; then
   echo "Errors in retrieval"
-  mailx -s "ServiceHub METARS retrieval error" metdb@metoffice.gov.uk < $base_dir/sevicehub/email.txt
+  mailx -s "ServiceHub SREW retrieval error" metdb@metoffice.gov.uk < $base_dir/sevicehub/email.txt
   exit 8
 fi
 
@@ -75,9 +72,9 @@ fi
 #
 CTS1=ssaftp01-zvopaph1
 CTS2=ssaftp02-zvopaph2
-DEST=metar-uk-csv
+DEST=srew-uk-csv
 
-num_files=$(ls -1 $output_dir/eg_metars_data*.csv 2>/dev/null | wc -l)
+num_files=$(ls -1 $output_dir/srew_data*.csv 2>/dev/null | wc -l)
 echo "$num_files files to transfer"
 
 #  ... check that there are some to copy
@@ -88,10 +85,9 @@ then
 # Copy one at a time - trying the secondary server if the first
 # one fails.
 
-  for infile in $output_dir/eg_metars_data*.csv
+  for infile in $output_dir/srew_data*.csv
   do
-    temp=${infile##/*/}
-    outfile=${temp#*_}
+    outfile=${infile##/*/}
     sendfile $CTS1 $infile $DEST $outfile
     rc=$?
 
@@ -103,13 +99,16 @@ then
       if [ "$rc" -ne 0 ]
       then
         echo "FTP failed on both servers"
+        mailx -s "ServiceHub SREW FTP error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
       else
+      #  cp $infile /tmp/sent03/$outfile
         rm $infile
       fi
     else
+    #  cp $infile /tmp/sent03/$outfile
       rm $infile
     fi
-
+    
   done
 
 fi
