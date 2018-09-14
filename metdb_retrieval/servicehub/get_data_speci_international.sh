@@ -2,10 +2,10 @@
 
 #-----------------------------------------------------------------------
 #
-# SCRIPT        : get_data_metar_uk.sh 
+# SCRIPT        : get_data_speci_international.sh
 #
-# PURPOSE       : Run python retrieval script to get METARS data for
-#                 ServiceHub. UK stations only (EG)
+# PURPOSE       : Run python retrieval script to get SPECI data for
+#                 ServiceHub. Non-UK stations.
 #
 # CALLED BY     : moodsf cron  
 #
@@ -66,7 +66,7 @@ rc=$?
 
 if [[ $rc -ne 0 ]]; then
   echo "Errors in retrieval"
-  mailx -s "ServiceHub METARS retrieval error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
+  mailx -s "ServiceHub SPECI retrieval error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
   exit 8
 fi
 
@@ -75,9 +75,9 @@ fi
 #
 CTS1=ssaftp01-zvopaph1
 CTS2=ssaftp02-zvopaph2
-DEST=metar-uk-csv
+DEST=speci-international-csv
 
-num_files=$(ls -1 $output_dir/metars_data*.csv 2>/dev/null | wc -l)
+num_files=$(ls -1 $output_dir/speci_data*.csv 2>/dev/null | wc -l)
 echo "$num_files files to transfer"
 
 #  ... check that there are some to copy
@@ -88,7 +88,7 @@ then
 # Copy one at a time - trying the secondary server if the first
 # one fails.
 
-  for infile in $output_dir/metars_data*.csv
+  for infile in $output_dir/speci_data*.csv
   do
     outfile=${infile##/*/}
     sendfile $CTS1 $infile $DEST $outfile
@@ -102,7 +102,7 @@ then
       if [ "$rc" -ne 0 ]
       then
         echo "FTP failed on both servers"
-        mailx -s "ServiceHub METAR FTP error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
+        mailx -s "ServiceHub SPECI FTP error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
       else
         rm $infile
       fi

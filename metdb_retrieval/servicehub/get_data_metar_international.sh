@@ -66,7 +66,7 @@ rc=$?
 
 if [[ $rc -ne 0 ]]; then
   echo "Errors in retrieval"
-  mailx -s "ServiceHub METARS retrieval error" metdb@metoffice.gov.uk < $base_dir/sevicehub/email.txt
+  mailx -s "ServiceHub METARS retrieval error" metdb@metoffice.gov.uk < $base_dir/servicehub/email.txt
   exit 8
 fi
 

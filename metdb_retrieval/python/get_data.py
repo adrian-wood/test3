@@ -41,6 +41,7 @@ from unit_utils import *
 # Local corrections for errors in the python subtypes module
 metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
 metdb.subtypes.DTYPE_MAPS["METARS"][u'STTN_RPRT_TYPE'] = 'i4'
+metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
 
 TFMT = '%Y-%m-%dT%H:%M:%S'   # time format string
 sites = MDI
