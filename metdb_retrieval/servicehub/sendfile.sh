@@ -16,6 +16,7 @@
 #
 # REVISION INFO :
 #
+# MB-1798: Switch to binary transfers to avoid extra CR problem  SN
 # MB-1790: First version.                                        Sheila Needham
 #
 #-----------------------------------------------------------------------
@@ -38,7 +39,7 @@ sendfile(){
   ftplog=$(mktemp /tmp/ftplog.XXXXXXXX)
 
 ftp -v $SERVER <<EOF > $ftplog
-ascii
+binary
 cd $DESTDIR/
 put $INFILE $OUTFILE.tmp
 rename $OUTFILE.tmp $OUTFILE

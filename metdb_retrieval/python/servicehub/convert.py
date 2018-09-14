@@ -1,6 +1,3 @@
-""" .. module:: convert
-    .. moduleauthor:: Sheila Needham
-"""
 import numpy as np
 from unit_utils import *
 
@@ -9,6 +6,19 @@ from unit_utils import *
 # This section has all the individual conversion functions that can be
 # called from the elements table.
 # ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+def metar_temp(value):
+    """Convert temperature from K to degrees c.
+       Specific for METARS which are converted from C to K by MetDB
+       using 273K.
+       parameter: float temperature in K or MDI
+       returns: string temperature in degrees C or MDI
+    """
+    result = ""
+    if value is not MDI:
+        result = "{:.0f}".format(value - 273)
+    return result
 
 
 # -----------------------------------------------------------------------

@@ -7,6 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1798: Aug 2018 New processing for replicated elements.         SN
 # MB-1789: Aug 2018 Optional headers; new column in elements file;
 #           test option; default start time; correct initialisation
 #           of csv output list.                                     SN
@@ -29,7 +30,6 @@ import datetime as dt
 import getopt
 import importlib
 import metdb
-metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
 import numpy as np
 import _strptime
 import re
@@ -37,6 +37,11 @@ import string
 import sys
 import traceback
 from unit_utils import *
+
+# Local corrections for errors in the python subtypes module
+metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
+metdb.subtypes.DTYPE_MAPS["METARS"][u'STTN_RPRT_TYPE'] = 'i4'
+metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
 
 TFMT = '%Y-%m-%dT%H:%M:%S'   # time format string
 sites = MDI
@@ -98,17 +103,22 @@ class Elements():
        column.
 
        The element file consists of four columns separated by colons:
-         number - gives the order of the output fields        - row[0]
+         number - not used in this version                    - row[0]
          csv column name - including optional units in brackets row[1]
          csv uom name - official unit abbreviation              row[2]
          metdb function/element names - to produce the output - row[3]
        The function must be in lower-case, the element names must be
        in upper-case.  Items preceded by % are fixed values.
+       A set of functions for handling replicated data have the word
+       'layer' in their name and they get special treatment.
        No nested functions (yet).
 
        Attributes:
            element_map (dict): key = the csv column and value = a
                                list of order, function and uom.
+           layer_map (dict): key = layer name and value = a list
+                             of max replications and process function
+                             as a string.
     """
 
     def __init__(self, elem):
@@ -123,6 +133,7 @@ class Elements():
         self.units = []        # just the units
         self.uom = []          # just the uom
         self.rows = 0          # count of rows
+        self.layer_map = {}    # any layer elements defined here
 
         try:
             f = open(elem, 'r')
@@ -133,12 +144,38 @@ class Elements():
                                  quoting=csv.QUOTE_NONE)
 
             e_reader = csv.reader(f, dialect='elements')
+            order = 0
             for row in e_reader:
-                order = int(row[0])
                 key = row[1].strip()
                 uom = row[2].strip()
                 func = row[3].strip()
-                self.element_map[key] = (order, func, uom)
+
+                if 'define_layer' in func:
+
+                    # process layer function. Do not add
+                    # element names to the map here because
+                    # this row of the table is just defining
+                    # the replicated set
+
+                    (key, value) = self.define_layer(func)
+                    self.layer_map[key] = value
+
+                elif 'from_layer' in func:
+
+                    # expand element into a number of replications.
+                    # Each new element will be prefixed with a count
+                    # delimited by underscores e.g.' _01_cloud_base'
+
+                    (new_entries, new_func) = self.from_layer(func)
+                    layer_count = 0
+                    for e in range(new_entries):
+                        order += 1
+                        layer_count += 1
+                        prefix = '_' + str(layer_count) + '_'
+                        self.element_map[prefix+key] = (order, new_func, uom)
+                else:
+                    order += 1
+                    self.element_map[key] = (order, func, uom)
             self.rows = len(self.element_map)
 
             # create ordered lists of keys, titles and units
@@ -168,10 +205,12 @@ class Elements():
            Returns:
                List of upper-case words
         """
-        s = line.translate(None, string.ascii_lowercase)   # del lower-case
-        s = s.translate(None, '().')                       # del brackets
-        s = s.strip('_')                                   # del _
-        s = s.strip(' ')                                   # del spaces
+        s = ''
+        if 'layer' not in line:
+            s = line.translate(None, string.ascii_lowercase)   # del lower-case
+            s = s.translate(None, '().')                       # del brackets
+            s = s.strip('_')                                   # del _
+            s = s.strip(' ')                                   # del spaces
         return list(filter(None, s.split(',')))
 
     def get_element_names(self):
@@ -189,6 +228,13 @@ class Elements():
                     elements.remove(e)
 
             elements_list = list(set(elements_list + elements))
+
+        # add any layer elements
+        for k, v in self.layer_map.iteritems():
+            for e in v[0]:
+                if e in elements_list:
+                    elements_list.remove(e)
+            elements_list.append(v)
         return elements_list
 
     def __repr__(self):
@@ -199,7 +245,8 @@ class Elements():
               details for printing.
         """
         output = ''
-        for k, v in self.element_map.iteritems():
+        for k, v in sorted(self.element_map.items(),
+                           key=lambda(k, (v1, v2, v3)): v1):
             output += '{:35s}{:5s}{:40s}\n'.format(k, ' --- ', v[1])
         return output
 
@@ -216,6 +263,66 @@ class Elements():
             title = field
             units = ''
         return (title, units)
+
+    def define_layer(self, expression):
+        """Extract layer name and contents from the function expression
+           given in the form (layer_name,contents...,count).
+           First argument is layer name which is used internally to
+           refer to a set of replicated elements, last is the max replication
+           count and the ones in between are the elements on that
+           layer.
+           Returns a tuple consisting of the layer name and a
+           nested list in the format required by the retieval module.
+           For example:
+
+           >>> define_layer(sig_wx,SIG_WX_INSY,SIG_WX_DSC,SIG_WX_PHNM,3)
+           ('sig_wx',(('SIG_WX_INSY','SIG_WX_DSC','SIG_WX_PHNM'),3))
+
+        """
+        pattern = re.compile("(.*)(\()(.*)(\))")
+        m = pattern.match(expression)
+        if m:
+            func = m.group(1)
+            argstr = m.group(3)
+        else:
+            print 'Error in define_layer:', expression
+            sys.exit(2)
+
+        args = argstr.split(',')
+        key = args[0]
+        value = ((tuple(args[1:-1])), int(args[-1]))
+        return (key, value)
+
+    def from_layer(self, expression):
+        """Extract the number of replications for this layer and
+           the function required for this element from the function
+           expression.
+           parameter: function expression
+           returns: the replication count and function.
+           For example:
+
+           >>> from_layer(sig_wx,code_lookup(%020192,SIG_WX_INSY_ID))
+           (3,'code_lookup(%020192,SIG_WX_INSY_ID)')
+        """
+        layers = 0
+        func = ''
+        # parse the expression to find the layer name and the
+        # element function
+        pattern = re.compile("(.*?\()(.*?),(.*?\))")
+        m = pattern.match(expression)
+        if m:
+            func = m.group(3)
+            layer_name = m.group(2)
+        else:
+            print 'Error in from_layer:', expression
+            sys.exit(2)
+        layers = self.layer_map[layer_name][1]
+
+        # remove outer function
+        if '(' not in func:
+            func = func.replace(')', '')
+
+        return (layers, func)
 
 
 # ----------------------------------------------------------------------
@@ -247,7 +354,25 @@ def time_from_ref(ref, hour=None, start=True):
 
 
 # -------------------------------------------------------------------
-def process_function(expression, obs, i):
+def hours_back_from(now, hours):
+    """Return the hour that is 'hours' back from now.
+       Parameters: now - a datetime object representing the current 
+                         time
+                   hours - a list of negative integers saying how 
+                           many hours to adjust by
+       Returns: integer list - adjusted hours
+    """
+    hour_list = []
+
+    ref = now
+    for h in hours:
+        hour_list.append((ref - dt.timedelta(hours=-h)).hour)
+    hour_list.append(ref.hour)
+    return hour_list
+
+
+# -------------------------------------------------------------------
+def process_function(expression, obs, i, number=None):
     """Get arguments for the given function, evaluate it and
        returns the results as a string representation.
 
@@ -265,10 +390,12 @@ def process_function(expression, obs, i):
 
     for a in args_list:
         if '%' not in a:
-            args.append(obs[a][i])
+            if number >= 0:
+                args.append(obs[a][i][number])
+            else:
+                args.append(obs[a][i])
         else:
             args.append(a[1:])
-
 # get the function name, if there is one
 
     parts = expression.split('(')
@@ -282,7 +409,7 @@ def process_function(expression, obs, i):
             value = f(*args)
 
         except:
-            print 'Error calling function', func
+            print 'Error calling function', func, args
             traceback.print_exc()
             sys.exit(2)
     else:
@@ -375,14 +502,18 @@ def get_data():
     this_run = now.strftime(TFMT)
     timestamp = now.strftime('%Y%m%dT%H%M%S')
 
-# hours is a list of request hours e.g. 00, 12 or blank to use the
-# current hour
+# hours is a list of request hours e.g. 00, 12, blank to use the
+# current hour or negative numbers for that number of hours 
+# previously (and will include the current hour too).
 
     hour_list = []
     if hasattr(settings, 'start_time'):
         hours = settings.start_time
         if hours:
             hour_list = [int(t) for t in hours.split(',')]
+            if all(h < 0 for h in hour_list):
+                hour_list = hours_back_from(now, hour_list)
+                    
     if len(hour_list) == 0:
         hour_list = [now.hour]
 
@@ -430,7 +561,16 @@ def get_data():
             if (sites and sites.required(obs, i)) or sites is None:
                 for k, v in elements.element_map.iteritems():
                     expression = v[1]
-                    output_csv[k] = process_function(expression, obs, i)
+                    # check if this is a layer element by looking for a
+                    # prefix on the key
+                    if k[0] == '_':
+                        numStr = k.split('_')[1]
+                        num = int(numStr) - 1
+                        output_csv[k] = process_function(expression,
+                                                         obs, i,
+                                                         number=num)
+                    else:
+                        output_csv[k] = process_function(expression, obs, i)
 
                 # end of loop over elements
                 csv_list.append(output_csv)
@@ -441,12 +581,15 @@ def get_data():
 
         if nobs > 0:
             outdir = settings.output_dir
+            # create output directory if neccessary
+            if not os.path.exists(outdir):
+                os.makedirs(outdir)
             output = outdir + '/' + settings.output_file
             output = output.replace('<timestamp>', timestamp)
             output = output.replace('<dt>', ob_dt)
 
             try:
-                f = open(output, 'wt')
+                f = open(output, 'wb')
 
                 # prepare file with ordered list of column names
                 writer = csv.DictWriter(f, fieldnames=elements.fields)
