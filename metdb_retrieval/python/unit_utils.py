@@ -1,3 +1,23 @@
+# ----------------------------------------------------------------------
+#
+# MODULE        : unit_utils.py
+#
+# PURPOSE       : Set of functions used to convert MetDB data to the
+#                 required output format.
+#
+# REVISION INFO :
+# MB-1803: Oct 2018 Change code/flag table output to let the csv module
+#                   handle quoting correctly.                        SN
+#
+# ----------------------------------------------------------------------
+# (C) CROWN COPYRIGHT 2018 - MET OFFICE. All Rights Reserved.
+#
+# Met Office, United Kingdom.
+#
+# The use, duplication and disclosure of this code is strictly
+# prohibited without the permission of The Meteorological Database
+# Team at the above address.
+# ----------------------------------------------------------------------
 import numpy as np
 import os
 import re
@@ -77,8 +97,9 @@ def code_lookup(fxy, value):
     else:
         decode = codevalue
 
-    # wrap the string in quotes in case it contains commas
-    return "'{}'".format(decode)
+    # String may contain commans but CSV module will wrap it in quotes
+    # automatically.
+    return '{}'.format(decode)
 
 
 # --------------------------------------------------------------------
@@ -88,8 +109,8 @@ def flag_lookup(fxy, value):
        from left to right where bit 1 is the most significant.
        parameters: string fxy descriptor
                    integer value to be decoded
-       returns: string text from flag table or the origin value as a string
-                if not found.
+       returns: string text from flag table or the original value as a
+                   string if not found.
     """
 
     if value is MDI:
@@ -99,16 +120,16 @@ def flag_lookup(fxy, value):
 
     missing = 2**bitwidth - 1
     decode = ''
-    if value == missing:
-        return "'{}'".format('--')
-    else:
-        for b in range(bitwidth):
-            if value % 2 == 1:
-                decode = decode + code_lookup(fxy, bitwidth - b)
-            value = value/2
+    for b in range(bitwidth):
+        if value % 2 == 1:
+            new_val = code_lookup(fxy, bitwidth - b)
+            if len(decode) == 0:
+                decode = new_val
+            else:
+                decode = decode + ';' + new_val
+        value = value/2
 
-    # replace consecutive quotes with a semi-colon to delimit flag items
-    return decode.replace('\'\'', ';')
+    return decode
 
 
 # --------------------------------------------------------------------
