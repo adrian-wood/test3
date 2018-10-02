@@ -49,12 +49,12 @@ Three executables will be created:
 
 The BADC suite is run on `mdb-apps` by `cylc`. The `BADC/cylc` directory containes the various `suite.rc` files, shell scripts etc that are required to configure `cylc` to run the suites at the appropriate times.
 
-The directory structure is as follows:
+The directory structure (in this repo) is as follows:
 
 ```
 BADC/
   cylc/
-    suites/
+    suites/    <--- sample suite.rc files for each datatype
       BADC/
         AMDARS/
           suite.rc
@@ -64,23 +64,32 @@ BADC/
           suite.rc
         ... etc
 
-    scripts/
+    scripts/   <--- shell scripts that the cylc suites run
       cntlchk.sh
-      catchup.sh
-      main.sh
-      ftp.sh
       errors.sh
+      ftp.sh
+      global_vars.sh 
+      retbadc.sh
+      retclm.sh
 
-    utils/
-      recreate_control_files.sh/py
+    utils/     <--- utility scripts, not executed by the cylc suites
+      check_control_files.sh
+      recreate_control_files.py
+      ... etc
 
-    samples/
-      amdars.ctl
-      shpsyn.ctl
-      ...
+    control_files/  <--- sample control files used by the suite, one for each datatype
+      MDB.BADC.AMDARS.CONTROL
+      MDB.BADC.CLIMAT.CONTROL
+      ... etc
+
+    elements/  <--- the element lists for retrieval, one for each dataype
+      MDB.BADC.DATA.AMDARS
+      MDB.BADC.DATA.CLIMAT
+      ... etc
 ```
 
 To create a `cylc` suite to execute the programs:
-1. Copy the suite.rc files into the users `~/cylc-run` directory.
-1. Amend the control files as necessary
-1. `cylc start BADC/AMDARS` etc
+1. Copy the `suites/BADC/*/suite.rc` files into the users `~/cylc-run/BADC` directory.
+1. Copy the other directories into `/var/moods/BADC`.
+1. Amend the control files as necessary.
+1. Start the suite by issuing `cylc start BADC/AMDARS` etc.
