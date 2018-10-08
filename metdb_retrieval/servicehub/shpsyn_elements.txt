@@ -1,0 +1,74 @@
+1 : platform_id                                                   :       :  package.convert.ship_id(BUOY_IDNY,CALL_SIGN)
+2 : bulletin_id                                                   :       :  BLTN_IDNY
+3 : collecting_centre                                             :       :  COLTN_CNTR
+4 : correction_number                                             :       :  CORTN_NMBR
+5 : amend_number                                                  :       :  AMND_NMBR
+6 : latitude (angular degrees)                                    : deg   :  LTTD                                     
+7 : longitude (angular degrees)                                   : deg   :  LNGD    
+8 : reported_wind_speed_units (flag table 002002)                 :       :  flag_lookup(%002002,SRFC_WIND_SPED_RCRDG_IDNY)
+9 : station_report_type (code table 002001)                       :       :  code_lookup(%002001,STTN_RPRT_TYPE)
+10: report_date_time (dd/mm/yyyy hh\:mmZ)                         :       :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+11: surface_wind_direction (degrees true)                         : deg   :  SRFC_WIND_DRCTN 
+12: surface_Wind_speed (meters per second)                        : m/s   :  SRFC_WIND_SPED
+13: start_period_of_maximum_gust (minutes)                        : min   :  SRFC_GUST_STRT_PERD
+14: end_period_of_maximum_gust (minutes)                          : min   :  SRFC_GUST_END_PERD
+15: maximum_gust_over_period (meters per second)                  : m/s   :  MXMM_SRFC_GUST
+16: start_period_of_high_mean_wind (minutes)                      : min   :  MXMM_MEAN_SRFC_WIND_SPED_STRT
+17: end_period_of_high_mean_wind (minutes)                        : min   :  MXMM_MEAN_SRFC_WIND_SPED_END
+18: maximum_mean_wind_speed (meters per second)                   : m/s   :  MXMM_MEAN_SRFC_WIND_SPED 
+19: horizontal_visibility (meters)                                : m     :  HRZL_VSBLY
+20: vertical_visibility (meters)                                  : m     :  VRTL_VSBLY
+21: current_weather (code table 020003)                           :       :  code_lookup(%020003,CRNT_WTHR_TYPE)
+22: past_weather_period (hours)                                   : h     :  PAST_WTHR_PERD
+23: primary_past_weather_type (code table 020004)                 :       :  code_lookup(%020004,PRMY_PAST_WTHR_TYPE)
+24: secondary_past_weather_type (code table 020005)               :       :  code_lookup(%020005,SCNY_PAST_WTHR_TYPE)
+25: surface_air_temperature (degree Celsius)                      : Cel   :  package.convert.synop_temp(SRFC_AIR_TMPR) 
+26: maximum_surface_air_temperature_period (hours)                : h     :  MXMM_SRFC_AIR_TMPR_PERD
+27: maximum_surface_air_temperature_over_period (Celsius)         : Cel   :  package.convert.synop_temp(MXMM_SRFC_AIR_TMPR)
+28: minimum_surface_air_temperature_period (hours)                : h     :  MNMM_SRFC_AIR_TMPR_PERD
+29: minimum_surface_air_temperature_over_period (Celsius)         : Cel   :  package.convert.synop_temp(MNMM_SRFC_AIR_TMPR)
+30: section_1_precipitation_period (hours)                        : h     :  PRCTN_PERD_SCTN1
+31: section_1_precipitation_amount (kilograms per square meter)   : kg/m2 :  package.convert.get_rain(PRCTN_AMNT_SCTN1)
+32: section_3_precipitation_period (hours)                        : h     :  PRCTN_PERD_SCTN3
+33: section_3_precipitation_amount (kilograms per square meter)   : kg/m2 :  package.convert.get_rain(PRCTN_AMNT_SCTN3)
+34: 24_hour_precipitation (killograms per square meter)           : kg/m2 :  package.convert.get_rain(Q24HOUR_PRCTN_AMNT)
+35: surface_dewpoint_temperature (degree Celsius)                 : Cel   :  package.convert.synop_temp(SRFC_DEW_PONT_TMPR)
+36: surface_relative_humidity (percent)                           : %     :  SRFC_RLTV_HUMDY
+37: mean_sea_level_pressure (Pascal)                              : Pa    :  MSL_PESR 
+38: 3_hour_pressure_tendency (code table 010063)                  :       :  code_lookup(%010063,Q3HOUR_PESR_TNDY)
+39: 3_hour_pressure_change (Pascal)                               : Pa    :  Q3HOUR_STTN_LEVL_PESR_DFFRC
+40: 24_hour_pressure_change (Pascal)                              : Pa    :  Q24HOUR_SRFC_PESR_DFFRC
+41: direction_of_movement_reporting_method (code table 025041)    :       :  code_lookup(%025041,MOBL_PLTM_DRCTN_RCRDG_IDNY)
+42: direction_of_movement (degrees)                               : deg   :  Q3HOUR_SHIP_DRCTN
+43: speed_of_movement_reporting_method (code table 025042)        :       :  code_lookup(%025042,MOBL_PLTM_SPED_RCRDG_IDNY)
+44: speed_of_movement (meters per second)                         : m/s   :  Q3HOUR_SHIP_SPED
+45: sea_temperature_measurement_method (code table 002038)        :       :  code_lookup(%002038,SEA_SRFC_TMPR_RCRDG_IDNY)
+46: sea_surface_temperature (Celsius)                             : Cel   :  package.convert.synop_temp(SEA_SRFC_TMPR)
+47: wet_bulb_measurement_method (code table 002039)               :       :  code_lookup(%002039,WET_BULB_RCRDG_IDNY)
+48: wet_bulb_temperature (Celsius)                                : Cel   :  package.convert.synop_temp(WET_BULB_TMPR)
+49: wind_wave_measurement_method (code table 002195)              :       :  code_lookup(%002195,WIND_WAVE_RCRDG_IDNY)
+50: period_of_wind_waves (seconds)                                : sec   :  WIND_WAVE_PERD
+51: height_of_wind_waves (meters)                                 : m     :  WIND_WAVE_HGHT
+52: primary_swell_wave_direction (degrees)                        : deg   :  PRMY_SWLL_WAVE_DRCTN
+53: primary_swell_wave_period (seconds)                           : sec   :  PRMY_SWLL_WAVE_PERD
+54: primary_swell_wave_height (meters)                            : m     :  PRMY_SWLL_WAVE_HGHT
+55: secondary_swell_wave_direction (seconds)                      : deg   :  SCNY_SWLL_WAVE_DRCTN
+56: secondary_swell_wave_period (seconds)                         : sec   :  SCNY_SWLL_WAVE_PERD
+57: secondary_swell_wave_height (meters)                          : m     :  SCNY_SWLL_WAVE_HGHT
+58: ship_ice_accretion_origin (flag table 020033)                 :       :  flag_lookup(%020033,ORGN_SHIP_ICE_ACRN)
+59: ship_ice_accretion_thickness (meters)                         : m     :  SHIP_ICE_THNS
+60: ship_ice_accretion_rate (code table 020032)                   :       :  code_lookup(%020032,SHIP_ICE_ACRN_SPED)
+61: sea_ice_concentration (code table 020034)                     :       :  code_lookup(%020034,CNTRN_SEA_ICE)
+62: sea_ice_age (code table 020037)                               :       :  code_lookup(%020037,SEA_ICE_AGE)
+63: land_ice_amount (code table 020035)                           :       :  code_lookup(%020035,LAND_ORGN_ICE_AMNT)
+64: principle_ice_edge_bearing (degrees)                          : deg   :  PRMY_SEA_ICE_EDGE_DRCTN
+65: ice_situation (code table 020036)                             :       :  code_lookup(%020036,Q3HOUR_SEA_ICE_EDGE_CDTN)
+66: low_cloud_type (code table 020012)                            :       :  code_lookup(%020012,LOW_CLOD_TYPE) 
+67: medium_cloud_type (code table 020012)                         :       :  code_lookup(%020012,MEDM_CLOD_TYPE) 
+68: high_cloud_type (code table 020012)                           :       :  code_lookup(%020012,HIGH_CLOD_TYPE) 
+69: lowest_cloud_amount (code table 020011)                       :       :  code_lookup(%020011,LWST_CLOD_AMNT)
+70: lowest_cloud_base_height (meters)                             :       :  LWST_CLOD_BASE_HGHT
+ 0:                                                               :       :  define_layer(cloud,CLOD_AMNT,CLOD_TYPE,CLOD_BASE_HGHT,4)
+71: cloud_amount (code table 020011)                              :       :  from_layer(cloud,code_lookup(%020011,CLOD_AMNT))	
+72: cloud_type (code table 020012)                                :       :  from_layer(cloud,code_lookup(%020012,CLOD_TYPE))
+73: cloud_base_height (meters)                                    : m     :  from_layer(cloud,CLOD_BASE_HGHT)

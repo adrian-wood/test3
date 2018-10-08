@@ -1,0 +1,27 @@
+# CRONTAB entries for ServiceHub retrievals.  ADD these to the moodsf crontab when changes are made:
+# e.g. crontab -l > crontemp
+# edit crontemp by replacing existing ServiceHub entries with these
+# crontab crontemp
+
+# SREW data for ServiceHub
+12,22,45 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/srew_uk.cfg >>/tmp/get_srew_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+15,25,46 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/srew_international.cfg >>/tmp/get_srew_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# RAINFALL data for ServiceHub
+25 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/rainfall.cfg >>/tmp/get_rainfall_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# METAR data for ServiceHub
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/metar_international.cfg >>/tmp/get_metar_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/metar_uk.cfg >>/tmp/get_metar_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# SPECI data for ServiceHub
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/speci_international.cfg >>/tmp/get_speci_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/speci_uk.cfg >>/tmp/get_speci_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# LNDSYN data for ServiceHub 
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/lndsyn_uk.cfg >>/tmp/get_lndsyn_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/lndsyn_international.cfg >>/tmp/get_lndsyn_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# SHPSYN data for ServiceHub
+30 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/shpsyn.cfg >>/tmp/get_shpsyn_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+

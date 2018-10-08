@@ -7,6 +7,8 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1803: Oct 2018 Use a csv dialect for output to get the quoting
+#          right for string containing commas.                      SN
 # MB-1798: Aug 2018 New processing for replicated elements.         SN
 # MB-1789: Aug 2018 Optional headers; new column in elements file;
 #           test option; default start time; correct initialisation
@@ -356,9 +358,9 @@ def time_from_ref(ref, hour=None, start=True):
 # -------------------------------------------------------------------
 def hours_back_from(now, hours):
     """Return the hour that is 'hours' back from now.
-       Parameters: now - a datetime object representing the current 
+       Parameters: now - a datetime object representing the current
                          time
-                   hours - a list of negative integers saying how 
+                   hours - a list of negative integers saying how
                            many hours to adjust by
        Returns: integer list - adjusted hours
     """
@@ -503,7 +505,7 @@ def get_data():
     timestamp = now.strftime('%Y%m%dT%H%M%S')
 
 # hours is a list of request hours e.g. 00, 12, blank to use the
-# current hour or negative numbers for that number of hours 
+# current hour or negative numbers for that number of hours
 # previously (and will include the current hour too).
 
     hour_list = []
@@ -513,7 +515,7 @@ def get_data():
             hour_list = [int(t) for t in hours.split(',')]
             if all(h < 0 for h in hour_list):
                 hour_list = hours_back_from(now, hour_list)
-                    
+
     if len(hour_list) == 0:
         hour_list = [now.hour]
 
@@ -592,7 +594,8 @@ def get_data():
                 f = open(output, 'wb')
 
                 # prepare file with ordered list of column names
-                writer = csv.DictWriter(f, fieldnames=elements.fields)
+                writer = csv.DictWriter(f, fieldnames=elements.fields,
+                                        dialect='excel')
 
                 # add optional headers
                 if header_lines == 1:
