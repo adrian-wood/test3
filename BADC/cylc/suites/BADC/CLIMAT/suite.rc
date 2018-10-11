@@ -4,15 +4,20 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20181002T0630
+    initial cycle point = 20181009T0630
     [[special tasks]]
         clock-trigger = normal(PT0M)
     [[dependencies]] 
         [[[T0630]]]
-            graph = """normal => ftp
-                       normal:no_data_but_late => !ftp & !errors
-                       normal:fail | ftp:fail => errors
-                       normal & ftp => !errors"""
+            graph = """
+            # regular dependencies
+            normal => ftp
+            normal:fail | ftp:fail => errors
+ 
+            # suicide triggers
+            normal:no_data_but_late | (normal & ftp) => !errors
+            normal:fail | normal:no_data_but_late => !ftp
+            """
 [runtime] 
     [[root]]
         [[[environment]]]

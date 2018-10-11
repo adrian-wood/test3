@@ -8,7 +8,7 @@ echo "${DTYPE} control file before execution of cntlchk:"
 cat ${CNTL_DIR}/MDB.BADC.${DTYPE}.CONTROL
 echo "--------------------------------------------------"
 
-if [ -e ${RUN_DIR}/FT22F001 ]; then
+if [ -L ${RUN_DIR}/FT22F001 ]; then
     rm ${RUN_DIR}/FT22F001
 fi
 

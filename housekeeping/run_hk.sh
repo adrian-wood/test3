@@ -69,6 +69,19 @@ for SUITE in `cylc scan|cut -f1 -d' '`; do
 done
 echo "> ...done!"
 
+#------------------------------------------------------------------------        
+# BADC output files:
+# Shouldn't be anything in here when it is actually FTPing to BADC, but
+# for now keep a week's worth.
+# Also, tidy up empty directories in /tmp which have been created by the
+# check_control_files.sh script - tmpwatch empties them but stupidly does
+# not delete the directory itself :(
+#------------------------------------------------------------------------
+echo "> Tidying up BADC stuff..."
+find /var/moods/BADC/output -mtime +7 -print -exec rm -fr {} +
+find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -delete
+echo "> ...done!"
+
 echo "$0: ended at `date`"
 exit
 

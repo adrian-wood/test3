@@ -1,7 +1,7 @@
 """Recreate the control files for BADC extractions.
    Reads a configuration file control_file.cfg which holds all the details,
    and creates new control files accordingly in a directory in /tmp.
-   NB not PEP-8 compliant and I am sure there are better ways to do this.
+   NB I am sure there are better ways to do this.
    Andy Moorhouse, August 2018
 """
 
@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 config_file = '/var/moods/BADC/utils/control_file.cfg'
 Config = SafeConfigParser()
 now = datetime.now()
+
 
 def create_control_file(datatype, run_time):
     pathtime = run_time.strftime("%Y%m%d_%H%M%S")
@@ -26,28 +27,39 @@ def create_control_file(datatype, run_time):
     run_offset_hours = Config.getfloat(datatype, 'run_offset_hours')
 
     if run_day == "all":
-        # get the time within the previous run (now - lag time - period - offset):
-#       rtmlmp = (run_time - timedelta(hours=lag_hours) - timedelta(hours=period_hours))
-        rtmlmp = (run_time - timedelta(hours=lag_hours) - timedelta(hours=period_hours) - timedelta(hours=run_offset_hours))
-        hr = int(rtmlmp.strftime("%H")) # so this is the hour within the previous run
+        # get the time within the previous run, calculated as
+        # (now - lag time - period - offset):
+        rtmlmp = (run_time - timedelta(hours=lag_hours) -
+                  timedelta(hours=period_hours) -
+                  timedelta(hours=run_offset_hours))
+        hr = int(rtmlmp.strftime("%H"))  # the hour within the previous run
 
         # obtain the start time of the period that the hour is in...
         for period in range(24/period_hours):
             period_start_hr = ((period + 1) * period_hours)
-            #if hr <= period_start_hr:
             if hr < period_start_hr:
-                ret_start = rtmlmp.replace(microsecond=0,second=0,minute=0,hour=(period * period_hours))
+                ret_start = rtmlmp.replace(microsecond=0, second=0, minute=0,
+                                           hour=(period * period_hours))
                 break
 
         # calculate retrieval end time, and run time of last run...
-        ret_end = ret_start + timedelta(hours=period_hours -1) + timedelta(minutes=59)
-        ret_prt = ret_start + timedelta(hours=lag_hours) + timedelta(hours=period_hours) + timedelta(hours=run_offset_hours) + timedelta(seconds=10)
+        ret_end = (ret_start + timedelta(hours=period_hours - 1) +
+                   timedelta(minutes=59))
+        ret_prt = (ret_start + timedelta(hours=lag_hours) +
+                   timedelta(hours=period_hours) +
+                   timedelta(hours=run_offset_hours) + timedelta(seconds=10))
 
     else:
         offset = (run_time.weekday() - int(run_day)) % 7
-        ret_start = run_time.replace(microsecond=0,second=0,hour=0,minute=0) - timedelta(days=(offset + 7))
-        ret_end = ret_start.replace(microsecond=0,second=0,hour=23,minute=59) + timedelta(days=6)
-        ret_prt = ret_start + timedelta(days=offset + 1) + timedelta(hours=lag_hours) + timedelta(hours=run_offset_hours) + timedelta(seconds=10)
+        ret_start = (run_time.replace(microsecond=0, second=0, hour=0,
+                                      minute=0) -
+                     timedelta(days=(offset + 7)))
+        ret_end = (ret_start.replace(microsecond=0, second=0, hour=23,
+                                     minute=59) + timedelta(days=6))
+        ret_prt = (ret_start + timedelta(days=offset + 1) +
+                   timedelta(hours=lag_hours) +
+                   timedelta(hours=run_offset_hours) +
+                   timedelta(seconds=10))
 
     print "Retrieval Start Time: ", ret_start.strftime("%Y%m%d/%H%MZ")
     print "Retrieval End   Time: ", ret_end.strftime("%Y%m%d/%H%MZ")
@@ -55,7 +67,7 @@ def create_control_file(datatype, run_time):
 
     # Create control file
     with open(path + "MDB.BADC." + datatype + ".CONTROL", 'w') as fh:
-        if datatype != "CLIMAT": # CLIMAT does not have all the usual info in control file...
+        if datatype != "CLIMAT":  # CLIMAT doesn't have the usual info in file
             fh.write(ret_start.strftime("%Y%m%d/%H%MZ") + '\n')
             fh.write(ret_end.strftime("%Y%m%d/%H%MZ") + '\n')
             fh.write('{:>4}'.format(period_hours) + '\n')
@@ -66,6 +78,7 @@ def create_control_file(datatype, run_time):
         fh.write('{:>4}'.format(0) + '\n')
         fh.write('{:>8}'.format(0) + '\n')
 
+
 def main():
 
     Config.read(config_file)
@@ -75,11 +88,7 @@ def main():
         print "---------------------------------------------"
         print "Datatype: " + datatype
         create_control_file(datatype, now)
-#       create_control_file(datatype, datetime.strptime("20180714T1045Z","%Y%m%dT%H%MZ"))
-#       create_control_file(datatype, datetime.strptime("20180714T1500Z","%Y%m%dT%H%MZ"))
-#       create_control_file(datatype, datetime.strptime("20180714T2010Z","%Y%m%dT%H%MZ"))
-#       create_control_file(datatype, datetime.strptime("20180714T0145Z","%Y%m%dT%H%MZ"))
+# can replace "now" with datetime.strptime("20180714T1045Z","%Y%m%dT%H%MZ"))
 
 if __name__ == "__main__":
     main()
-

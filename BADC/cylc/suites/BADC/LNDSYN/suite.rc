@@ -4,16 +4,24 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20180820T1430
+    initial cycle point = 20181010T2030
     [[special tasks]]
         clock-trigger = cntlchk(PT0M)
     [[dependencies]] 
         [[[T0230, T0830, T1430, T2030]]]
-            graph = """cntlchk => catchup => normal
-                       cntlchk:sendonly => !catchup & !normal # if sendonly, don't run catchup or normal
-                       cntlchk:sendonly | normal => ftp
-                       cntlchk:fail | catchup:fail | normal:fail | ftp:fail => errors
-                       cntlchk & catchup & normal & ftp => !errors"""
+            graph = """
+            # regular dependencies
+            cntlchk => catchup
+            catchup => normal
+            normal | cntlchk:sendonly => ftp
+            cntlchk:fail | catchup:fail | normal:fail | ftp:fail => errors
+
+            # suicide triggers
+            (cntlchk:sendonly & ftp) | (cntlchk & catchup & normal & ftp) => !errors
+            cntlchk:fail | cntlchk:sendonly  => !catchup
+            cntlchk:fail | cntlchk:sendonly | catchup:fail  => !normal
+            cntlchk:fail | catchup:fail | normal:fail => !ftp
+            """
 [runtime] 
     [[root]]
         [[[environment]]]
