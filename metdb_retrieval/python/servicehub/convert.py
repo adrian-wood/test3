@@ -7,6 +7,7 @@
 #
 #
 # REVISION INFO :
+# MB-1824: Oct 2018 Function to remove 44-byte raw report text header SN
 # MB-1803: Oct 2018 Functions for land and marine synops            SN
 #
 # ----------------------------------------------------------------------
@@ -120,3 +121,15 @@ def datetime_from(*args):
             format(day, month, year, hour)
 
     return value
+
+
+# ----------------------------------------------------------------------
+def report_text(string):
+    """Return a string containing raw report text without the 44 byte
+       header.
+       Returns: string(44:)
+    """
+    if len(string) > 44:
+        return string[44:]
+    else:
+        return ""

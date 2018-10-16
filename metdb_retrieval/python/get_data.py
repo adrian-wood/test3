@@ -7,6 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1824: Oct 2018 Add raw report text to METAR/SPECI              SN
 # MB-1803: Oct 2018 Use a csv dialect for output to get the quoting
 #          right for string containing commas.                      SN
 # MB-1798: Aug 2018 New processing for replicated elements.         SN
@@ -43,7 +44,11 @@ from unit_utils import *
 # Local corrections for errors in the python subtypes module
 metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
 metdb.subtypes.DTYPE_MAPS["METARS"][u'STTN_RPRT_TYPE'] = 'i4'
+metdb.subtypes.CREP_ELEMENTS["METARS"] = "MTR_RPT_TXT"
+metdb.subtypes.DTYPE_MAPS["METARS"][u'MTR_RPT_TXT'] = 'S500'
 metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
+metdb.subtypes.CREP_ELEMENTS["SPECI"] = "MTR_RPT_TXT"
+metdb.subtypes.DTYPE_MAPS["SPECI"][u'MTR_RPT_TXT'] = 'S500'
 
 TFMT = '%Y-%m-%dT%H:%M:%S'   # time format string
 sites = MDI
