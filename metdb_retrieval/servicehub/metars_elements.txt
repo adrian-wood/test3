@@ -36,3 +36,4 @@
 45: convective_cloud_amount (code table 020011)        :            :  from_layer(con_cloud,code_lookup(%020011,DEEP_CONV_CLD_AMT_ID))	
 46: convective_cloud_type (code table 020012)          :            :  from_layer(con_cloud,code_lookup(%020012,DEEP_CONV_CLD_TYPE_ID))
 47: convective_cloud_base height (meters)              : m          :  from_layer(con_cloud,DEEP_CONV_CLD_BASE_HT)
+48: report_text                                        :            :  package.convert.report_text(MTR_RPT_TXT)
