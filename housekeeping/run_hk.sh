@@ -73,13 +73,19 @@ echo "> ...done!"
 # BADC output files:
 # Shouldn't be anything in here when it is actually FTPing to BADC, but
 # for now keep a week's worth.
-# Also, tidy up empty directories in /tmp which have been created by the
+#------------------------------------------------------------------------
+echo "> Tidying up BADC output files..."
+find /var/moods/BADC/output -mtime +7 -print -exec rm -fr {} +
+echo "> ...done!"
+
+#------------------------------------------------------------------------
+# Tidy up empty directories in /tmp which have been created by the
 # check_control_files.sh script - tmpwatch empties them but stupidly does
 # not delete the directory itself :(
 #------------------------------------------------------------------------
-echo "> Tidying up BADC stuff..."
-find /var/moods/BADC/output -mtime +7 -print -exec rm -fr {} +
-find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -delete
+echo "> Tidying up BADC empty directories..."
+/usr/bin/find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -print -delete
+#/usr/bin/find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -delete
 echo "> ...done!"
 
 echo "$0: ended at `date`"
