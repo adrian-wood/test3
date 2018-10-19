@@ -85,7 +85,6 @@ echo "> ...done!"
 #------------------------------------------------------------------------
 echo "> Tidying up BADC empty directories..."
 /usr/bin/find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -print -delete
-#/usr/bin/find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -delete
 echo "> ...done!"
 
 echo "$0: ended at `date`"
