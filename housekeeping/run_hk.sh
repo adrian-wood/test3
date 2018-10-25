@@ -2,6 +2,7 @@
 #------------------------------------------------------------------------        
 # PURPOSE : Performs housekeeping for the moodsf account on mdb-apps.
 #------------------------------------------------------------------------
+# MB-1841: Add ServiceHub housekeeping.                    Sheila Needham
 # MB-1763 : Initial version.                               Andy Moorhouse
 #------------------------------------------------------------------------
 
@@ -85,6 +86,18 @@ echo "> ...done!"
 #------------------------------------------------------------------------
 echo "> Tidying up BADC empty directories..."
 /usr/bin/find /tmp -mindepth 1 -maxdepth 1 -name "BADC_generated_control_files*" -type d -empty -print -delete
+echo "> ...done!"
+
+#------------------------------------------------------------------------
+# Tidy up ServiceHub files after 4 days. Do not look in sub-directories
+# (because they may contain test files which might be kept for longer).
+#------------------------------------------------------------------------
+echo "> Tidying up ServiceHub log files..."
+find /tmp -name "get*.log" -maxdepth 1 -mtime +4 -print -exec rm -fr {} +
+echo "> ...done!"
+
+echo "> Tidying up ServiceHub data files..."
+find /tmp -name "*data*.csv" -maxdepth 1 -mtime +4 -print -exec rm -fr {} +
 echo "> ...done!"
 
 echo "$0: ended at `date`"
