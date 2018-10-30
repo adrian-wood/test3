@@ -1,0 +1,21 @@
+1 : buoy_identifier                                   :            : BUOY_IDNY
+2 : latitude (angular degrees)                        : deg        : LTTD                                     
+3 : longitude (angular degrees)                       : deg        : LNGD    
+4 : report_date_time (dd/mm/yyyy hh\:mmZ)             :            : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+5 : wmo_region_number                                 :            : WMO_REGN_NMBR
+6 : wmo_sub_area                                      :            : WMO_REGN_SUB_AREA
+7 : station_name                                      :            : SITE_NAME
+8 : sea_surface_temperature (degree Celsius)          : Cel        : package.convert.convert_to_celsius(SEA_SRFC_TMPR)
+9 : averaging_period (minutes)                        : min        : TIME_PERD
+10: significant_wave_height (meters)                  : m          : SGNT_WAVE_HGHT
+11: peak_wave_periood (seconds)                       : s          : PEAK_WAVE_PERD
+12: mean_wave_period (seconds)                        : s          : MEAN_WAVE_PERD
+13: peak_wave_direction (degrees)                     : Deg        : DRCTN_PEAK_WAVE
+14: peak_wave_spread (degrees)                        : Deg        : SPRD_PEAK_WAVE
+15: number_of_wavebands                               :            : package.convert.limit_reps(FRQY_BAND_CONT,%14)
+  :                                                   :            : define_layer(waveband,WAVE_BAND_LOWR_FRQY,WAVE_BAND_UPPR_FRQY,SPCL_WAVE_DNSY,DRCTN_PEAK_WAVE_BAND,SPRD_PEAK_WAVE_BAND,14)
+16: waveband_lower_frequency (Hertz)                  : Hz         : from_layer(waveband,WAVE_BAND_LOWR_FRQY)
+17: waveband_upper_frequency (Hertz)                  : Hz         : from_layer(waveband,WAVE_BAND_UPPR_FRQY)
+18: spectral_wave_density (squared meters per Hertz)  : m2/Hz      : from_layer(waveband,SPCL_WAVE_DNSY)
+19: spectral_wave_peak_direction ( degrees)           : Deg        : from_layer(waveband,DRCTN_PEAK_WAVE_BAND)
+20: spectral_wave_peak_spread (degrees)                : Deg       : from_layer(waveband,SPRD_PEAK_WAVE_BAND)

@@ -1,12 +1,17 @@
 # ----------------------------------------------------------------------
 #
-# MODULE        : convert.py 
+# MODULE        : convert.py
 #
 # PURPOSE       : Functions to convert MetDB to the format required
 #                 by ServiceHub.
 #
 #
 # REVISION INFO :
+# MB-1803: Nov 2018 Check for missing data in date functions.
+#                   Function to reset replication counts if limit
+#                   exceeded,
+#                   Function to convert standard tempertures to 2dp as
+#                   string.                                         SN
 # MB-1824: Oct 2018 Function to remove 44-byte raw report text header SN
 # MB-1803: Oct 2018 Functions for land and marine synops            SN
 #
@@ -22,6 +27,7 @@
 
 import numpy as np
 from unit_utils import *
+
 
 # ---------------------------------------------------------------------
 def metar_temp(value):
@@ -49,6 +55,35 @@ def synop_temp(value):
     if value is not MDI:
         result = "{:.1f}".format(value - 273.1)
     return result
+
+
+# ----------------------------------------------------------------------
+def convert_to_celsius(temp):
+    """Convert termperature from K to degrees C using the standard
+       conversion after checking for missing data.
+       parameter: float temperature in K or MDI
+       returns: string temperature in degrees C and hundredths, or MDI
+    """
+    value = ""
+    if temp is not MDI:
+        value = "{:5.2f}".format(kelvin_to_celsius(temp))
+    return value
+
+
+# ---------------------------------------------------------------------
+def limit_reps(actual, limit):
+    """Check the actual number of replications does not exceed the max
+       specified; reset to max if necessary.
+       parameter: integer replication count (from the data)
+       parameter: string limit as specified in the elements table
+       returns: string giving the actual or maximum.
+    """
+    limit = int(limit)
+    if actual is not MDI:
+        value = min(actual, limit)
+    else:
+        value = actual
+    return value
 
 
 # ---------------------------------------------------------------------
@@ -107,18 +142,19 @@ def datetime_from(*args):
                 dd/MM/yyyy hh:mm (for 5 args)
                 dd/MM/yyyy hh:mm:ss (for 6 args)
     """
-    if len(args) == 6:
-        (year, month, day, hour, minute, second) = args
-        value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}:{:02d}".\
-            format(day, month, year, hour, minute, second)
-    elif len(args) == 5:
-        (year, month, day, hour, minute) = args
-        value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}".\
-            format(day, month, year, hour, minute)
-    elif len(args) == 4:
-        (year, month, day, hour) = args
-        value = "{:02d}/{:02d}/{:04d} {:02d}:00".\
-            format(day, month, year, hour)
+    if MDI not in args:
+        if len(args) == 6:
+            (year, month, day, hour, minute, second) = args
+            value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}:{:02d}".\
+                format(day, month, year, hour, minute, second)
+        elif len(args) == 5:
+            (year, month, day, hour, minute) = args
+            value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}".\
+                format(day, month, year, hour, minute)
+        elif len(args) == 4:
+            (year, month, day, hour) = args
+            value = "{:02d}/{:02d}/{:04d} {:02d}:00".\
+                format(day, month, year, hour)
 
     return value
 

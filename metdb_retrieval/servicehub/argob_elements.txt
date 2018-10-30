@@ -1,0 +1,21 @@
+1 : wmo_marine_platform_identifier                   :            : WMO_MRN_PLTM_IDNY
+2 : platform_model                                   :            : PLTM_MNFT_MODL
+3 : platform_serial_number                           :            : PLTM_MNFT_SERL
+4 : float_cycle_number                               :            : FLOT_CYCL
+5 : profile_direction (code table 002056)            :            : code_lookup(%002056,PRFL_DRCTN)
+6 : latitude (angular degrees)                       : deg        : LTTD                                     
+7 : longitude (angular degrees)                      : deg        : LNGD    
+8 : gtspp_position_qc_flag (code table 033050)       :            : code_lookup(%033050,GTSPP_POSN_QC)
+9 : sea_temperature_instrument_type (code table 022067) :         : code_lookup(%022067,SEA_TMPR_INST_TYPE)
+10: report_date_time (dd/mm/yyyy hh\:mmZ)            :            : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+11: buoy_type (code table 002036)                    :            : code_lookup(%002036,BUOY_TYPE)
+12: buoy_data_type (code table 002149)               :            : code_lookup(%002149,BUOY_DATA_TYPE)
+13: data_collection_system (code table 002148)       :            : code_lookup(%002148,DATA_COLTN_SYSTM)
+14: number_of_levels                                 :            : package.convert.limit_reps(LEVL_RPLTN_CONT,%1000)
+  :                                                  :            : define_layer(subsea,SUB_SRFC_TMPR,GTSPP_TMPR_QC,SUB_SRFC_PESR,GTSPP_PESR_QC,SALNY,GTSPP_SALNY_QC,1000)
+15: sea_temperature_at_depth (Celsius)               : Cel        : from_layer(subsea,package.convert.convert_to_celsius(SUB_SRFC_TMPR))
+16: gtspp_temperature_qc_flag (code table 033050)    :            : from_layer(subsea,code_lookup(%033050,GTSPP_TMPR_QC))
+17: pressure_at_depth (Pa)                           : Pa         : from_layer(subsea,SUB_SRFC_PESR)
+18: gtspp_pressure_qc_flag (code table 033050)       :            : from_layer(subsea,code_lookup(%033050,GTSPP_PESR_QC))
+19: salinity_at_depth (parts per thousand)           :            : from_layer(subsea,SALNY)
+20: gtspp_salinity_qc_flag (code table 033050)       :            : from_layer(subsea,code_lookup(%033050,GTSPP_SALNY_QC))
