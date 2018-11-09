@@ -1,5 +1,6 @@
 #code|abbreviation|type|name|unit|scale|reference|width|crex_unit|crex_scale|crex_width
 002195|waveMeasuremenMethod|table|WAVE MEASUREMENT METHOD |CODE TABLE|0|0|3|NA|0|0
+008215|significanceOfFollowingValue|SIGNIFICANCE OF FOLLOWING VALUE|0|0|6|NA|0|0
 013206|rainfallEventType|table|RAINFALL EVENT TYPE (EA) |CODE TABLE|0|0|3|NA|0|0
 020192|significantWeatherIntensity|table|SIGNIFICANT PRESENT OR FORECAST WEATHER INTENSITY OR PROXIMITY|CODE TABLE|0|0|3|NA|0|0
 020193|significantWeatherQualifiers|table|SIGNIFICANT PRESENT OR FORECAST WEATHER QUALIFIERS|FLAG TABLE|0|0|8|NA|0|0
