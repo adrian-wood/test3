@@ -7,6 +7,7 @@
 #
 #
 # REVISION INFO :
+# MB-1825: Nov 2018 Set seconds to 0 if not given.
 # MB-1803: Nov 2018 Check for missing data in date functions.
 #                   Function to reset replication counts if limit
 #                   exceeded,
@@ -59,7 +60,7 @@ def synop_temp(value):
 
 # ----------------------------------------------------------------------
 def convert_to_celsius(temp):
-    """Convert termperature from K to degrees C using the standard
+    """Convert temperature from K to degrees C using the standard
        conversion after checking for missing data.
        parameter: float temperature in K or MDI
        returns: string temperature in degrees C and hundredths, or MDI
@@ -73,10 +74,10 @@ def convert_to_celsius(temp):
 # ---------------------------------------------------------------------
 def limit_reps(actual, limit):
     """Check the actual number of replications does not exceed the max
-       specified; reset to max if necessary.
+       specified and reset to max if necessary.
        parameter: integer replication count (from the data)
        parameter: string limit as specified in the elements table
-       returns: string giving the actual or maximum.
+       returns: integer giving the actual or maximum.
     """
     limit = int(limit)
     if actual is not MDI:
@@ -142,17 +143,23 @@ def datetime_from(*args):
                 dd/MM/yyyy hh:mm (for 5 args)
                 dd/MM/yyyy hh:mm:ss (for 6 args)
     """
-    if MDI not in args:
-        if len(args) == 6:
-            (year, month, day, hour, minute, second) = args
+    value = ""
+    time = list(args)
+    # seconds might be missing
+    if len(time) == 6 and time[5] is MDI:
+        time[5] = 0
+
+    if MDI not in time:
+        if len(time) == 6:
+            (year, month, day, hour, minute, second) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}:{:02d}".\
                 format(day, month, year, hour, minute, second)
-        elif len(args) == 5:
-            (year, month, day, hour, minute) = args
+        elif len(time) == 5:
+            (year, month, day, hour, minute) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}".\
                 format(day, month, year, hour, minute)
-        elif len(args) == 4:
-            (year, month, day, hour) = args
+        elif len(time) == 4:
+            (year, month, day, hour) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:00".\
                 format(day, month, year, hour)
 

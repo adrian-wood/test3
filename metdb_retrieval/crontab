@@ -33,5 +33,10 @@
 
 # BUOYB data for ServiceHub
 30 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/buoyb.cfg >>/tmp/get_buoyb_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
-~
+
+# AIREPS data for ServiceHub
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/aireps.cfg >>/tmp/get_aireps_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# AMDARS data for ServiceHub
+25,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/amdars.cfg >>/tmp/get_amdars_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 
