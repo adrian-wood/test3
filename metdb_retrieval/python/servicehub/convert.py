@@ -7,6 +7,8 @@
 #
 #
 # REVISION INFO :
+# MB-1876: Dec 2018 New SONDE function and check for missing WMO block
+#                   and station before converting.                  SN
 # MB-1825: Nov 2018 Set seconds to 0 if not given.
 # MB-1803: Nov 2018 Check for missing data in date functions.
 #                   Function to reset replication counts if limit
@@ -119,7 +121,9 @@ def id_from(station):
 def wmo_id(block, station):
     """Return a string representation of station ID.
     """
-    value = "{:02d}{:03d}".format(block, station)
+    value = ""
+    if block is not MDI and station is not MDI:
+        value = "{:02d}{:03d}".format(block, station)
     return value
 
 
@@ -176,3 +180,19 @@ def report_text(string):
         return string[44:]
     else:
         return ""
+
+
+# ----------------------------------------------------------------------
+def sonde_level_type(flag):
+    """Return type of position values which might be absolute or
+       displacement.
+       parameter: int 1,2 or MDI 
+       return: string decode
+    """
+    value = ""
+    if flag is not MDI:
+        if flag == 1:
+            value = "1 ABSOLUTE"
+        elif flag == 2:
+            value = "2 DISPLACEMENT FROM LAUNCH"
+    return value

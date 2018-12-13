@@ -7,6 +7,7 @@ import metdb
 def local_updates():
     # Local corrections for errors in the python subtypes module
     metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["AMDARS"][u'SCND'] = 'i4'
 
     metdb.subtypes.DTYPE_MAPS["METARS"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["METARS"] = "MTR_RPT_TXT"
@@ -15,6 +16,8 @@ def local_updates():
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["SPECI"] = "MTR_RPT_TXT"
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'MTR_RPT_TXT'] = 'S500'
+    
+    metdb.subtypes.DTYPE_MAPS["SONDE"][u'HUMDY_CRTN'] = 'f4'
 
     metdb.subtypes.DTYPE_MAPS["BUOYB"] = {
              u'BLTN_TYPE': 'i4',    # 1, 2, 3 or 4 for old, moored, drifting or wave buoy sequence respectively

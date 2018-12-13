@@ -7,6 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1876: Dec 2018 Speed up CSV output by turning off type checking.
 # MB-1804: Nov 2018 Move metdb module corrections out of this source.
 #          Suppress printing of elements list unless in test mode.  SN      
 # MB-1824: Oct 2018 Add raw report text to METAR/SPECI              SN
@@ -599,6 +600,7 @@ def get_data():
 
                 # prepare file with ordered list of column names
                 writer = csv.DictWriter(f, fieldnames=elements.fields,
+                                        extrasaction='ignore',
                                         dialect='excel')
 
                 # add optional headers
