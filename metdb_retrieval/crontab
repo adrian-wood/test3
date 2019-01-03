@@ -40,3 +40,11 @@
 # AMDARS data for ServiceHub
 25,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/amdars.cfg >>/tmp/get_amdars_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 
+# SONDE data for ServiceHub
+40 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/sonde_uk.cfg >>/tmp/get_sonde_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/sonde_international.cfg >>/tmp/get_sonde_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# TAFS data for ServiceHub
+5,35 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_uk.cfg >>/tmp/get_tafs_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+10,40 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_international.cfg >>/tmp/get_tafs_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+

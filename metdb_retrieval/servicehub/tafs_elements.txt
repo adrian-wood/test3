@@ -1,0 +1,71 @@
+1 : icao_identifier                                    :          : ICAO_ID 
+2 : bulletin_id                                        :          : BLTN_ID
+3 : collecting_centre                                  :          : CLTN_CNTR
+4 : correction_number                                  :          : COR_NUM
+5 : amend_number                                       :          : AMND_NUM
+6 : latitude (angular degrees)                         : deg      : LAT                                    
+7 : longitude (angular degrees)                        : deg      : LON
+8 : report_date_time (dd/mm/yyyy hh\:mmZ)              :          : package.convert.datetime_from(YR,MON,DAY,HR,MNT) 
+91: taf_length_type                                    :          : TAF_LEN_TYPE
+10: forecast_start (dd/hh)                             :          : package.convert.forecast_time(FCST_BGN_DAY,FCST_BGN_HR)
+11: forecast_end (hh)                                  :          : package.convert.forecast_time(FCST_END_HR)
+12: wind_direction (degrees true)                      : deg      : WND_DIR
+13: wind_speed (meters per second)                     : m/s      : WND_SPD
+14: maximum_gust (meters per second)                   : m/s      : MAX_GUST
+15: general_weather (flag table 020195)                :          : flag_lookup(%020195,GNRL_WX_ID)
+ 0:                                                    :          : define_layer(sig_wx,SIG_WX_INSY_ID,SIG_WX_DSC_ID,SIG_WX_PHNM_ID,3)
+16: sig_weather_intensity (code table 020192)          :          : from_layer(sig_wx,code_lookup(%020192,SIG_WX_INSY_ID))
+17: sig_weather_description (flag table 020193)        :          : from_layer(sig_wx,flag_lookup(%020193,SIG_WX_DSC_ID))
+18: sig_weather_phenomenon (flag table 020194)         :          : from_layer(sig_wx,flag_lookup(%020194,SIG_WX_PHNM_ID))
+ 0:                                                    :          : define_layer(sig_cloud,CLD_AMT_ID,CLD_TYPE_ID,CLD_BASE_HT,3)
+19: sig_cloud_amount (code table 020011)               :          : from_layer(sig_cloud,code_lookup(%020011,CLD_AMT_ID))	
+20: sig_cloud_type (code table 020012)                 :          : from_layer(sig_cloud,code_lookup(%020012,CLD_TYPE_ID))
+21: sig_cloud_base_height (meters)                     : m        : from_layer(sig_cloud,CLD_BASE_HT)
+22: convective_cloud_amount (code table 020011)        :          : code_lookup(%020011,DEEP_CONV_CLD_AMT_ID)
+23: convective_cloud_type (code table 020012)          :          : code_lookup(%020012,DEEP_CONV_CLD_TYPE_ID)
+24: convective_cloud_base height (meters)              : m        : DEEP_CONV_CLD_BASE_HT
+25: minimum_visibility (meters)                        : m        : MIN_VSBY
+26: vertical_visibility (meters)                       : m        : VERT_VSBY
+27: air_temperature_forecast_hour (hour)               : hour     : FCST_AIR_TEMP_HR
+28: surface_air_temperature (degree Celsius)           : Cel      : package.convert.metar_temp(AIR_TEMP)
+29: icing_level (meters)                               : m        : ICG_LVL
+30: icing_layer_thickness (meters)                     : m        : ICG_LAY_THKN 
+31: airframe_icing_id (code table 020041)              :          : code_lookup(%020041,ARFM_ICG_ID)
+32: turbulence_frequency_id (code table 004192)        :          : code_lookup(%004192,TBLC_FREQ_ID)
+33: turbulence_base_height (meters)                    : m        : TBLC_BASE_HT
+34 : turbulence_top_height (meters)                    : m        : TBLC_TOP_HT
+35: turbulence_amount_id (code table 011031)           :          : code_lookup(%011031,TBLC_AMT_ID)
+36: present_weather_id (code table 020003)             :          : code_lookup(%020003,PRST_WX_ID)
+37: number_of_change_sections                          :          : package.convert.limit_reps(NUM_CHG_SECT,%8)
+ 0:                                                    :          : define_layer(change,FCST_CHG_ID,FCST_CHG_BGN_HR,FCST_CHG_END_HR,FCST_PRBL,CHG_WND_DIR,CHG_WND_SPD,CHG_MAX_GUST,CHG_GNRL_WX_ID,CHG_DEEP_CONV_CLD_AMT_ID,CHG_DEEP_CONV_CLD_TYPE_ID,CHG_DEEP_CONV_CLD_BASE_HT,CHG_MIN_VSBY,FCST_CHG_BGN_DAY,FCST_CHG_END_DAY,CHG_TEMP_BGN_DAY,CHG_TEMP_END_DAY,CHG_SIG_WX_INSY_ID_1,CHG_SIG_WX_INSY_ID_2,CHG_SIG_WX_INSY_ID_3,CHG_SIG_WX_DSC_ID_1,CHG_SIG_WX_DSC_ID_2,CHG_SIG_WX_DSC_ID_3,CHG_SIG_WX_PHNM_ID_1,CHG_SIG_WX_PHNM_ID_2,CHG_SIG_WX_PHNM_ID_3,CHG_CLD_AMT_ID_1,CHG_CLD_AMT_ID_2,CHG_CLD_AMT_ID_3,CHG_CLD_TYPE_ID_1,CHG_CLD_TYPE_ID_2,CHG_CLD_TYPE_ID_3,CHG_CLD_BASE_HT_1,CHG_CLD_BASE_HT_2,CHG_CLD_BASE_HT_3,8)
+38: forecast_change_id (flag table 008220)             :          : from_layer(change,flag_lookup(%008220,FCST_CHG_ID))
+39: forecast_probability (percent)                     : %        : from_layer(change,FCST_PRBL))
+40: change_start (dd/hh)                               :          : from_layer(change,package.convert.forecast_time(FCST_CHG_BGN_DAY,FCST_CHG_BGN_HR))
+41: change_end (dd/hh)                                 :          : from_layer(change,package.convert.forecast_time(FCST_CHG_END_DAY,FCST_CHG_END_HR))
+42: change_wind_direction (degrees true)               : deg      : from_layer(change,CHG_WND_DIR)
+43: change_wind_speed (meters per second)              :m/s       : from_layer(change,CHG_WND_SPD)
+44: change_maximum_gust (meters per second)            : m/s      : from_layer(change,CHG_MAX_GUST)
+45: change_general_weather (flag table 020195)         :          : from_layer(change,flag_lookup(%020195,CHG_GNRL_WX_ID))
+46: change_convective_cloud_amount (code table 020011) :          : from_layer(change,code_lookup(%020011,CHG_DEEP_CONV_CLD_AMT_ID))
+47: change_convective_cloud_type (code table 020012)   :          : from_layer(change,code_lookup(%020012,CHG_DEEP_CONV_CLD_TYPE_ID))
+48: change_convective_cloud_base height (meters)       : m        : from_layer(change,CHG_DEEP_CONV_CLD_BASE_HT)
+49: change_minimum_visibility (meters)                 : m        : from_layer(change,CHG_MIN_VSBY)
+50: change_sig_weather_intensity_1 (code table 020192) :          : from_layer(change,code_lookup(%020192,CHG_SIG_WX_INSY_ID_1))
+51: change_sig_weather_intensity_2 (code table 020192) :          : from_layer(change,code_lookup(%020192,CHG_SIG_WX_INSY_ID_2))
+52: change_sig_weather_intensity_3 (code table 020192) :          : from_layer(change,code_lookup(%020192,CHG_SIG_WX_INSY_ID_3))
+53: change_sig_weather_description_1 (flag table 020193):         : from_layer(change,flag_lookup(%020193,CHG_SIG_WX_DSC_ID_1))
+54: change_sig_weather_description_2 (flag table 020193):         : from_layer(change,flag_lookup(%020193,CHG_SIG_WX_DSC_ID_2))
+55: change_sig_weather_description_3 (flag table 020193):         : from_layer(change,flag_lookup(%020193,CHG_SIG_WX_DSC_ID_3))
+56: change_sig_weather_phenomenon_1 (flag table 020194):          : from_layer(change,flag_lookup(%020194,CHG_SIG_WX_PHNM_ID_1))
+57: change_sig_weather_phenomenon_2 (flag table 020194):          : from_layer(change,flag_lookup(%020194,CHG_SIG_WX_PHNM_ID_2))
+58: change_sig_weather_phenomenon_3 (flag table 020194):          : from_layer(change,flag_lookup(%020194,CHG_SIG_WX_PHNM_ID_3))
+59: change_sig_cloud_amount_1 (code table 020011)      :          : from_layer(change,code_lookup(%020011,CHG_CLD_AMT_ID_1))
+60: change_sig_cloud_amount_2 (code table 020011)      :          : from_layer(change,code_lookup(%020011,CHG_CLD_AMT_ID_2))
+61: change_sig_cloud_amount_3 (code table 020011)      :          : from_layer(change,code_lookup(%020011,CHG_CLD_AMT_ID_3))
+62: change_sig_cloud_type_1 (code table 020012)        :          : from_layer(change,code_lookup(%020012,CHG_CLD_TYPE_ID_1))
+63: change_sig_cloud_type_2 (code table 020012)        :          : from_layer(change,code_lookup(%020012,CHG_CLD_TYPE_ID_2))
+64: change_sig_cloud_type_3 (code table 020012)        :          : from_layer(change,code_lookup(%020012,CHG_CLD_TYPE_ID_3))
+65: change_sig_cloud_base_height_1 (meters)            : m        : from_layer(change,CHG_CLD_BASE_HT_1)
+66: change_sig_cloud_base_height_2 (meters)            : m        : from_layer(change,CHG_CLD_BASE_HT_2)
+67: change_sig_cloud_base_height_3 (meters)            : m        : from_layer(change,CHG_CLD_BASE_HT_3)
+68: report_text                                        :          : package.convert.report_text(TAF_RPT_TXT)
