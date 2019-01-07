@@ -13,6 +13,8 @@
 #
 # REVISION INFO :
 #
+# MB-1827: Switch to experimental metdb-python version for latest
+#          version of subtypes.
 # MB-1803: New general purpose script to replace individual types.
 #-----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2018 - MET OFFICE. All Rights Reserved.
@@ -24,8 +26,9 @@
 # Team at the above address.
 #-----------------------------------------------------------------------
 
-module load scitools
-module display scitools
+
+module load scitools/experimental_legacy-current
+module display scitools/experimental_legacy-current
 
 get_config() {
 

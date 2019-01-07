@@ -53,6 +53,27 @@ def local_updates():
         u'RCPT_MINT'                        : 'i4'      , # Time of receipt minute
     }
 
+    # This is to overcome the problem of nested replications
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_1'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_2'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_3'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'TAF_RPT_TXT'] = 'S5000'
+
     metdb.subtypes.DTYPE_MAPS["BUOYB"] = {
              u'BLTN_TYPE': 'i4',    # 1, 2, 3 or 4 for old, moored, drifting or wave buoy sequence respectively
              u'WMO_REGN_NMBR': 'i4',    # WMO region number
