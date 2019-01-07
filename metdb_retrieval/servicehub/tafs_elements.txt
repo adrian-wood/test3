@@ -6,7 +6,7 @@
 6 : latitude (angular degrees)                         : deg      : LAT                                    
 7 : longitude (angular degrees)                        : deg      : LON
 8 : report_date_time (dd/mm/yyyy hh\:mmZ)              :          : package.convert.datetime_from(YR,MON,DAY,HR,MNT) 
-91: taf_length_type                                    :          : TAF_LEN_TYPE
+9 : taf_length_type                                    :          : TAF_LEN_TYPE
 10: forecast_start (dd/hh)                             :          : package.convert.forecast_time(FCST_BGN_DAY,FCST_BGN_HR)
 11: forecast_end (hh)                                  :          : package.convert.forecast_time(FCST_END_HR)
 12: wind_direction (degrees true)                      : deg      : WND_DIR
@@ -33,7 +33,7 @@
 31: airframe_icing_id (code table 020041)              :          : code_lookup(%020041,ARFM_ICG_ID)
 32: turbulence_frequency_id (code table 004192)        :          : code_lookup(%004192,TBLC_FREQ_ID)
 33: turbulence_base_height (meters)                    : m        : TBLC_BASE_HT
-34 : turbulence_top_height (meters)                    : m        : TBLC_TOP_HT
+34: turbulence_top_height (meters)                     : m        : TBLC_TOP_HT
 35: turbulence_amount_id (code table 011031)           :          : code_lookup(%011031,TBLC_AMT_ID)
 36: present_weather_id (code table 020003)             :          : code_lookup(%020003,PRST_WX_ID)
 37: number_of_change_sections                          :          : package.convert.limit_reps(NUM_CHG_SECT,%8)
@@ -43,7 +43,7 @@
 40: change_start (dd/hh)                               :          : from_layer(change,package.convert.forecast_time(FCST_CHG_BGN_DAY,FCST_CHG_BGN_HR))
 41: change_end (dd/hh)                                 :          : from_layer(change,package.convert.forecast_time(FCST_CHG_END_DAY,FCST_CHG_END_HR))
 42: change_wind_direction (degrees true)               : deg      : from_layer(change,CHG_WND_DIR)
-43: change_wind_speed (meters per second)              :m/s       : from_layer(change,CHG_WND_SPD)
+43: change_wind_speed (meters per second)              : m/s      : from_layer(change,CHG_WND_SPD)
 44: change_maximum_gust (meters per second)            : m/s      : from_layer(change,CHG_MAX_GUST)
 45: change_general_weather (flag table 020195)         :          : from_layer(change,flag_lookup(%020195,CHG_GNRL_WX_ID))
 46: change_convective_cloud_amount (code table 020011) :          : from_layer(change,code_lookup(%020011,CHG_DEEP_CONV_CLD_AMT_ID))

@@ -14,7 +14,7 @@
 # ARGUMENTS     : (1) config file
 #
 # REVISION INFO :
-# MB-1827: Jan 2019 switch to expermimental version for metdb-python
+# MB-1827: Jan 2019 switch to experimental version for metdb-python
 # MB-1780: Jul 2018 FTP and notifications added.        Sheila Needham
 # MB-1638: May 2018 Original.                           Sheila Needham
 #
