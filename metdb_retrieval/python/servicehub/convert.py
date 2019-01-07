@@ -7,6 +7,7 @@
 #
 #
 # REVISION INFO :
+# MB-1827: Jan 2019 New function for TAFS forecast time.
 # MB-1876: Dec 2018 New SONDE function and check for missing WMO block
 #                   and station before converting.                  SN
 # MB-1825: Nov 2018 Set seconds to 0 if not given.
@@ -195,4 +196,25 @@ def sonde_level_type(flag):
             value = "1 ABSOLUTE"
         elif flag == 2:
             value = "2 DISPLACEMENT FROM LAUNCH"
+    return value
+
+
+# ----------------------------------------------------------------------
+def forecast_time(*args):
+    """Return dd/hh as a string from integer inputs (or missing).
+       parameter: either hour or day and hour
+       return: dd/  or dd/hhZ  or hhZ depending on inputs
+    """
+    value = ""
+    day = MDI
+    hour = MDI
+
+    if len(args) == 1:
+        (hour,) = args
+    elif len(args) == 2:
+        (day, hour) = args
+    if day is not MDI:
+        value += "{:02d}/".format(day)
+    if hour is not MDI:
+        value += "{:02d}Z".format(hour)
     return value
