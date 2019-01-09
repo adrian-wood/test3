@@ -1,5 +1,3 @@
-# import mock
-# import re
 import unittest
 import get_data
 from datetime import datetime

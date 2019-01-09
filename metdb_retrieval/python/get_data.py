@@ -586,7 +586,7 @@ def get_data():
 
     for t in hour_list:
         csv_list = []  # list of lines to output
-        start_time = time_from_ref(now, days_ago=days_ago, hour=t)
+        start_time = time_from_ref(now, days_ago=days_ago, hour=t, start=True)
         end_time = time_from_ref(now, days_ago=days_ago, hour=t, start=False,
                                  time_span=time_span)
         rcpt_time = time_from_ref(last_run)
