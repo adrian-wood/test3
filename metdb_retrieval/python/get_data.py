@@ -365,7 +365,7 @@ def time_from_ref(ref, hour=None, start=True, days_ago=0, time_span=1):
             min = 59
 
     if ref.hour < hr and days_ago == 0:
-        copy_ref = copy_ref - dt.timedelta(days=(1))
+        copy_ref = copy_ref - dt.timedelta(days=1)
 
     return copy_ref.strftime("%Y%m%d/") + \
         '{:02d}{:02d}'.format(hr, min) + 'Z'
