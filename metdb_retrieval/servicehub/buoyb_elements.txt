@@ -1,0 +1,82 @@
+1 : buoy_identifier                                    :            : BUOY_IDNY
+2 : latitude (angular degrees)                         : deg        : LTTD                                     
+3 : longitude (angular degrees)                        : deg        : LNGD    
+4 : report_date_time (dd/mm/yyyy hh\:mmZ)              :            : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+5 : wmo_region_number                                  :            : WMO_REGN_NMBR
+6 : wmo_sub_area                                       :            : WMO_REGN_SUB_AREA
+7 : station_name                                       :            : STTN_NAME
+8 : station_report_type (code table 002001)            :            : code_lookup(%002001,STTN_RPRT_TYPE)
+9 : buoy_data_type (code table 002149)                 :            : code_lookup(%002149,BUOY_DATA_TYPE)
+10: last_postition_date_time (dd/mm/yyy hh\:mmZ)       :            : package.convert.datetime_from(YEAR_OF_LAST_PSTN,MNTH_OF_LAST_PSTN,DAY_OF_LAST_PSTN,HOUR_OF_LAST_PSTN,MINT_OF_LAST_PSTN)
+11: buoy_direction (angular degrees)                   : deg        : BUOY_DRCTN
+12: buoy_speed (meters per second)                     : m/s        : BUOY_SPED
+13: buoy_satellite_transmission_quality (code table 033022) :       : code_lookup(%033022,BUOY_STLT_TRMSN_QLTY)
+14: buoy_location_quality (code table 033023)          :            : code_lookup(%033023,QLTY_OF_PSTN)
+15: location_quality_class (code table 033027)         :            : code_lookup(%033027,QLTY_OF_PSTN_CLSS)
+16: ice_thickness (meters)                             : m          : ICE_THCKS
+17: platform_battery_voltage (volts)                   : V          : PLTFM_BTRY_VLTG
+18: data_collection_system (code table 002148)         :            : code_lookup(%002148,DATA_COLTN_SYSTM)
+19: drogue_type (code table 002034)                    :            : code_lookup(%002034,DROG_IDNY)
+20: drogue_status (code table 022060)                  :            : code_lookup(%022060,LGRGN_DRFTR_DROG_STTS)
+21: drogue_depth (meters)                              : m          : DROG_DPTH
+22: drifter_submergence (percent time submerged)       : %          : LGRGN_DRFTR_SBMGC
+23: station_level_pressure (Pa)                        : Pa         : STTN_PESR
+24: mean_sea_level_pressure (Pa)                       : Pa         : MSL_PESR
+25: temperature_humidity_sensor_height (meters)        : m          : TMPR_HUMDY_SNSR_HGHT_WATR
+26: surface_air_temperature (degree Celsius)           : Cel        : package.convert.convert_to_celsius(SRFC_AIR_TMPR) 
+27: surface_dewpoint_temperature (degree Celsius)      : Cel        : package.convert.convert_to_celsius(SRFC_DEW_PONT_TMPR)
+28: surface_relative_humidity (percent)                : %          :  SRFC_RLTV_HUMDY
+29: wind_sensor_height (meters)                        :            : WIND_SNSR_HGHT_WATR
+30: anemometer_type (code table 002169)                :            : code_lookup(%002169,ANMTR_TYPE)
+31: surface_wind_period (minutes)                      : min        :SRFC_WIND_PERD
+32: surface_wind_direction (angular degrees)           : deg        : SRFC_WIND_DRCTN
+33: surface_wind_speed (meters per second)             : m/s        : SRFC_WIND_SPED
+34: surface_gust_period (minutes)                      : min        : SRFC_GUST_PERD
+35: maximum_gust_speed (meters per second)             : m/s        : MXMM_SRFC_GUST_SPED
+36: sea_surface_temperature_precision (kelvin)         : K          : SEA_SRFC_TMPR_PRCSN
+37: sea_surface_temperature_depth (meters)             :            : SEA_SRFC_TMPR_DPTH
+38: sea_surface_temperature (degree Celsius)           : Cel        : package.convert.convert_to_celsius(SEA_SRFC_TMPR)
+39: surface_salinity_depth_measurement_method (code table 002033) :         : code_lookup(%002033,SRFC_SALNY_DPTH_INST)
+40: sea_surface_salinity (parts per thousand)          :            : SEA_SRFC_SALNY
+41: surface_type (code_table 008029)                   :            : code_lookup(%008029,SRFC_TYPE)
+42: horizontal_visibility (meters)                     : m          : HRZL_VSBLY
+43: precipitation_period (hours)                       : hour       : PRCTN_PERD
+44: precipitation_amount (kilograms per square meter)  : kg/m2      : PRCTN_AMNT
+45: radiation_period (minutes)                         : min        : RADTN_PERD
+46: long_wave_radiation (Joule per square meter)       : J/m2       : LONG_WAVE_RADTN
+47: short_wave_radiation (Joules per square meter)     : J/m2       : SHRT_WAVE_RADTN
+48: net_radiation (Joules per square meter)            : J/m2       : NET_RADTN
+49: global_solar_radiation (Joules per square meter)   : J/m2       : GLOBL_SOLR_RADTN
+50: diffuse_solar_radiation (Joules per square meter)  : J/m2       : DIFS_SOLR_RADTN
+51: direct_solar_radiation (Joules per square meter)   : J/m2       : DRCT_SOLR_RADTN
+52: wave_record_duration (seconds)                     : s          : DRTN_WAVE_RCRD
+53: maximum_wave_height (meters)                       : m          : MXMM_WAVE_HGHT
+54: significant_wave_height (meters)                   : m          : SGNT_WAVE_HGHT
+55: mean_wave_period (seconds)                         : s          : MEAN_WAVE_PERD
+56: dominant_wave_direction (degrees)                  : Deg        : DRCTN_PEAK_WAVE
+57: dominant_wave_spread (degrees)                     : Deg        : SPRD_PEAK_WAVE
+58: spectral_peak_wave_period (seconds)                : s          : PEAK_WAVE_PERD
+59: spectral_wave_record_duration (seconds)            : s          : DRTN_SPCL_WAVE_RCRD
+60: maximum_non_directional_spectral_wave_density (meters squared seconds) : m2s : MXMM_SPCL_WAVE_DNSY
+61: number_of_wavebands                                :            : package.convert.limit_reps(SPCL_BAND_RPLTN_CONT,%32)
+  :                                                    :            : define_layer(waveband,BAND_CNTRL_FRQY,SPCL_WAVE_DNSY,MEAN_DRCTN_OF_WAVES,PRNL_DRCTN_OF_WAVES,FRST_NDMLD_POLR_CRDT,SCND_NDMLD_POLR_CRDT,32)
+62: waveband_central_frequency (Hertz)                 : Hz         : from_layer(waveband,BAND_CNTRL_FRQY)
+63: spectral_wave_density (squared meters per Hertz)   : m2/Hz      : from_layer(waveband,SPCL_WAVE_DNSY)
+64: spectral_wave_mean_direction ( degrees)            : Deg        : from_layer(waveband,MEAN_DRCTN_OF_WAVES)
+65: spectral_wave_principal_direction(degrees)         : Deg        : from_layer(waveband,PRNL_DRCTN_OF_WAVES)
+66: first_normalised_polar_coordinate                  :            : from_layer(waveband,FRST_NDMLD_POLR_CRDT)
+67: second_normalised_polar_coordinate                 :            : from_layer(waveband,SCND_NDMLD_POLR_CRDT)
+68: current_measurement_duration (code table 002031)   :            : code_lookup(%002030,DRTN_TIME_CRNT_MESRT)
+  :                                                    :            : define_layer(current,DPTH_OF_CRNT_MESRT,LEVL_CRNT_DRCTN,LEVL_CRNT_SPED,5)
+69: number_of_current_levels                           :            : package.convert.limit_reps(CRNT_LEVL_RPLTN_CONT,%5)
+70: current_depth (meters)                             :  m         : from_layer(current,DPTH_OF_CRNT_MESRT)
+71: current_direction (degrees)                        : Deg        : from_layer(current,LEVL_CRNT_DRCTN)
+72: current_speed (meters per second)                  : m          : from_layer(current,LEVL_CRNT_SPED)
+73: sea_temperature_precision (Kelvin)                 : K          : SEA_TMPR_PRCSN
+74: digitisation_indicator (code table 002032)         :            : code_lookup(%002032,DGTZN_INDTR)
+75: salinity_depth_measurement_method (code table 002033) :         : code_lookup(%002033,SALNY_DPTH_INST)
+76: number_of_temperature_salinity_levels              :            : package.convert.limit_reps(TMPR_SALNY_LEVL_RPLTN_CONT,%21)
+  :                                                    :            : define_layer(temperature,DPTH_OF_TMPR_SALNY_MESRT,LEVL_SEA_TMPR,LEVL_SEA_SALNY,21)
+77: depth_below_sea_surface (meters)                   : m          : from_layer(temperature,DPTH_OF_TMPR_SALNY_MESRT)
+78: sea_temperature_at_depth (Celsius)                 : Cel        : from_layer(temperature,package.convert.convert_to_celsius(LEVL_SEA_TMPR))
+79: salinity_at_depth (parts per thousand)             :            : from_layer(temperature,LEVL_SEA_SALNY)

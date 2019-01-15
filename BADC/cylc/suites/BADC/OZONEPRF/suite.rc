@@ -1,0 +1,41 @@
+[meta] 
+    title = "BADC OZONEPRF"
+    description = "Runs the extraction of OZONEPRF data from MetDB for transmission to BADC."
+    URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
+    group = "BADC"
+[scheduling] 
+    initial cycle point = 20181011T0630
+    [[special tasks]]
+        clock-trigger = cntlchk(PT0M)
+    [[dependencies]] 
+        [[[T0630/P1W]]]
+            graph = """
+            # regular dependencies
+            cntlchk => catchup
+            catchup => normal
+            normal | cntlchk:sendonly => ftp
+            cntlchk:fail | catchup:fail | normal:fail | ftp:fail => errors
+
+            # suicide triggers
+            (cntlchk:sendonly & ftp) | (cntlchk & catchup & normal & ftp) => !errors
+            cntlchk:fail | cntlchk:sendonly  => !catchup
+            cntlchk:fail | cntlchk:sendonly | catchup:fail  => !normal
+            cntlchk:fail | catchup:fail | normal:fail => !ftp
+            """
+[runtime] 
+    [[root]]
+        [[[environment]]]
+            DTYPE = OZONEPRF
+            SCRIPTS = /var/moods/BADC/scripts
+    [[cntlchk]] 
+        script = $SCRIPTS/cntlchk.sh
+        [[[outputs]]]
+            sendonly = "SENDONLY"
+    [[catchup]] 
+        script = $SCRIPTS/retbadc.sh CATCHUP
+    [[normal]] 
+        script = $SCRIPTS/retbadc.sh
+    [[ftp]] 
+        script = $SCRIPTS/ftp.sh
+    [[errors]] 
+        script = $SCRIPTS/errors.sh

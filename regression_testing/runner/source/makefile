@@ -8,15 +8,15 @@
 #
 #
 
-FF = ifort
+FF = gfortran
 FFLAGS =
 
 MDBRTVL = mdbrtvl.exe
+NCDFRTVL = ncdfrtvl.exe
 RETBUFR = retbufr.exe
 GETGRIB = getgrib.exe
 RPCVER = 5.2
-#RPCLIB =  $(shell find $(BASE) -name *.a -print)
-RPCLIB = ../bin/MetDBRPCv$(RPCVER)/MetDBRPC5.a
+RPCLIB = /var/moods/lib/MetDB_RPCv5.2_linux/MetDBRPC5.a
 
 MDBRTVL_O = mdbrtvl.o \
             getname.o
@@ -26,10 +26,12 @@ RETBUFR_O= retbufr.o \
            get1bmsg.o \
            ichar3.o 
 
+NCDFRTVL_O = ncdfrtvl.o
+
 GETGRIB_O = getgrib.o
 
 
-ALL : $(MDBRTVL) $(RETBUFR) $(GETGRIB) $(CLEAN)
+ALL : $(MDBRTVL) $(RETBUFR) $(GETGRIB) $(NCDFRTVL) $(CLEAN)
 CLEAN :
 	rm *.o
 
@@ -45,6 +47,9 @@ $(GETGRIB) : $(GETGRIB_O)
 	$(FF) -o $@ $^ $(RPCLIB)
 	mv $@ ../bin/.
 
+$(NCDFRTVL) : $(NCDFRTVL_O)
+	$(FF) -o $@ $^ $(RPCLIB)
+	mv $@ ../bin/.
 
 %.o : %.f90 
 	$(FF) -c $<

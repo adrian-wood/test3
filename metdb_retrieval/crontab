@@ -1,0 +1,50 @@
+# CRONTAB entries for ServiceHub retrievals.  ADD these to the moodsf crontab when changes are made:
+# e.g. crontab -l > crontemp
+# edit crontemp by replacing existing ServiceHub entries with these
+# crontab crontemp
+
+# SREW data for ServiceHub
+12,22,45 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/srew_uk.cfg >>/tmp/get_srew_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+15,25,46 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/srew_international.cfg >>/tmp/get_srew_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# RAINFALL data for ServiceHub
+25 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/rainfall.cfg >>/tmp/get_rainfall_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# METAR data for ServiceHub
+1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/metar_international.cfg >>/tmp/get_metar_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/metar_uk.cfg >>/tmp/get_metar_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# SPECI data for ServiceHub
+1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/speci_international.cfg >>/tmp/get_speci_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/speci_uk.cfg >>/tmp/get_speci_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# LNDSYN data for ServiceHub 
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/lndsyn_uk.cfg >>/tmp/get_lndsyn_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/lndsyn_international.cfg >>/tmp/get_lndsyn_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# SHPSYN data for ServiceHub
+30 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/shpsyn.cfg >>/tmp/get_shpsyn_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# ARGOB data for ServiceHub
+55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/argob.cfg >>/tmp/get_argob_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# WAVENET data for ServiceHub
+40 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/wavenet.cfg >>/tmp/get_wavenet_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# BUOYB data for ServiceHub
+30 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/buoyb.cfg >>/tmp/get_buoyb_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# AIREPS data for ServiceHub
+10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/aireps.cfg >>/tmp/get_aireps_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# AMDARS data for ServiceHub
+25,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/amdars.cfg >>/tmp/get_amdars_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# SONDE data for ServiceHub
+40 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/sonde_uk.cfg >>/tmp/get_sonde_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/sonde_international.cfg >>/tmp/get_sonde_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# TAFS data for ServiceHub
+5,15,25,35,45,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_uk.cfg >>/tmp/get_tafs_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_international.cfg >>/tmp/get_tafs_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+

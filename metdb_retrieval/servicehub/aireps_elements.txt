@@ -1,0 +1,14 @@
+1 : call_sign                                  :       : CALL_SIGN
+2 : collecting_centre                          :       : COLTN_CNTR 
+3 : bulletin_id                                :       : BLTN_IDNY
+4 : report_date_time (dd/mm/yyyy hh\:mmZ)      :       : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+5 : time_significance (code table 008215)      :       : code_lookup(%008215,TIME_SGNC_FLAG)
+6 : latitude (angular degrees)                 : deg   : LTTD 
+7 : longitude (angular degrees)                : deg   : LNGD 
+8 : location_significance (code table 008215)  :       : code_lookup(%008215,AREA_SGNC_FLAG) 
+9 : altitude (meters)                          : m     : ALTD 
+10: air_temperature (degree Celsius)           : Cel   : package.convert.metar_temp(LEVL_AIR_TMPR) 
+11: wind_direction (degrees true)              :       : LEVL_WIND_DRCTN
+12: wind_speed (meters per second)             : m/s   : LEVL_WIND_SPED 
+13: degree_of_turbulence (code table 011031)   :       : code_lookup(%011031,TRBC_DEGR)
+14: airframe_icing (code table 020041)         :       : code_lookup(%020041,ICE_DEGR)

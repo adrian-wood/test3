@@ -1,0 +1,33 @@
+[meta] 
+    title = "BADC CLIMAT"
+    description = "Runs the extraction of CLIMAT data from MetDB for transmission to BADC."
+    URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
+    group = "BADC"
+[scheduling] 
+    initial cycle point = 20181009T0630
+    [[special tasks]]
+        clock-trigger = normal(PT0M)
+    [[dependencies]] 
+        [[[T0630]]]
+            graph = """
+            # regular dependencies
+            normal => ftp
+            normal:fail | ftp:fail => errors
+ 
+            # suicide triggers
+            normal:no_data_but_late | (normal & ftp) => !errors
+            normal:fail | normal:no_data_but_late => !ftp
+            """
+[runtime] 
+    [[root]]
+        [[[environment]]]
+            DTYPE = CLIMAT
+            SCRIPTS = /var/moods/BADC/scripts
+    [[normal]] 
+        script = $SCRIPTS/retclm.sh
+        [[[outputs]]]
+            no_data_but_late = "NO_DATA_BUT_LATE"
+    [[ftp]] 
+        script = $SCRIPTS/ftp.sh
+    [[errors]] 
+        script = $SCRIPTS/errors.sh

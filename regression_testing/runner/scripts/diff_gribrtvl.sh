@@ -14,7 +14,7 @@ echo "BINDIR $BINDIR"
 
 if [ $# -ne 3 ]
 then
-  echo 'Usage:diff_gribrtvl.sh <input request> <system one> <system two>'
+  echo 'Usage:diff_grbrtvl.sh <input request> <system one> <system two>'
   exit 1
 fi  
 

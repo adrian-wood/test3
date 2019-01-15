@@ -1,0 +1,39 @@
+1 : icao_identifier                                    :            :  ICAO_ID 
+2 : bulletin_id                                        :            :  BLTN_IDNY
+3 : collecting_centre                                  :            :  COLTN_CNTR
+4 : correction_number                                  :            :  COR_NUM
+5 : amend_number                                       :            :  AMND_NUM
+6 : latitude (angular degrees)                         : deg        :  LTTD                                     
+7 : longitude (angular degrees)                        : deg        :  LNGD    
+8 : station_height (meters)                            : m          :  STTN_HGHT 
+9 : station_report_type (code table 002001)            :            :  code_lookup(%002001,STTN_RPRT_TYPE)
+10: report_date_time (dd/mm/yyyy hh\:mmZ)              :            :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+11: wind_direction (degrees true)                      : deg        :  WND_DIR 
+12: wind_speed (meters per second)                     : m/s        :  WND_SPD
+13: maximum_gust (meters per second)                   : m/s        :  MAX_GUST
+14: maximum_direction_of_variable_wind (degrees true)  : deg        :  VRBL_WND_MAX_DIR
+15: minimum_direction_of_variable_wind (degrees true)  : deg        :  VRBL_WND_MIN_DIR
+16: direction_of_minimum_visibility (degrees true)     : deg        :  MIN_VSBY_DIR
+17: minimum_visibility (meters)                        : m          :  MIN_VSBY
+18: prevaling_visibility (meters)                      : m          :  PRVLNG_VSBLY 
+19: direction_of_maximum_visibility (degees true)      : deg        :  MAX_VSBY_DIR
+20: maximum_visibility (meters)                        : m          :  MAX_VSBY
+21: general_weather (flag table 020195)                :            :  flag_lookup(%020195,GNRL_WX_ID)
+22: current_weather (code table 020003)                :            :  code_lookup(%020003,CRNT_WTHR_TYPE)
+ 0:                                                    :            :  define_layer(sig_wx,SIG_WX_INSY_ID,SIG_WX_DSC_ID,SIG_WX_PHNM_ID,3)
+23: sig_weather_intensity (code table 020192)          :            :  from_layer(sig_wx,code_lookup(%020192,SIG_WX_INSY_ID))
+24: sig_weather_description (flag table 020193)        :            :  from_layer(sig_wx,flag_lookup(%020193,SIG_WX_DSC_ID))
+25: sig_weather_phenomenon (flag table 020194)         :            :  from_layer(sig_wx,flag_lookup(%020194,SIG_WX_PHNM_ID))
+32: vertical_visibility (meters)                       : m          :  VRTL_VSBLY 
+33: surface_air_temperature (degree Celsius)           : Cel        :  package.convert.metar_temp(SRFC_AIR_TMPR) 
+34: surface_dewpoint_temperature (degree Celsius)      : Cel        :  package.convert.metar_temp(SRFC_DEW_PONT_TMPR)
+35: altimeter_pressure (Pascal)                        : Pa         :  ALTM_PRES
+ 0:                                                    :            :  define_layer(sig_cloud,CLD_AMT_ID,CLD_TYPE_ID,CLD_BASE_HT,3)
+36: sig_cloud_amount (code table 020011)               :            :  from_layer(sig_cloud,code_lookup(%020011,CLD_AMT_ID))	
+37: sig_cloud_type (code table 020012)                 :            :  from_layer(sig_cloud,code_lookup(%020012,CLD_TYPE_ID))
+38: sig_cloud_base_height (meters)                     : m          :  from_layer(sig_cloud,CLD_BASE_HT)
+ 0:                                                    :            :  define_layer(con_cloud,DEEP_CONV_CLD_AMT_ID,DEEP_CONV_CLD_TYPE_ID,DEEP_CONV_CLD_BASE_HT,3)
+45: convective_cloud_amount (code table 020011)        :            :  from_layer(con_cloud,code_lookup(%020011,DEEP_CONV_CLD_AMT_ID))	
+46: convective_cloud_type (code table 020012)          :            :  from_layer(con_cloud,code_lookup(%020012,DEEP_CONV_CLD_TYPE_ID))
+47: convective_cloud_base height (meters)              : m          :  from_layer(con_cloud,DEEP_CONV_CLD_BASE_HT)
+48: report_text                                        :            :  package.convert.report_text(MTR_RPT_TXT)

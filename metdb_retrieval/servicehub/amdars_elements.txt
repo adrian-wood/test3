@@ -1,0 +1,24 @@
+1 : flight_number                                          :       : FLGT_NMBR 
+2 : aircraft_registration                                  :       : RGSN_NMBR 
+3 : report_date_time (dd/mm/yyyy hh\:mm\:ssZ)              :       : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)
+4 : latitude (angular degrees)                             : deg   : LTTD 
+5 : longitude (angular degrees)                            : deg   : LNGD 
+6 : altitude (meters)                                      : m     : ALTD 
+7 : navigation_system (code table 002061)                  :       : code_lookup(%002061,NVGTN_SYTM)
+8 : data_relay_system (code table 002062)                  :       : code_lookup(%002062,DATA_RELY_SYTM)
+9 : aircraft_roll_angle (degrees)                          : deg   : ARCT_ROLL_ANGL
+10: position_original_specification (code table 002070)    :       : code_lookup(%002070,CRDT_ORGL_SPFCN)
+11: pressure (Pa)                                          : Pa    : LEVL_PESR 
+12: flight_phase (code table 008004)                       :       : code_lookup(%008004,FLGT_PHAS)
+13: reported_wind_speed_units (flag table 002002)          :       : flag_lookup(%002002,WIND_INST_TYPE) 
+14: wind_direction (degrees true)                          :       : LEVL_WIND_DRCTN
+15: wind_speed (meters per second)                         : m/s   : LEVL_WIND_SPED 
+16: vertical_gust_velocity (meters per second)             : m/s   : VRTL_GUST_VLCY 
+17: vertical_gust_acceleration (meters per second squared) : m/s2  : VRTL_GUST_ACLTN 
+18: degree_of_turbulence (code table 011031)               :       : code_lookup(%011031,TRBC_DEGR) 
+19: temperature_precision (kelvin)                         : K     : TMPR_OBSVN_PRCSN 
+20: air_temperature (degree Celsius)                       : Cel   : package.convert.synop_temp(LEVL_AIR_TMPR) 
+21: dewpoint_temperature (degrees Celsius)                 : Cel   : package.convert.synop_temp(LEVL_DEW_PONT_TMPR)
+22: relative_humidity (percent)                            :       : LEVL_RLTV_HUMDY 
+23: mixing_ratio (kg per kg)                               : kg/kg : LEVL_MXNG_RATO 
+24: airframe_icing  (code table 020041)                    :       : code_lookup(%020041,ICE_DEGR)

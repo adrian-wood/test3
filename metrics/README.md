@@ -7,18 +7,15 @@ This version replaces one previously held in the metdb-apps repository which als
 
 ### Code Location
 
-The system runs from /home/h01/usmdb/public_html/moods/sla_stats as user usmdb. This keeps it separate from the MOODS environment and outside the MOODS configuration management process so that changes can be made as and when required. It also allows the system to take advantages of Python packages not available on the MOODS systems (e.g.jinja2).
+The system runs from mdb-apps:/var/moods/metrics as user moodsf. This keeps it separate from the MOODS environment and outside the MOODS configuration management process so that changes can be made as and when required. It also allows the system to take advantages of Python packages not available on the MOODS systems (e.g.jinja2).
 
-The directory structure is straightforward:
+/var/moods/metrics - contains two scripts
 
-1. /archive - contains the monthly summary reports - monthly_summary_{YYYYMMDD}.html
-1. /html - template HTML documents and a symbolic link to the latest report
-1. /scripts - scripts to create the images and generate HTML from templates
+/var/www/html/metrics - template, output pages and archive directory
 
 ### Process
 
-Nagios XI reports and graph pages are e-mailed to the MetDB inbox on the 1st of the month.  The attached PDF documents must be saved in the /archive
-folder using the standard naming convention:
+Nagios XI reports and graph pages are e-mailed to the MetDB inbox on the 1st of the month.  The attached PDF documents must be saved in the archive folder using the standard naming convention:
 
    yyyymm01_sla.pdf
    
@@ -44,4 +41,4 @@ Options:
   -d DATE               date of image files yyyymmdd.
   -o OUTFILE, --outfile=OUTFILE output file relative to BASE dir.
 ```  
-This uses the template in html/summary_template.html to produce the final monthly summary page and is called from metdb_monthly_report.py. 
+This uses the summary_template.html to produce the final monthly summary page and is called from metdb_monthly_report.py. 

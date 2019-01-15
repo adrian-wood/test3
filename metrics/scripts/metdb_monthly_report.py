@@ -7,12 +7,13 @@
 # PURPOSE       : Finds start and end dates of last month and runs acripts
 #                 to produce monthly summary web pages.
 #
-# USAGE         : runs on 2nd of the month from cron
-#                 (no arguments)
+# USAGE         : run manually after downloading pdf files from Nagios.
 #
 # REVISION INFO :
 #
 # $Log:
+
+# MB-1743: Moved to mdb-apps server; now using Nagios PDFs.        SN
 # MB-1608: Version for Nagios XI graphs, based on code previously held
 #          in metdb-apps/metrics.                                  SN
 # $
@@ -32,10 +33,9 @@ import datetime as dt
 import calendar
 import traceback
 
-BASEDIR = r"/home/h01/usmdb/public_html/moods/sla_stats/"
-SCRIPTDIR = BASEDIR + "scripts/"
-ARCHIVEDIR = BASEDIR + "archive/"
-HTMLDIR = BASEDIR + "html/"
+BASEDIR = r"/var/moods/metrics/"
+HTMLDIR = r"/var/www/html/metrics/"
+ARCHIVEDIR = HTMLDIR + "archive/"
 
 
 def getLastMonth(today):
@@ -74,14 +74,14 @@ def main():
     startstr = firstOfMonth.strftime("%Y%m%d")
     endstr = lastOfMonth.strftime("%Y%m%d")
 
-    cmd = SCRIPTDIR + "create_summary.py -d " + startstr
+    cmd = BASEDIR + "create_summary.py -d " + startstr
     rc = os.system(cmd)
     if rc != 0:
         print "Error running " + cmd
         sys.exit(8)
 
-# move the summary page to archive and create a 'latest' symlink
-# (no return codes from these functions)
+    # move the summary page to archive and create a 'latest' symlink
+    # (no return codes from these functions)
     summary = "monthly_summary_" + startstr + ".html"
     os.rename(HTMLDIR + summary, ARCHIVEDIR + summary)
     os.unlink(HTMLDIR + "latest_report.html")
