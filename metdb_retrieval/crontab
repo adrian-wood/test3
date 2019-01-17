@@ -48,3 +48,6 @@
 5,15,25,35,45,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_uk.cfg >>/tmp/get_tafs_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 1,10,20,30,40,50 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tafs_international.cfg >>/tmp/get_tafs_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 
+# MODES data for ServiceHub
+5,15,25,35,45,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/modes.cfg >>/tmp/get_modes_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
