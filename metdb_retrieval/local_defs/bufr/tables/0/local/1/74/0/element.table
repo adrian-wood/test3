@@ -1,4 +1,5 @@
 #code|abbreviation|type|name|unit|scale|reference|width|crex_unit|crex_scale|crex_width
+001201|modesDataSource|table|MODE-S DATA SOURCE|CODE TABLE|0|0|3|NA|0|0
 001217|airQualityObservingStationDominantEmissionSource|table|AIR QUALITY OBSERVING STATION DOMINANT EMISSION SOURCE |CODE TABLE|0|0|3|NA|0|0
 001218|airQualityObservingStationAreaType|table|AIR QUALITY OBSERVING STATION AREA TYPE |CODE TABLE|0|0|3|NA|0|0
 001219|airQualityObservingStationTerrainType|table|AIR QUALITY OBSERVING STATION TERRAIN TYPE |CODE TABLE|0|0|3|NA|0|0

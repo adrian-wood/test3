@@ -52,3 +52,6 @@
 00 08 * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/airqal_uk.cfg >>/tmp/get_airqal_uk_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 45 08 * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/airqal_international.cfg >>/tmp/get_airqal_int_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 
+# MODES data for ServiceHub
+5,15,25,35,45,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/modes.cfg >>/tmp/get_modes_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
