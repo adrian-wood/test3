@@ -1,5 +1,0 @@
-MetDB_RPC_TIC.txt   User TIC information for MetDB RPC
-
-M??                 Branch e.g. M12
-?????               Userid e.g. T12DB
-?????               TIC

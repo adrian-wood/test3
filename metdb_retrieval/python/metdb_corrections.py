@@ -7,6 +7,7 @@ import metdb
 def local_updates():
     # Local corrections for errors in the python subtypes module
     metdb.subtypes.DTYPE_MAPS["RAINFALL"][u'SCND'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["AMDARS"][u'SCND'] = 'i4'
 
     metdb.subtypes.DTYPE_MAPS["METARS"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["METARS"] = "MTR_RPT_TXT"
@@ -15,6 +16,63 @@ def local_updates():
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["SPECI"] = "MTR_RPT_TXT"
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'MTR_RPT_TXT'] = 'S500'
+    
+    metdb.subtypes.DTYPE_MAPS["SONDE"][u'HUMDY_CRTN'] = 'f4'
+
+    metdb.subtypes.DTYPE_MAPS["AIRQAL"][u'AQTY_OBSG_STTN_DMNT_EMSN_SRC'] = 'i4'
+
+    metdb.subtypes.DTYPE_MAPS["AIRQALEU"] = {
+        u'LNG_STTN_NME'                     : 'S32'     , # Long station name
+        u'AQTY_OBSG_STTN_LCL_CD'            : 'S7'      , # Observing station local code
+        u'ABSE_AQTY_OBSG_STTN_CD'           : 'S6'      , # Airbase observing station code
+        u'GEMS_AQTY_OBSG_STTN_CD'           : 'S6'      , # GEMS Station Code
+        u'AQTY_OBSG_STTN_DMNT_EMSN_SRC'     : 'i4'      , # Observing station dominant emission source
+        u'AQTY_OBSG_STTN_AR_TYP'            : 'i4'      , # Observing station area type
+        u'AQTY_OBSG_STTN_TRN_TYP'           : 'i4'      , # Observing station terrain type
+        u'YEAR'                             : 'i4'      , # Year
+        u'MNTH'                             : 'i4'      , # Month
+        u'DAY'                              : 'i4'      , # Day
+        u'HOUR'                             : 'i4'      , # Hour
+        u'MINT'                             : 'i4'      , # Minute
+        u'SCND'                             : 'i4'      , # Second
+        u'LTTD'                             : 'f4'      , # Latitude (High Accuracy)
+        u'LNGD'                             : 'f4'      , # Longtitude (High Accuracy)
+        u'STTN_HGHT'                        : 'f4'      , # Station height
+        u'SNSR_HGHT'                        : 'f4'      , # Height of sensor
+        u'AVGNG_PERD'                       : 'i4'      , # Averaging time period
+        u'CSNT_TYP'                         : 'i4'      , # Atmospheric constituent type
+        u'CAS_RGSY_NMBR'                    : 'S88'     , # CAS Registry number
+        u'PLTE_MTR_CHTZN'                   : 'i4'      , # Particulate matter characterization
+        u'DCML_SCL_MASS_DNSTY'              : 'f4'      , # ?????
+        u'MASS_DNSTY'                       : 'f4'      , # ?????
+        u'QLTY_INFN'                        : 'f4'      , # ?????
+        u'RCPT_YEAR'                        : 'i4'      , # Time of receipt year
+        u'RCPT_MNTH'                        : 'i4'      , # Time of receipt month
+        u'RCPT_DAY'                         : 'i4'      , # Time of receipt day
+        u'RCPT_HOUR'                        : 'i4'      , # Time of receipt hour
+        u'RCPT_MINT'                        : 'i4'      , # Time of receipt minute
+    }
+
+    # This is to overcome the problem of nested replications
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_INSY_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_DSC_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_SIG_WX_PHNM_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_AMT_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_1'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_2'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_TYPE_ID_3'] = 'i4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_1'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_2'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'CHG_CLD_BASE_HT_3'] = 'f4'
+    metdb.subtypes.DTYPE_MAPS["TAFS"][u'TAF_RPT_TXT'] = 'S5000'
 
     metdb.subtypes.DTYPE_MAPS["BUOYB"] = {
              u'BLTN_TYPE': 'i4',    # 1, 2, 3 or 4 for old, moored, drifting or wave buoy sequence respectively

@@ -1,0 +1,68 @@
+ : wmo_station_id                                          :       : package.convert.wmo_id(WMO_BLCK_NMBR,WMO_STTN_NMBR)   
+ : wmo_region_number                                       :       : WMO_REGN_NMBR   
+ : call_sign                                               :       : CALL_SIGN       
+ : latitude (angular degrees)                              : deg   : LTTD                  
+ : longitude (angular degrees)                             : deg   : LNGD                  
+ : launch_date_time (dd/mm/yyyy hh\:mm\:ssZ)               :       : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)                  
+ : radiosonde_type (code table 002011)                     :       : code_lookup(%002011,RADI_SNDE_TYPE)
+ : radiation_correction (code table 002013)                :       : code_lookup(%002013,RADTN_CORTN)
+ : tracking_system_status (code table 002014)              :       : code_lookup(%002014,TRCKG_STTS)
+ : measuring_equipment_type (code table 002003)            :       : code_lookup(%002003,MESRG_EQPT_TYPE)        
+ : radiosonde_ascension_number                             :       : RSND_ASCN_NMBR        
+ : radiosonde_operating_frequency (Hz)                     : Hz    : RSND_OPRTG_FRQY    
+ : pressure_sensor_type (code table 002095)                :       : code_lookup(%002095,PESR_SNSR_TYPE)
+ : temperature_sensor_type (code table 02096)              :       : code_lookup(%002096,TMPR_SNSR_TYPE)     
+ : humidity_sensor_type (code table 002097)                :       : code_lookup(%002097,HUMDY_SNSR_TYPE)    
+ : humidity_correction (code table 002017)                 :       : code_lookup(%002017,HUMDY_CRTN)         
+ : balloon_type (code table 002081)                        :       : code_lookup(%002081,BALN_TYPE)          
+ : balloon_weight (kilograms)                              : kg    : BALN_WGHT          
+ : balloon_gas (code table 002084)                         :       : code_lookup(%002084,BALN_GAS)           
+ : geopotential_height_calculation (code table 002191)     :       : code_lookup(%002191,GPTL_HGHT_CLTN)        
+ : station_height (meters)                                 : m     : STTN_HGHT             
+ : station_barometer_height (meters)                       : m     : STTN_BMTR_HGHT        
+ : radiosonde_release_height (meters)                      : m     : SNDE_RLSE_HGHT        
+ : station_elevation_quality (flag table 033024)           :       : flag_lookup(%033024,STTN_HGHT_QLTY)        
+ : station_pressure (Pa)                                   : Pa    : STTN_PESR             
+ : station_temperature_sensor_height (meters)              : m     : STTN_TMPR_SNSR_HGHT   
+ : station_air_temperature (degree Celsius)                : Cel   : package.convert.convert_to_celsius(STTN_AIR_TMPR)                                            
+ : station_dewpoint_temperature (degree Celsius)           : Cel   : package.convert.convert_to_celsius(STTN_DEW_PONT_TMPR)                                       
+ : station_relative_humidity (percent)                     : %     : STTN_RLTV_HUMDY                                          
+ : station_wind_sensor_height (meters)                     : m     : STTN_WIND_SNSR_HGHT                                      
+ : station_wind_instrument_type (flag table 002002)        :       : flag_lookup(%002002,STTN_WIND_INST_TYPE)                                      
+ : station_wind_direction (angular degrees)                : deg   : STTN_WIND_DRCTN                                          
+ : station_wind_speed (meters per second)                  : m/s   : STTN_WIND_SPED                                           
+ : station_weather_sensor_height (meters)                  : m     : STTN_WTHR_SNSR_HGHT                                      
+ : present_weather (code table 020003)                     :       : code_lookup(%020003,CRNT_WTHR_TYPE)                                           
+ : lowest_cloud_amount (percent)                           : %     : LWST_CLOD_AMNT                            
+ : lowest_cloud_base_height (meters)                       : m     : LWST_CLOD_BASE_HGHT                       
+ : low_cloud_type (code table 020012)                      :       : code_lookup(%020012,LOW_CLOD_TYPE)                             
+ : medium_cloud_type (code table 020012)                   :       : code_lookup(%020012,MEDM_CLOD_TYPE)                            
+ : high_cloud_type (code table 020012)                     :       : code_lookup(%020012,HIGH_CLOD_TYPE)                            
+ : main_cloud_type (code table 020012)                     :       : code_lookup(%020012,CLOD_TYPE)                                 
+ : sea_surface_temperature (degree Celsius)                : Cel   : package.convert.convert_to_celsius(SEA_SRFC_TMPR)
+ : lat_lon_or_displacement_indicator                       :       : package.convert.sonde_level_type(LEVL_POSN_FLAG)               
+ : number_of_levels                                        :       : package.convert.limit_reps(LEVL_RPLTN_CONT,%6000)  
+ :                                                         :       : define_layer(profile,LEVL_TIME_DSPLT,LEVL_SNDG_SGNFC,LEVL_PESR,LEVL_HGHT,LEVL_GPTL_HGHT,LEVL_LTTD,LEVL_LNGD,LEVL_AIR_TMPR,LEVL_RLTV_HUMDY,LEVL_DEW_PONT_TMPR,LEVL_WIND_DRCTN,LEVL_WIND_SPED,LEVL_MXNG_RATO,6000)
+ : level_time_displacement_since_launch (seconds)          : s     : from_layer(profile,LEVL_TIME_DSPLT)
+ : level_significance (flag table 008042)                  :       : from_layer(profile,flag_lookup(%008042,LEVL_SNDG_SGNFC))              
+ : level_pressure (Pa)                                     : Pa    : from_layer(profile,LEVL_PESR)                    
+ : level_height (meters)                                   : m     : from_layer(profile,LEVL_HGHT)                    
+ : level_geopotential_height (meters)                      : m     : from_layer(profile,LEVL_GPTL_HGHT)
+ : level_latitude_or_displacement (degrees)                : deg   : from_layer(profile,LEVL_LTTD)                    
+ : level_longitude_or_displacement (degrees)               : deg   : from_layer(profile,LEVL_LNGD)                    
+ : level_air_temperature (degree Celsius)                  : Cel   : from_layer(profile,package.convert.convert_to_celsius(LEVL_AIR_TMPR))                
+ : level_relative_humidity (percent)                       : %     : from_layer(profile,LEVL_RLTV_HUMDY)              
+ : level_dewpoint_temperature (degree Celsius)             : Cel   : from_layer(profile,package.convert.convert_to_celsius(LEVL_DEW_PONT_TMPR))
+ : level_wind_direction (angular degrees)                  : deg   : from_layer(profile,LEVL_WIND_DRCTN)              
+ : level_wind_speed (meters per second)                    : m/s   : from_layer(profile,LEVL_WIND_SPED)               
+ : level_mixing_ratio (kilogram per kilogram)              : kg/kg : from_layer(profile,LEVL_MXNG_RATO)                                                   
+ : number_of_windshear_levels                              :       : package.convert.limit_reps(WIND_SHER_RPLTN_CONT,%6)        
+ :                                                         :       : define_layer(shear,WIND_SHER_TIME_DSPLT,WIND_SHER_SNDG_SGNFC,WIND_SHER_PESR,WIND_SHER_HGHT,WIND_SHER_LTTD_DSPLT,WIND_SHER_LNGD_DSPLT,WIND_SHER_LAYR_BELW,WIND_SHER_LAYR_ABOV,6)
+ : windshear_time_displacement_since_launch (seconds)      : s     : from_layer(shear,WIND_SHER_TIME_DSPLT)        
+ : windshear_significance (flag table 008042)              :       : from_layer(shear,flag_lookup(%008042,WIND_SHER_SNDG_SGNFC))        
+ : windshear_pressure (Pa)                                 : Pa    : from_layer(shear,WIND_SHER_PESR)              
+ : windshear_height (meters)                               : m     : from_layer(shear,WIND_SHER_HGHT)                   
+ : windshear_latitude_displacement_since_launch (degrees)  : deg   : from_layer(shear,WIND_SHER_LTTD_DSPLT)         
+ : windshear_longitude_displacement_since_launch (degrees) : deg   : from_layer(shear,WIND_SHER_LNGD_DSPLT)         
+ : windshear_1km_layer_below (meters per second)           : m/s   : from_layer(shear,WIND_SHER_LAYR_BELW)          
+ : windshear_1km_layer_above (meters per second)           : m/s   : from_layer(shear,WIND_SHER_LAYR_ABOV)          

@@ -7,6 +7,10 @@
 #
 #
 # REVISION INFO :
+# MB-1827: Jan 2019 New function for TAFS forecast time.
+# MB-1876: Dec 2018 New SONDE function and check for missing WMO block
+#                   and station before converting.                  SN
+# MB-1825: Nov 2018 Set seconds to 0 if not given.
 # MB-1803: Nov 2018 Check for missing data in date functions.
 #                   Function to reset replication counts if limit
 #                   exceeded,
@@ -59,7 +63,7 @@ def synop_temp(value):
 
 # ----------------------------------------------------------------------
 def convert_to_celsius(temp):
-    """Convert termperature from K to degrees C using the standard
+    """Convert temperature from K to degrees C using the standard
        conversion after checking for missing data.
        parameter: float temperature in K or MDI
        returns: string temperature in degrees C and hundredths, or MDI
@@ -73,10 +77,10 @@ def convert_to_celsius(temp):
 # ---------------------------------------------------------------------
 def limit_reps(actual, limit):
     """Check the actual number of replications does not exceed the max
-       specified; reset to max if necessary.
+       specified and reset to max if necessary.
        parameter: integer replication count (from the data)
        parameter: string limit as specified in the elements table
-       returns: string giving the actual or maximum.
+       returns: integer giving the actual or maximum.
     """
     limit = int(limit)
     if actual is not MDI:
@@ -118,7 +122,9 @@ def id_from(station):
 def wmo_id(block, station):
     """Return a string representation of station ID.
     """
-    value = "{:02d}{:03d}".format(block, station)
+    value = ""
+    if block is not MDI and station is not MDI:
+        value = "{:02d}{:03d}".format(block, station)
     return value
 
 
@@ -142,17 +148,23 @@ def datetime_from(*args):
                 dd/MM/yyyy hh:mm (for 5 args)
                 dd/MM/yyyy hh:mm:ss (for 6 args)
     """
-    if MDI not in args:
-        if len(args) == 6:
-            (year, month, day, hour, minute, second) = args
+    value = ""
+    time = list(args)
+    # seconds might be missing
+    if len(time) == 6 and time[5] is MDI:
+        time[5] = 0
+
+    if MDI not in time:
+        if len(time) == 6:
+            (year, month, day, hour, minute, second) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}:{:02d}".\
                 format(day, month, year, hour, minute, second)
-        elif len(args) == 5:
-            (year, month, day, hour, minute) = args
+        elif len(time) == 5:
+            (year, month, day, hour, minute) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:{:02d}".\
                 format(day, month, year, hour, minute)
-        elif len(args) == 4:
-            (year, month, day, hour) = args
+        elif len(time) == 4:
+            (year, month, day, hour) = time
             value = "{:02d}/{:02d}/{:04d} {:02d}:00".\
                 format(day, month, year, hour)
 
@@ -169,3 +181,40 @@ def report_text(string):
         return string[44:]
     else:
         return ""
+
+
+# ----------------------------------------------------------------------
+def sonde_level_type(flag):
+    """Return type of position values which might be absolute or
+       displacement.
+       parameter: int 1,2 or MDI 
+       return: string decode
+    """
+    value = ""
+    if flag is not MDI:
+        if flag == 1:
+            value = "1 ABSOLUTE"
+        elif flag == 2:
+            value = "2 DISPLACEMENT FROM LAUNCH"
+    return value
+
+
+# ----------------------------------------------------------------------
+def forecast_time(*args):
+    """Return dd/hh as a string from integer inputs (or missing).
+       parameter: either hour or day and hour
+       return: dd/  or dd/hhZ  or hhZ depending on inputs
+    """
+    value = ""
+    day = MDI
+    hour = MDI
+
+    if len(args) == 1:
+        (hour,) = args
+    elif len(args) == 2:
+        (day, hour) = args
+    if day is not MDI:
+        value += "{:02d}/".format(day)
+    if hour is not MDI:
+        value += "{:02d}Z".format(hour)
+    return value

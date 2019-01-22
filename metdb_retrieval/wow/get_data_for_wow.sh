@@ -14,6 +14,7 @@
 # ARGUMENTS     : (1) config file
 #
 # REVISION INFO :
+# MB-1827: Jan 2019 switch to experimental version for metdb-python
 # MB-1780: Jul 2018 FTP and notifications added.        Sheila Needham
 # MB-1638: May 2018 Original.                           Sheila Needham
 #
@@ -27,8 +28,8 @@
 # Team at the above address.
 #-----------------------------------------------------------------------
 
-module load scitools
-module display scitools 
+module load scitools/experimental_legacy-current
+module display scitools/experimental_legacy-current
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <full_path_to_config_file>"
