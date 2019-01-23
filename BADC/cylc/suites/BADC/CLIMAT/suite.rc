@@ -4,7 +4,7 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20181102T0630
+    initial cycle point = 20190124T0630
     [[special tasks]]
         clock-trigger = normal(PT0M)
     [[dependencies]] 
@@ -12,17 +12,16 @@
             graph = """
             # regular dependencies
             normal:ok_data => ftp
-            normal:fail | ftp:fail => errors
  
             # suicide triggers
-            normal:fail | normal:no_data_but_late => !ftp
-            normal:no_data_but_late | ftp => !errors
+            normal:no_data_but_late => !ftp
             """
 [runtime] 
     [[root]]
         [[[environment]]]
             DTYPE = CLIMAT
             SCRIPTS = /var/moods/BADC/scripts
+        %include /var/moods/BADC/include/job.config
     [[normal]] 
         script = $SCRIPTS/retclm.sh
         [[[outputs]]]
@@ -30,5 +29,3 @@
             ok_data = "OK_DATA"
     [[ftp]] 
         script = $SCRIPTS/ftp.sh
-    [[errors]] 
-        script = $SCRIPTS/errors.sh

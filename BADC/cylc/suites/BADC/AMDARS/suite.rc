@@ -4,7 +4,7 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20190122T1830
+    initial cycle point = 20190123T1230
     [[special tasks]]
         clock-trigger = cntlchk(PT0M)
     [[dependencies]] 
@@ -14,11 +14,10 @@
             """
 [runtime]
     [[root]]
-        [[[job]]]
-            execution retry delays = 6*PT10M
         [[[environment]]]
             DTYPE = AMDARS
-            SCRIPTS = /var/moods/BADC/scripts 
+            SCRIPTS = /var/moods/BADC/scripts
+        %include /var/moods/BADC/include/job.config
     [[cntlchk]] 
         script = $SCRIPTS/cntlchk.sh
     [[catchup]] 
@@ -26,4 +25,4 @@
     [[normal]] 
         script = $SCRIPTS/retbadc.sh
     [[ftp]] 
-        script = $SCRIPTS/ftp_test.sh
+        script = $SCRIPTS/ftp.sh
