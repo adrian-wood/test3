@@ -21,6 +21,7 @@ PATH=/data/local/fcm/bin:$PATH
 
 # Local vars...
 running_suites=/var/moods/.running_suites_list
+rc=0
 
 echo "`date "+%Y/%m/%d %H:%M:%S"`: $0 running... "
 
@@ -28,10 +29,11 @@ if [ -f $running_suites ]; then
     while read SUITE; do
         [ "${SUITE:0:1}" = "#" ] && continue  # ignore comment lines...
         echo "Restarting suite $SUITE ..."
-        cylc restart $SUITE
+        echo cylc restart $SUITE
     done < $running_suites
 else
     echo "ERROR: $running_suites file not found"
+    rc=1
 fi
 
 echo "`date "+%Y/%m/%d %H:%M:%S"`: $0 finished."
