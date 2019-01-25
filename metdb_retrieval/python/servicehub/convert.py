@@ -7,6 +7,7 @@
 #
 #
 # REVISION INFO :
+# MB-1909: Jan 2019 Trim blanks from end of report text.            SN
 # MB-1827: Jan 2019 New function for TAFS forecast time.
 # MB-1876: Dec 2018 New SONDE function and check for missing WMO block
 #                   and station before converting.                  SN
@@ -178,7 +179,7 @@ def report_text(string):
        Returns: string(44:)
     """
     if len(string) > 44:
-        return string[44:]
+        return string[44:].strip()
     else:
         return ""
 

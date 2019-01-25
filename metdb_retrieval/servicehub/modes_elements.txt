@@ -1,0 +1,32 @@
+1 : site_id                                           :         : SITE_ID
+2 : latitude (angular degrees)                        : deg     : LTTD 
+3 : longitude (angular degrees)                       : deg     : LNGD 
+4 : report_date_time (dd/mm/yyyy hh\:mm\:ssZ)         :         : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)
+5 : data_source (code table 001201)                   :         : code_lookup(%001201,DATA_SRCE)
+6 : transponder_icao_id                               :         : ICAO_ADDR
+7 : call_sign                                         :         : CALL_SIGN
+8 : airframe_manufacturer_id                          :         : ARCT_TYPE
+9 : pressure_altitude (meters)                        : m       : PESR_ALTD
+10: gnss_altitude (meters)                            : m       : GNSS_ALTD
+11: indicated_airspeed (meters per second)            : m/s     : INDCT_AIRSPD
+12: true_airspeed (meters per second)                 : m/s     : TRUE_AIRSPD
+13: ground_speed (meters per second)                  : m/s     : GRND_SPED
+14: true_heading (angular degrees)                    : deg     : TRUE_HDNG
+15: ground_heading (angular degrees)                  : deg     : GRND_HDNG
+16: radar_ground_speed (meters per second)            : m/s     : RADR_GRND_SPED
+17: radar_ground_heading (angular degrees)            : deg     : RADR_GRND_HDNG
+18: mach_number                                       :         : MACH_NMBR
+19: air_temperature (degrees Celsius)                 : Cel     : package.convert.convert_to_celsius(AIR_TMPR)
+20: radar_air_temperature (degrees Celsius)           : Cel     : package.convert.convert_to_celsius(AIR_TMPR_RADR)
+21: geomagnetic_deviation (angular degrees)           : deg     : GMGTC_DVTN
+22: magnetic_heading_bias (angular degrees)           : deg     : MAG_HDNG_DVTN
+23: barometric_pressure (Pascals)                     : Pa      : BRMTC_PESR
+24: roll_angle (degrees)                              : deg     : ROLL_ANGL
+25: wind_direction (angular degrees)                  : deg     : WIND_DRCTN
+26: wind_speed (meters per second)                    : m/s     : WIND_SPED
+27: radar_wind_direction (angular degrees)            : deg     : WIND_DRCTN_RADR
+28: radar_wind_speed (meters per second)              : m/s     : WIND_SPED_RADR
+29: wind_speed_u_component (meters per second)        : m/s     : WIND_U
+30: wind_speed_v_component (meters per second)        : m/s     : WIND_V
+31: radar_wind_speed_u_component (meters per second)  : m/s     : WIND_U_RADR
+32: radar_wind_speed_v_component (meters per second)  : m/s     : WIND_V_RADR 

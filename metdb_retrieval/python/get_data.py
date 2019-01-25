@@ -7,9 +7,12 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1891: Jan 2019 Cater for retrieval periods of > 1 hour and for
+#                   "days ago" retrievals, both needed for AIRQAL and
+#                   AIRQALEU ServiceHub retrievals.                 AM
 # MB-1876: Dec 2018 Speed up CSV output by turning off type checking.
 # MB-1804: Nov 2018 Move metdb module corrections out of this source.
-#          Suppress printing of elements list unless in test mode.  SN      
+#          Suppress printing of elements list unless in test mode.  SN
 # MB-1824: Oct 2018 Add raw report text to METAR/SPECI              SN
 # MB-1803: Oct 2018 Use a csv dialect for output to get the quoting
 #          right for string containing commas.                      SN
@@ -33,6 +36,7 @@
 import ConfigParser
 import csv
 import datetime as dt
+from datetime import timedelta
 import getopt
 import importlib
 import metdb
@@ -332,18 +336,23 @@ class Elements():
 
 
 # ----------------------------------------------------------------------
-def time_from_ref(ref, hour=None, start=True):
+def time_from_ref(ref, hour=None, start=True, days_ago=0, time_span=1):
     """Create a MetDB format date/time string.
 
-       Ref    - is a datetime object.
-       hour   - is optional, if not given then ref is used.
-       start  - is optional, default is True.
-       when it is a start time then the minutes start at 00,
-       otherwise an end time is assumed and minutes is set to 59.
-       If the requested hour is in the future then it uses the
-       day before the ref date instead.
+       Ref       - a datetime object.
+       hour      - optional, if not given then ref is used.
+       start     - optional, default is True.
+       days_ago  - optional, default 0 days ago i.e. today
+       time_span - optional, no of hours to be retrieved, default 1 hour
+       When returning a start time then minutes are set to 00
+       when returning an end time use the time_span to calculate the hour and
+       set the minutes to 59.
+       If the requested hour is in the future and we are retrieving from today
+       (i.e. days_ago is 0) then use the day before the ref date instead.
     """
+    ref = ref - timedelta(days=days_ago)
     copy_ref = ref
+
     if hour is None:
         hr = ref.hour
         min = ref.minute
@@ -352,9 +361,12 @@ def time_from_ref(ref, hour=None, start=True):
         if start:
             min = 0
         else:
+            hr = (hr + time_span - 1)
             min = 59
-    if ref.hour < hr:
+
+    if ref.hour < hr and days_ago == 0:
         copy_ref = copy_ref - dt.timedelta(days=1)
+
     return copy_ref.strftime("%Y%m%d/") + \
         '{:02d}{:02d}'.format(hr, min) + 'Z'
 
@@ -518,11 +530,47 @@ def get_data():
         hours = settings.start_time
         if hours:
             hour_list = [int(t) for t in hours.split(',')]
+            # cannot have negative hours and days_ago set
+            if hasattr(settings, 'days_ago') and any(h < 0 for h in hour_list):
+                print ('Cannot combine negative start_time hours with '
+                       'days_ago parameter.')
+                sys.exit(2)
             if all(h < 0 for h in hour_list):
                 hour_list = hours_back_from(now, hour_list)
 
     if len(hour_list) == 0:
         hour_list = [now.hour]
+
+# time_span (number of hours for the retrieval) must be a single positive
+# integer. Defaults to a span of 1 hour
+
+    time_span = 1
+    if hasattr(settings, 'time_span'):
+        try:
+            time_span = int(settings.time_span)
+        except:
+            print 'Invalid time_span value: ' + settings.time_span
+            sys.exit(2)
+        if time_span < 0:
+            print ('Invalid time_span (must be positive integer number of '
+                   'hours): ' + settings.time_span)
+            sys.exit(2)
+
+# days_ago (number of whole days previously for the retrieval) must be a
+# single positive integer. Defaults to 0 days ago, i.e. today. If set then
+# cannot use negative hour values in start_time.
+
+    days_ago = 0
+    if hasattr(settings, 'days_ago'):
+        try:
+            days_ago = int(settings.days_ago)
+        except:
+            print 'Invalid days_ago value: ' + settings.days_ago
+            sys.exit(2)
+        if days_ago < 0:
+            print ('Invalid days_ago (must be positive number of '
+                   'days): ' + settings.days_ago)
+            sys.exit(2)
 
 # Get platform list, if any
 
@@ -538,8 +586,9 @@ def get_data():
 
     for t in hour_list:
         csv_list = []  # list of lines to output
-        start_time = time_from_ref(now, hour=t, start=True)
-        end_time = time_from_ref(now, hour=t, start=False)
+        start_time = time_from_ref(now, days_ago=days_ago, hour=t, start=True)
+        end_time = time_from_ref(now, days_ago=days_ago, hour=t, start=False,
+                                 time_span=time_span)
         rcpt_time = time_from_ref(last_run)
         ob_dt = '{:02d}'.format(t)
 
@@ -638,6 +687,7 @@ def get_data():
     if not test:
         settings.reset({'run_time': this_run})
         settings.write_cfg(config_file)
+
 
 if __name__ == '__main__':
     get_data()

@@ -1,0 +1,18 @@
+1 : long_station_name                                                     :       : LNG_STTN_NME
+2 : observing_station_local_code                                          :       : AQTY_OBSG_STTN_LCL_CD
+3 : airbase_observing_station_code                                        :       : ABSE_AQTY_OBSG_STTN_CD
+4 : gems_station_code                                                     :       : GEMS_AQTY_OBSG_STTN_CD
+5 : observing_station_dominant_emission_source (code table 001217)        :       : code_lookup(%001217,AQTY_OBSG_STTN_DMNT_EMSN_SRC)
+6 : observing_station_area_type (code table 001218)                       :       : code_lookup(%001218,AQTY_OBSG_STTN_AR_TYP)
+7 : observing_station_terrain_type (code table 001219)                    :       : code_lookup(%001219,AQTY_OBSG_STTN_TRN_TYP)
+8 : report_date_time (dd/mm/yyyy hh\:mm\:ssZ)                             :       : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)
+9 : latitude (angular degrees)                                            : deg   : LTTD 
+10: longitude (angular degrees)                                           : deg   : LNGD 
+11: station_height (meters)                                               : m     : STTN_HGHT
+12: sensor_height (meters)                                                : m     : SNSR_HGHT
+13: averaging_time_period (minutes)                                       : min   : AVGNG_PERD
+14: atmospheric_constituent_type (code table 008043)                      :       : code_lookup(%008043,CSNT_TYP)
+15: cas_registry_number                                                   :       : CAS_RGSY_NMBR
+16: particulate_matter_characterization (code table 008045)               :       : code_lookup(%008045,PLTE_MTR_CHTZN)
+17: decimal_scale_of_mass_density_concentration_value                     :       : DCML_SCL_MASS_DNSTY
+18: mass_density_concentration_of_particulate (kilograms per cubic meter) : kg/m3 : MASS_DNSTY
