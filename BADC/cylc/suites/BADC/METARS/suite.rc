@@ -4,7 +4,7 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20190123T1930
+    initial cycle point = next(T0130; T0730; T1330; T1930)
     [[special tasks]]
         clock-trigger = cntlchk(PT0M)
     [[dependencies]] 
@@ -24,5 +24,8 @@
         script = $SCRIPTS/retbadc.sh CATCHUP
     [[normal]] 
         script = $SCRIPTS/retbadc.sh
+        # turn off retries for this job as it updates control file...
+        [[[job]]]
+            execution retry delays = 
     [[ftp]] 
         script = $SCRIPTS/ftp.sh

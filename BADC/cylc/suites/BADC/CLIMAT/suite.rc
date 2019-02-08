@@ -4,7 +4,7 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20190124T0630
+    initial cycle point = next(T0630)
     [[special tasks]]
         clock-trigger = normal(PT0M)
     [[dependencies]] 
@@ -24,6 +24,9 @@
         %include /var/moods/BADC/include/job.config
     [[normal]] 
         script = $SCRIPTS/retclm.sh
+        # turn off retries for this job as it updates control file...
+        [[[job]]]
+            execution retry delays = 
         [[[outputs]]]
             no_data_but_late = "NO_DATA_BUT_LATE"
             ok_data = "OK_DATA"
