@@ -21,9 +21,9 @@
     [[cntlchk]] 
         script = $SCRIPTS/cntlchk.sh
     [[catchup]] 
-        script = $SCRIPTS/retbadc.sh CATCHUP
+        script = $SCRIPTS/retoz.sh CATCHUP
     [[normal]] 
-        script = $SCRIPTS/retbadc.sh
+        script = $SCRIPTS/retoz.sh
         # turn off retries for this job as it updates control file...
         [[[job]]]
             execution retry delays = 
