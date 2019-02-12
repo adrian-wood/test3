@@ -1,1 +1,3 @@
 *.py[co]
+metdb_retrieval/queued/
+metdb_retrieval/processed/

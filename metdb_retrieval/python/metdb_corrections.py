@@ -16,7 +16,7 @@ def local_updates():
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["SPECI"] = "MTR_RPT_TXT"
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'MTR_RPT_TXT'] = 'S500'
-    
+
     metdb.subtypes.DTYPE_MAPS["SONDE"][u'HUMDY_CRTN'] = 'f4'
 
     metdb.subtypes.DTYPE_MAPS["AIRQAL"][u'AQTY_OBSG_STTN_DMNT_EMSN_SRC'] = 'i4'
@@ -207,3 +207,4 @@ def local_updates():
              u'SALNY': 'f4',  # Salinity
              u'GTSPP_SALNY_QC': 'i4',  # GTSPP Salinity QC Flag
              }
+

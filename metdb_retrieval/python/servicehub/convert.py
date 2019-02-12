@@ -188,7 +188,7 @@ def report_text(string):
 def sonde_level_type(flag):
     """Return type of position values which might be absolute or
        displacement.
-       parameter: int 1,2 or MDI 
+       parameter: int 1,2 or MDI
        return: string decode
     """
     value = ""
