@@ -1,0 +1,5 @@
+1 : site_name                              :          : STTN_NAME
+2 : latitude                               : deg      : LTTD
+3 : longitude                              : deg      : LNGD
+4 : report_date_time (dd/mm/yy hh\:mmZ)    :          : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR)
+5 : tide_elevation                         : m        : TIDE_ELVTN
