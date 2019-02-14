@@ -8,7 +8,7 @@
     [[special tasks]]
         clock-trigger = normal(PT0M)
     [[dependencies]] 
-        [[[T0630]]]
+        [[[P1D]]]  # every day
             graph = """
             # regular dependencies
             normal:ok_data => ftp

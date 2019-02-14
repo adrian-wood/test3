@@ -8,7 +8,7 @@
     [[special tasks]]
         clock-trigger = cntlchk(PT0M)
     [[dependencies]] 
-        [[[T0130, T0730, T1330, T1930]]]
+        [[[PT6H]]]
             graph = """
             cntlchk => catchup => normal => ftp
             """
