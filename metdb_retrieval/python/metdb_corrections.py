@@ -16,7 +16,7 @@ def local_updates():
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'STTN_RPRT_TYPE'] = 'i4'
     metdb.subtypes.CREP_ELEMENTS["SPECI"] = "MTR_RPT_TXT"
     metdb.subtypes.DTYPE_MAPS["SPECI"][u'MTR_RPT_TXT'] = 'S500'
-    
+
     metdb.subtypes.DTYPE_MAPS["SONDE"][u'HUMDY_CRTN'] = 'f4'
 
     metdb.subtypes.DTYPE_MAPS["AIRQAL"][u'AQTY_OBSG_STTN_DMNT_EMSN_SRC'] = 'i4'
@@ -206,4 +206,16 @@ def local_updates():
              u'GTSPP_PESR_QC': 'i4',  # GTSPP Water pressure QC Flag
              u'SALNY': 'f4',  # Salinity
              u'GTSPP_SALNY_QC': 'i4',  # GTSPP Salinity QC Flag
+             }
+
+    metdb.subtypes.DTYPE_MAPS["TIDEGAGE"] = {
+             u'STTN_NAME': 'S20',
+             u'LTTD' : 'f4',
+             u'LNGD' : 'f4',
+             u'TIDE_ELVTN' : 'f4',
+             u'YEAR' : 'i4', # year
+             u'MNTH': 'i4',  # month
+             u'DAY': 'i4',  # day
+             u'HOUR': 'i4',  # hour
+             u'MINT': 'i4',  # minute
              }
