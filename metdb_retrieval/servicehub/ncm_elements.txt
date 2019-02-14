@@ -1,0 +1,38 @@
+1 : station_id                                                :       : package.convert.id_from(WMO_STTN_INDX_NMBR)
+2 : bulletin_id                                               :       : BLTN_IDNY
+3 : collecting_centre                                         :       : COLTN_CNTR
+4 : latitude (angular degrees)                                : deg   : LTTD                                     
+5 : longitude (angular degrees)                               : deg   : LNGD              
+6 : report_date_time (dd/mm/yyyy hh\:mmZ)                     :       : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR)
+7 : correction_number                                         :       : CORTN_NMBR
+8 : 09Z_minimum_grass_temperature (degree Celsius)            : Cel   : package.convert.synop_temp(MNMM_GRSS_TMPR) 
+9 : 09Z_minimum_concrete_temperature (degree Celsius)         : Cel   : package.convert.synop_temp(MNMM_CCRT_TMPR) 
+10: 09Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,GRND_STAT)
+11: 09Z_state_of_concrete_slab (local code 020203)            :       : package.convert.local_code(%020203,CCRT_STAT)
+12: 09Z_soil_temperature_30cm (degree Celsius)                : Cel   : package.convert.synop_temp(Q30CM_SOIL_TMPR) 
+13: 09Z_soil_temperature_100cm (degree Celsius)               : Cel   : package.convert.synop_temp(Q100CM_SOIL_TMPR)
+14: 09Z_snow_depth (meters)                                   : m     : package.convert.snow_depth(SNOW_DPTH)
+15: 09Z_fresh_snow_depth (meters)                             : m     : package.convert.snow_depth(FRSH_SNOW_DPTH)
+16: 09Z_21Z_maximum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q0921Z_MXMM_AIR_TMPR) 
+17: 09Z_21Z_minimum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q0921Z_MNMM_AIR_TMPR) 
+18: 09Z_21Z_precipitation_amount (kilograms per square meter) : kg/m2 : package.convert.get_rain(Q0921Z_PRCTN_AMNT)
+19: 21Z_09Z_maximum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q2109Z_MXMM_AIR_TMPR) 
+20: 21Z_09Z_minimum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q2109Z_MNMM_AIR_TMPR) 
+21: 21Z_09Z_precipitation_amount (kilograms per square meter) : kg/m2 : package.convert.get_rain(Q2109Z_PRCTN_AMNT)
+22: 09Z_09Z_maximum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q0909Z_MXMM_AIR_TMPR) 
+23: 09Z_09Z_minimum_air_temperature (degree Celsius)          : Cel   : package.convert.synop_temp(Q0909Z_MNMM_AIR_TMPR) 
+24: 09Z_09Z_precipitation_amount (kilograms per square meter) : kg/m2 : package.convert.get_rain(Q0909Z_PRCTN_AMNT)
+25: 09Z_09Z_sunshine_amount (hours)                           : h     : Q0909Z_SUN_AMNT
+26: day_of_hail (local code 020198)                           :       : package.convert.local_code(%020198,HAIL_DAY_IDNY)
+27: day_of_thunder (local code 020199)                        :       : package.convert.local_code(%020199,THNR_DAY_IDNY)
+28: day_of_fog (local code 020200)                            :       : package.convert.local_code(%020200,FOG_DAY_IDNY)
+29: day_of_gale (local code 020201)                           :       : package.convert.local_code(%020201,GALE_DAY_IDNY)
+30: day_of_snow (local code 020202)                           :       : package.convert.local_code(%020202,SNOW_DAY_IDNY)
+31: previous_12Z_state_of_ground (code table 020062)          :       : code_lookup(%020062,Q12Z_GRND_STAT)
+32: previous_15Z_state_of_ground (code table 020062)          :       : code_lookup(%020062,Q15Z_GRND_STAT)
+33: previous_18Z_state_of_ground (code table 020062)          :       : code_lookup(%020062,Q18Z_GRND_STAT)
+34: previous_21Z_state_of_ground (code table 020062)          :       : code_lookup(%020062,Q21Z_GRND_STAT)
+35: 00Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q00Z_GRND_STAT)
+36: 03Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q03Z_GRND_STAT)
+37: 06Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q06Z_GRND_STAT)
+38: 09Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q09Z_GRND_STAT)
