@@ -66,7 +66,6 @@ BADC/
 
     include/  <--- include files for common suite definitions
       job.config
-      ... etc
 
     scripts/   <--- shell scripts that the cylc suites run
       cntlchk.sh
