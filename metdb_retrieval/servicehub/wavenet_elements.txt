@@ -18,4 +18,5 @@
 17: waveband_upper_frequency (Hertz)                  : Hz         : from_layer(waveband,WAVE_BAND_UPPR_FRQY)
 18: spectral_wave_density (squared meters per Hertz)  : m2/Hz      : from_layer(waveband,SPCL_WAVE_DNSY)
 19: spectral_wave_peak_direction ( degrees)           : Deg        : from_layer(waveband,DRCTN_PEAK_WAVE_BAND)
-20: spectral_wave_peak_spread (degrees)                : Deg       : from_layer(waveband,SPRD_PEAK_WAVE_BAND)
+20: spectral_wave_peak_spread (degrees)               : Deg        : from_layer(waveband,SPRD_PEAK_WAVE_BAND)
+21: time_of_receipt (dd/mm/yyyy hh\:mmZ)              :            : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

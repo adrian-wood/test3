@@ -6,4 +6,5 @@
 6 : report_date_time (dd/mm/yyyy hh\:mm\:ssZ)    :            :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT,SCND)
 7 : event_type (code table 013206)               :            :  code_lookup(%013206,PRCTN_EVNT_TYPE)
 8 : time_period (minutes)                        : min        :  PRCTN_TIME_PERD 
-7 : rainfall_amount (kilograms per square meter) : kg/m2      :  package.convert.get_rain(PRCTN_AMNT)
+9 : rainfall_amount (kilograms per square meter) : kg/m2      :  package.convert.get_rain(PRCTN_AMNT)
+10: time_of_receipt (dd/mm/yyyy hh\:mmZ)         :            :  package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

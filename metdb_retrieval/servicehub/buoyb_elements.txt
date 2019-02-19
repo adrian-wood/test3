@@ -80,3 +80,4 @@
 77: depth_below_sea_surface (meters)                   : m          : from_layer(temperature,DPTH_OF_TMPR_SALNY_MESRT)
 78: sea_temperature_at_depth (Celsius)                 : Cel        : from_layer(temperature,package.convert.convert_to_celsius(LEVL_SEA_TMPR))
 79: salinity_at_depth (parts per thousand)             :            : from_layer(temperature,LEVL_SEA_SALNY)
+80: time_of_receipt (dd/mm/yyyy hh\:mmZ)               :            : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

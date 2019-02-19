@@ -1,5 +1,6 @@
 1 : site_name                              :          : STTN_NAME
 2 : latitude                               : deg      : LTTD
 3 : longitude                              : deg      : LNGD
-4 : report_date_time (dd/mm/yy hh\:mmZ)    :          : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR)
+4 : report_date_time (dd/mm/yy hh\:mmZ)    :          : package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
 5 : tide_elevation                         : m        : TIDE_ELVTN
+6: time_of_receipt (dd/mm/yyyy hh\:mmZ)    :          : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)
