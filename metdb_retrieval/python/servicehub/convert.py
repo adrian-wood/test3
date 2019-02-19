@@ -140,6 +140,66 @@ def get_rain(rain):
 
 
 # ----------------------------------------------------------------------
+def snow_depth(snow):
+    """Return snowfall amount or code figure 997 for fresh snow
+    """
+    value = ""
+    if snow is not MDI:
+        if snow >= 9.97:
+            value = "997"
+        else:
+            value = "{:.2f}".format(snow)
+    return value
+
+
+# ----------------------------------------------------------------------
+def local_code(table, code):
+    """Return code value from NCM code tables - these are not BUFR
+       tables.
+       Parameters: string - table number
+                   int    - code value or MDI
+       Return: decoded value or blank string
+    """
+    code_tables = {"020198": {0: "0 None",
+                              1: "1 DIAMOND DUST",
+                              2: "2 SNOW GRAINS",
+                              3: "3 SNOW PELLETS",
+                              4: ("4 ICE PELLETS OR SMALL HAIL"
+                                  " (LESS THAN 5MM DIAMETER)"),
+                              5: "5 HAIL (5-9MM DIAMETER)",
+                              6: "6 HAIL (10-19MM DIAMETER)",
+                              7: "7 HAIL (20MM OR GREATER DIAMETER)",
+                              8: "8 ",
+                              9: "9 None (restricted period)"},
+                   "020199": {0: "0 None",
+                              1: ("1 Thunderstorm, with or without"
+                                  " precipitation"),
+                              9: "9 None (restricted period)"},
+                   "020200": {0: "0 Visibility GE 1000m",
+                              1: "1 Visibility LT 1000m"},
+                   "020201": {0: "0 None",
+                              1: ("1 34-knot winds for a period of at "
+                                  " least 10 minutes"),
+                              9: "9 None (restricted period)"},
+                   "020202": {0: "0 None",
+                              1: "1 Sleet",
+                              5: "5 Snow",
+                              9: "9 None (restricted period)"},
+                   "020203": {0: "0 Dry",
+                              1: "1 Moist",
+                              2: "2 Wet",
+                              3: "3 Icy"}}
+
+    value = ""
+    if code is not MDI:
+        if table in code_tables:
+            value = code_tables.get(table).get(code, "")
+        else:
+            print "Invalid code table ", table
+    return value
+
+
+# ----------------------------------------------------------------------
 def datetime_from(*args):
     """Return a string representation of the date and time in the
        day/month/year hh:MM:ss format.
@@ -188,7 +248,7 @@ def report_text(string):
 def sonde_level_type(flag):
     """Return type of position values which might be absolute or
        displacement.
-       parameter: int 1,2 or MDI 
+       parameter: int 1,2 or MDI
        return: string decode
     """
     value = ""
