@@ -19,3 +19,4 @@
 18: gtspp_pressure_qc_flag (code table 033050)       :            : from_layer(subsea,code_lookup(%033050,GTSPP_PESR_QC))
 19: salinity_at_depth (parts per thousand)           :            : from_layer(subsea,SALNY)
 20: gtspp_salinity_qc_flag (code table 033050)       :            : from_layer(subsea,code_lookup(%033050,GTSPP_SALNY_QC))
+21: time_of_receipt (dd/mm/yyyy hh\:mmZ)             :            : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

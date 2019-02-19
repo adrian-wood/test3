@@ -36,3 +36,4 @@
 36: 03Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q03Z_GRND_STAT)
 37: 06Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q06Z_GRND_STAT)
 38: 09Z_state_of_ground (code table 020062)                   :       : code_lookup(%020062,Q09Z_GRND_STAT)
+39: time_of_receipt (dd/mm/yyyy hh\:mmZ)                      :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

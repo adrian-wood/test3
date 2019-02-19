@@ -66,3 +66,4 @@
  : windshear_longitude_displacement_since_launch (degrees) : deg   : from_layer(shear,WIND_SHER_LNGD_DSPLT)         
  : windshear_1km_layer_below (meters per second)           : m/s   : from_layer(shear,WIND_SHER_LAYR_BELW)          
  : windshear_1km_layer_above (meters per second)           : m/s   : from_layer(shear,WIND_SHER_LAYR_ABOV)          
+ : time_of_receipt (dd/mm/yyyy hh\:mmZ)                    :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)
