@@ -96,3 +96,4 @@
 97: above_station_cloud_type (code table 020012)                  :       :  code_lookup(%020012,ABOV_STTN_CLOD_TYPE))
 98: above_station_cloud_top_height (meters)                       : m     :  ABOV_STTN_CLOD_TOP_HGHT
 99: above_station_cloud_top_type (code_table 020017)              :       :  code_lookup(%020017,ABOV_STTN_CLOD_TOP_TYPE)
+100: time_of_receipt (dd/mm/yyyy hh\:mmZ)                         :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

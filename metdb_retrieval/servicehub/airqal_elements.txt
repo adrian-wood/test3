@@ -16,3 +16,4 @@
 16: particulate_matter_characterization (code table 008045)               :       : code_lookup(%008045,PLTE_MTR_CHTZN)
 17: decimal_scale_of_mass_density_concentration_value                     :       : DCML_SCL_MASS_DNSTY
 18: mass_density_concentration_of_particulate (kilograms per cubic meter) : kg/m3 : MASS_DNSTY
+19: time_of_receipt (dd/mm/yyyy hh\:mmZ)                                  :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

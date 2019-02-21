@@ -12,3 +12,4 @@
 12: wind_speed (meters per second)             : m/s   : LEVL_WIND_SPED 
 13: degree_of_turbulence (code table 011031)   :       : code_lookup(%011031,TRBC_DEGR)
 14: airframe_icing (code table 020041)         :       : code_lookup(%020041,ICE_DEGR)
+15: time_of_receipt (dd/mm/yyyy hh\:mmZ)       :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

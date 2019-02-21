@@ -30,3 +30,4 @@
 30: wind_speed_v_component (meters per second)        : m/s     : WIND_V
 31: radar_wind_speed_u_component (meters per second)  : m/s     : WIND_U_RADR
 32: radar_wind_speed_v_component (meters per second)  : m/s     : WIND_V_RADR 
+33: time_of_receipt (dd/mm/yyyy hh\:mmZ)              :         : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

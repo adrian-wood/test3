@@ -22,3 +22,4 @@
 22: relative_humidity (percent)                            :       : LEVL_RLTV_HUMDY 
 23: mixing_ratio (kg per kg)                               : kg/kg : LEVL_MXNG_RATO 
 24: airframe_icing  (code table 020041)                    :       : code_lookup(%020041,ICE_DEGR)
+25: time_of_receipt (dd/mm/yyyy hh\:mmZ)                   :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

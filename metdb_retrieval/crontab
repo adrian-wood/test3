@@ -55,3 +55,9 @@
 # MODES data for ServiceHub
 5,15,25,35,45,55 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/modes.cfg >>/tmp/get_modes_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
 
+# TIDEGAGE data for ServiceHub
+15,45 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/tidegage.cfg >>/tmp/get_tidegage_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+
+# NCM data for ServiceHub
+30 * * * * /var/moods/metdb_retrieval/servicehub/get_data.sh /var/moods/metdb_retrieval/servicehub/ncm_uk.cfg >>/tmp/get_ncm_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+

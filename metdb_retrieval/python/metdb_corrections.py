@@ -208,3 +208,14 @@ def local_updates():
              u'GTSPP_SALNY_QC': 'i4',  # GTSPP Salinity QC Flag
              }
 
+    metdb.subtypes.DTYPE_MAPS["TIDEGAGE"] = {
+             u'STTN_NAME': 'S20',
+             u'LTTD' : 'f4',
+             u'LNGD' : 'f4',
+             u'TIDE_ELVTN' : 'f4',
+             u'YEAR' : 'i4', # year
+             u'MNTH': 'i4',  # month
+             u'DAY': 'i4',  # day
+             u'HOUR': 'i4',  # hour
+             u'MINT': 'i4',  # minute
+             }
