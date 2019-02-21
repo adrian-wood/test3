@@ -7,7 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
-# MB-1818: Feb 2019 Expand environment variables if given in the 
+# MB-1810: Feb 2019 Expand environment variables if given in the 
 #                   config file. Also, write to a temp file first and
 #                   rename at the end (to allow asynchronous
 #                   file transfers).                                SN
