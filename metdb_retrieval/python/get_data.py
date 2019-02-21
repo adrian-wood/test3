@@ -213,12 +213,12 @@ class Elements():
                 self.titles.append(title)
                 self.units.append(units)
                 self.uom.append(v[2])
+
+            f.close()
         except:
             print 'ERROR reading elements file ', elem
             traceback.print_exc()
             sys.exit(2)
-        finally:
-            f.close()
 
     @staticmethod
     def parse_elements(line):

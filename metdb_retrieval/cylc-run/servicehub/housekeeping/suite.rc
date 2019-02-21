@@ -1,0 +1,26 @@
+[meta]
+    title = "HOUSEKEEPING"
+    description = "Deletes working files from cylc directories and old processed files."
+    URL = https://metnet2/content/metdb-provision-data-servicehub
+    group = "ServiceHub"
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = next(T-00; T-10; T-20; T-30; T-40; T-50)
+    [[special tasks]]
+        clock-trigger = housekeeping(PT0M)
+    [[dependencies]]
+        [[[PT05M]]]
+            graph = """
+            # regular dependencies
+            housekeeping[-PT05M] => housekeeping
+
+            """
+[runtime]
+    [[root]]
+        [[[environment]]]
+            %include /var/moods/cylc-run/servicehub/base_env.rc
+             SCRIPTS = $BASE_DIR/scripts
+    [[housekeeping]]
+        script = $SCRIPTS/run_hk.sh
+

@@ -40,6 +40,8 @@ if [[ $# -ne 2 ]]; then
 fi
 CONFIG=$1
 CYCLE=$2
+echo "CONFIG is $CONFIG"
+echo "CYCLE  is $CYCLE"
 
 if [[ ! -s $CONFIG ]]; then
   echo "Error: $CONFIG file not found"
@@ -49,20 +51,26 @@ fi
 #
 # Get details from config file - fail if any not set
 #
+
+# location csv of output from get_data retrieval
 output_dir=$(get_config "output_dir")
 check_config "output_dir" "$output_dir"
 
+# location for successfully copied files to be moved as backup
 processed_dir=$(get_config "processed_dir")
 check_config "processed_dir" "$processed_dir"
 [[ -d "$processed_dir" ]] || mkdir -p "$processed_dir"
 
+# one or more FTP sites - will be tried in order
 dest_ftp=$(get_config "dest_ftp")
 check_config "dest_ftp" "$dest_ftp"
 read -r -a ftp_server <<< "$dest_ftp"
 
+# location for files on FTP site
 dest_dir=$(get_config "dest_dir")
 check_config "dest_dir" "$dest_dir"
 
+# csv filename template translated to a pattern match
 output_file=$(get_config "output_file")
 check_config "output_file" "$output_file"
 file_pattern=${output_file/<*>/*}
@@ -73,8 +81,12 @@ check_config "subtype" "$subtype"
 package=$(get_config "package")
 check_config "package" "$package"
 
+contact=$(get_config "contact")
+check_config "contact" "$contact"
+
 echo "Application package       : $package"
 echo "MetDB subtype             : $subtype"
+echo "Contact                   : $contact"
 echo "Temporary output directory: $output_dir"
 echo "FTP destination(s)        : ${ftp_server[@]}"
 echo "CTS destination directory : $dest_dir"
@@ -119,14 +131,15 @@ do
                 echo "FTP failed"
                 mailx -s "MetDB_retrieval $subtype FTP error" \
                          "$contact" < "$BASE_DIR"/"$package"/email.txt
-                exit 1
+                exit 0
             fi
         done  # end of loop over files
 
     else  # no files to send
-#        ps -fwwu $USER
-        echo "CONFIG is $CONFIG"
-        echo "CYCLE is $CYCLE"
+ 
+        # Check for a get_data process running for the same CONFIG and CYCLE as this send_data which
+        # may still be producing files.
+
         running=$(ps -fwwu $USER | grep get_data.sh | grep $CONFIG | grep $CYCLE | grep -v grep | wc -l)
         echo "running: " $running
         if [[ "$running" -eq 0 ]]; then

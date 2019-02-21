@@ -70,7 +70,7 @@
 72: state_of_sea (code table 022061)                              :       :  code_lookup(%022061,SEA_STAT_IDNY)
 73: sea_temperature_measurement_method (code table 002038)        :       :  code_lookup(%002038,SEA_SRFC_TMPR_RCRDG_IDNY)
 74: sea_surface_temperature (Celsius)                             : Cel   :  package.convert.synop_temp(SEA_SRFC_TMPR)
-75: wind_wave_measuring_method (code table 002195)                :       :  code_lookup(%002915,WIND_WAVE_RCRDG_IDNY)
+75: wind_wave_measuring_method (code table 002195)                :       :  code_lookup(%002195,WIND_WAVE_RCRDG_IDNY)
 76: wind_wave_height (meters)                                     : m     :  WIND_WAVE_HGHT
 77: wind_wave_period (seconds)                                    : s     :  WIND_WAVE_PERD
 78: primary_swell_wave_direction (angular degrees)                : deg   :  PRMY_SWLL_WAVE_DRCTN

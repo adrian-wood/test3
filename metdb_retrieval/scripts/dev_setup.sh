@@ -1,6 +1,12 @@
 #!/bin bash -l
 # 
-# Run this to initialise your test environment when running outside of cycl
+# This initialises your test environment when running outside of cycl.
+# Set BASE_DIR and ECCODES according to your test requirements.
+#
+# Run from the command line:
+# . ./dev_setup.sh
+# Then you can run get_data.sh and send_data.sh from the command line instead
+# of from cylc.
 # 
 
 module load scitools/experimental_legacy-current

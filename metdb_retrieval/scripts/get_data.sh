@@ -7,9 +7,13 @@
 # PURPOSE       : Run python retrieval script to get data as specified
 #                 by the config file for ServiceHub.
 #
-# CALLED BY     : moodsf cron
+# CALLED BY     : cylc suite or from the command line
 #
 # ARGUMENTS     : (1) config file
+#               : (2) cycle name (use a dummy name if running outside
+#                     of cylc)
+#
+# EXAMPLE       : ./get_data.sh ../servicehub/aireps.cfg 20190101T1200Z
 #
 # ENVIRONMENT   : BASE_DIR set in cylc (or local export) points to
 #                 metdb_retrieval directory
@@ -31,22 +35,31 @@ module display scitools/experimental_legacy-current
 
 : "${BASE_DIR:?Need to set BASE_DIR non-empty}"
 
+. "$BASE_DIR"/scripts/config_utils.sh  || exit 1
+
 echo "Using BASE_DIR $BASE_DIR"
 
 # Check arguments
 
 if [[ $# -ne 2 ]]; then
   echo "Usage: $0 <full_path_to_config_file> <cycle_point>"
-  exit 8
+  exit 1
 fi
 CONFIG=$1
 
 if [[ ! -s $CONFIG ]]; then
   echo "Error: $CONFIG file not found"
-  exit 8
+  exit 1
 fi
 
-echo "...config file $CONFIG"
+subtype=$(get_config "subtype")
+check_config "subtype" "$subtype"
+
+package=$(get_config "package")
+check_config "package" "$package"
+
+contact=$(get_config "contact")
+check_config "contact" "$contact"
 
 # Path to ecCodes code/flag tables
 export ECCODES_DEFINITION_PATH=$ECCODES/share/eccodes/definitions:\
@@ -60,6 +73,11 @@ export PYTHONPATH=$BASE_DIR/python
 python $BASE_DIR/python/get_data.py -c $CONFIG
 rc=$?
 
+if [ "$rc" -ne 0 ]; then
+   echo "get_data.py failed"
+   mailx -s "MetDB_retrieval $subtype Retrieval error" \
+            "$contact" < "$BASE_DIR"/"$package"/email.txt
+fi
 echo "Return code from get_data: $rc"
-exit $rc
+exit 0
 

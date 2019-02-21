@@ -1,0 +1,3 @@
+BASE_DIR=/var/moods/metdb_retrieval
+ECCODES=/var/moods/eccodes
+
