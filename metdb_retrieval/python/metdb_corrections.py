@@ -218,4 +218,9 @@ def local_updates():
              u'DAY': 'i4',  # day
              u'HOUR': 'i4',  # hour
              u'MINT': 'i4',  # minute
+             u'RCPT_YEAR': 'i4',    # time of receipt year
+             u'RCPT_MNTH': 'i4',    # time of receipt month
+             u'RCPT_DAY': 'i4',    # time of receipt day
+             u'RCPT_HOUR': 'i4',    # time of receipt hour
+             u'RCPT_MINT': 'i4',    # time of receipt minute
              }

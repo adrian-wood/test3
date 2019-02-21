@@ -24,7 +24,7 @@
 #                 
 # 
 #  HISTORY  
-#  MB-1810: Exclude cylc-run directories from deployment as these are
+#  MB-1810: Exclude cylc directories from deployment as these are
 #           updated manually.                                        SN 
 #
 #
@@ -115,7 +115,7 @@ done < $CONFIGS
 # then copy to DEST deleting any files in DEST that no longer exist in SRC
 echo "Copying files"
 echo "rsync...from $SRC to $DEST"
-rsync -rv --exclude 'cylc-run' --delete-after $SRC $DEST
+rsync -rv --exclude 'cylc' --delete-after $SRC $DEST
 rc=$?
 echo "...complete. RC=$rc"
 

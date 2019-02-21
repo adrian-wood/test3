@@ -129,7 +129,7 @@ do
             done
             if [ "$rc" -ne 0 ]; then
                 echo "FTP failed"
-                mailx -s "MetDB_retrieval $subtype FTP error" \
+                mailx -s "MetDB_retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
                          "$contact" < "$BASE_DIR"/"$package"/email.txt
                 exit 0
             fi

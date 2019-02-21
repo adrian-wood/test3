@@ -1,6 +1,6 @@
 [meta]
-    title = "TAFS INTERNATIONAL"
-    description = "Extract TAFS from the MetDB as CSV and send to ServiceHub via CTS."
+    title = "METARS INTERNATIONAL"
+    description = "Extract METARS from the MetDB as CSV and send to ServiceHub via CTS."
     URL = https://metnet2/content/metdb-provision-data-servicehub
     group = "ServiceHub"
 [cylc]
@@ -10,18 +10,18 @@
     [[special tasks]]
         clock-trigger = get_data(PT0M)
     [[dependencies]]
-        [[[PT10M]]]
+        [[[PT05M]]]
             graph = """
             # regular dependencies
-            get_data[-PT10M] => get_data
-            get_data:start & send_data[-PT10M] => send_data
+            get_data[-PT05M] => get_data
+            get_data:start  & send_data[-PT05M] => send_data
 
             """
 [runtime]
     [[root]]
         [[[environment]]]
             %include /var/moods/cylc-run/servicehub/base_env.rc
-            CONFIG = $BASE_DIR/servicehub/tafs_international.cfg
+            CONFIG = $BASE_DIR/servicehub/metars_international.cfg
             SCRIPTS = $BASE_DIR/scripts
             CYCLE = $CYLC_TASK_CYCLE_POINT
     [[get_data]]

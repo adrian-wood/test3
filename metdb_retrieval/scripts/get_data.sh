@@ -31,7 +31,7 @@
 #-----------------------------------------------------------------------
 
 module load scitools/experimental_legacy-current
-module display scitools/experimental_legacy-current
+module display scitools/experimental_legacy-current 2>&1
 
 : "${BASE_DIR:?Need to set BASE_DIR non-empty}"
 
@@ -75,7 +75,7 @@ rc=$?
 
 if [ "$rc" -ne 0 ]; then
    echo "get_data.py failed"
-   mailx -s "MetDB_retrieval $subtype Retrieval error" \
+   mailx -s "MetDB_retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
             "$contact" < "$BASE_DIR"/"$package"/email.txt
 fi
 echo "Return code from get_data: $rc"

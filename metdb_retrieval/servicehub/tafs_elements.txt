@@ -69,4 +69,4 @@
 66: change_sig_cloud_base_height_2 (meters)            : m        : from_layer(change,CHG_CLD_BASE_HT_2)
 67: change_sig_cloud_base_height_3 (meters)            : m        : from_layer(change,CHG_CLD_BASE_HT_3)
 68: report_text                                        :          : package.convert.report_text(TAF_RPT_TXT)
-69: time_of_receipt (dd/mm/yyyy hh\:mmZ)               :          : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)
+69: time_of_receipt (dd/mm/yyyy hh\:mmZ)               :          : package.convert.datetime_from(RCT_YR,RCT_MON,RCT_DAY,RCT_HR,RCT_MNT)

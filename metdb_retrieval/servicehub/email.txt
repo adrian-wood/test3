@@ -1,5 +1,5 @@
 Non-zero return code from ServiceHub data extractions.
-Please see error logs in mdb-apps:/tmp/get_*_<yyyymmdd>_<hhmmss>.log
+Please see error logs in http://www-mdb-apps/rose-bush/
 
 Further documentation at https://metnet2/content/metdb-provision-data-servicehub
 
