@@ -14,8 +14,8 @@ echo "BASE_DIR: $BASE_DIR"
 echo "> Tidying up cylc suite output files..."
 for SUITE in $(cylc scan|cut -f1 -d' '); do
     echo ">> tidying cylc suite $SUITE:"
-    find ~/cylc-run/${SUITE}/log/job -mindepth 1 -maxdepth 1 -type d -mmin +120 -print -exec rm -fr {} +
-    find ~/cylc-run/${SUITE}/work -mindepth 1 -maxdepth 1 -type d -mmin +120 -print -exec rm -fr {} +
+    find ~/cylc-run/${SUITE}/log/job -mindepth 1 -maxdepth 1 -type d -mmin +240 -print -exec rm -fr {} +
+    find ~/cylc-run/${SUITE}/work -mindepth 1 -maxdepth 1 -type d -mmin +240 -print -exec rm -fr {} +
 done
 echo "> ...done!"
 #------------------------------------------------------------------------
