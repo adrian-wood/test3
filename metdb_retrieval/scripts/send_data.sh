@@ -25,6 +25,19 @@
 # prohibited without the permission of The Meteorological Database
 # Team at the above address.
 #-----------------------------------------------------------------------
+function finish () {
+  # Always exit 0 to keep the suites running
+  rc=$1
+  echo "Finishing with return code $rc"
+  if [ "$rc" -ne 0 ]; then
+      mailx -s "MetDB_Retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
+             "sheila.needham@metoffice.gov.uk"
+
+      exit 0
+  fi
+}
+
+trap "finish $?" EXIT
 
 : "${BASE_DIR:?BASE_DIR must be set}"
 

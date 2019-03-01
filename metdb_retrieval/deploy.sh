@@ -80,7 +80,7 @@ if [ -d "$DEST/$TARGET" ]; then
   BACKUP=$(mktemp -d)
   echo "Making backup of $DEST/$TARGET in $BACKUP"
   echo "rsync..."
-  rsync -av $DEST/$TARGET $BACKUP
+  rsync -av --exclude 'processed' $DEST/$TARGET $BACKUP
   rc=$?
   echo "...complete. RC=$rc"
 fi

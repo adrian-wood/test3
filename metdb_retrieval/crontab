@@ -1,0 +1,9 @@
+# CRONTAB entries for metdb_retrieval applications.  ADD these to the moodsf crontab when changes are made:
+# e.g. crontab -l > crontemp
+# edit crontemp by replacing existing ServiceHub entries with these
+# crontab crontemp
+
+
+# WOW retrievals
+30 00,06,12,18 * * * /var/moods/metdb_retrieval/scripts/get_data_for_wow.sh /var/moods/metdb_retrieval/wow/african_obs.cfg >>/tmp/get_wow_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+

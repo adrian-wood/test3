@@ -14,6 +14,7 @@ module display scitools/experimental_legacy-current
 
 export BASE_DIR=/home/sneedham/metdb-misc-clean/metdb_retrieval
 export ECCODES=/var/moods/eccodes
+export ECCODES_DEFINITION_PATH=$ECCODES/share/eccodes/definitions:$BASE_DIR/local_defs
 
 echo "Testing MetDB Retrievals from $BASE_DIR"
 

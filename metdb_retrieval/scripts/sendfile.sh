@@ -1,7 +1,7 @@
 #!/bin/sh
 #-----------------------------------------------------------------------
 #
-# SCRIPT        :sendfile.sh  - IN TEST MODE !!!
+# SCRIPT        :sendfile.sh
 #
 # PURPOSE       : function to send a file to a given location via
 #                 FTP and check it is successful.
@@ -35,7 +35,6 @@ sendfile(){
   DESTDIR=$3
   OUTFILE=$4
   echo "copying $INFILE to $DESTDIR/$OUTFILE on $SERVER"
-  return 0
 
   ftplog=$(mktemp /tmp/ftplog.XXXXXXXX)
 
