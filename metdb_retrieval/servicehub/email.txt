@@ -1,7 +1,11 @@
 Non-zero return code from ServiceHub data extractions.
-Please see error logs in http://www-mdb-apps/rose-bush/
+
+suite: $CYLC_SUITE_NAME
+task: $CYLC_TASK_ID
+
+See http://$HOSTNAME/rose-bush/taskjobs/$USER?&suite=$CYLC_SUITE_NAME&cycles=$CYLC_CYCLE_ID
 
 Further documentation at https://metnet2/content/metdb-provision-data-servicehub
 
-sent from: mdb-apps
+sent from: $HOSTNAME
 

@@ -30,11 +30,11 @@ function finish () {
   rc=$1
   echo "Finishing with return code $rc"
   if [ "$rc" -ne 0 ]; then
-      mailx -s "MetDB_Retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
-             "sheila.needham@metoffice.gov.uk"
+      mailx -s "Unknown error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
+             "$CONTACT"
 
-      exit 0
   fi
+  exit 0
 }
 
 trap "finish $?" EXIT
@@ -142,8 +142,9 @@ do
             done
             if [ "$rc" -ne 0 ]; then
                 echo "FTP failed"
+                envsubst < "$BASE_DIR"/"package"/email.txt | \
                 mailx -s "MetDB_retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
-                         "$contact" < "$BASE_DIR"/"$package"/email.txt
+                "$contact"
                 exit 0
             fi
         done  # end of loop over files
