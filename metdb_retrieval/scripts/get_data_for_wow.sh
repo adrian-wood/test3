@@ -34,7 +34,7 @@
 # Team at the above address.
 #-----------------------------------------------------------------------
 
-export BASE_DIR=/home/sneedham/metdb-misc-clean/metdb_retrieval
+export BASE_DIR=/var/moods/metdb_retrieval
 export ECCODES=/var/moods/eccodes
 # This is not run by cylc but the following variables are assumed to be
 # defined by get_data and send_data

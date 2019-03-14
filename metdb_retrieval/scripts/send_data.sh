@@ -142,7 +142,7 @@ do
             done
             if [ "$rc" -ne 0 ]; then
                 echo "FTP failed"
-                envsubst < "$BASE_DIR"/"package"/email.txt | \
+                envsubst < "$BASE_DIR"/"$package"/email.txt | \
                 mailx -s "MetDB_retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
                 "$contact"
                 exit 0

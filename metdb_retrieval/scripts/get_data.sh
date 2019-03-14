@@ -88,7 +88,7 @@ rc=$?
 
 if [ "$rc" -ne 0 ]; then
    echo "get_data.py failed"
-   envsubst < "$BASE_DIR"/"package"/email.txt | \
+   envsubst < "$BASE_DIR"/"$package"/email.txt | \
    mailx -s "MetDB_retrieval error from $CYLC_SUITE_NAME : $CYLC_TASK_ID" \
             "$contact" 
 fi

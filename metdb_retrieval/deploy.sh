@@ -8,8 +8,7 @@
 #                Makes a backup on /tmp first then merges the latest run
 #                times from current config files into the source configs
 #                before copying the whole source to the required 
-#                destination. Files no longer in the source repo are
-#                deleted from the destination directory.
+#                destination.
 #
 #  CALLED BY   : user
 #
@@ -25,7 +24,8 @@
 # 
 #  HISTORY  
 #  MB-1810: Exclude cylc directories from deployment as these are
-#           updated manually.                                        SN 
+#           updated manually. Do not delete unused files from target (to
+#           preserve processed and queued directories.                SN 
 #
 #
 #-----------------------------------------------------------------------
@@ -112,10 +112,10 @@ do
   sed -i -e "s/$new_line/$latest_run/g" $config
 done < $CONFIGS
 
-# then copy to DEST deleting any files in DEST that no longer exist in SRC
+# then copy to DEST 
 echo "Copying files"
 echo "rsync...from $SRC to $DEST"
-rsync -rv --exclude 'cylc' --delete-after $SRC $DEST
+rsync -rv --exclude 'cylc' $SRC $DEST
 rc=$?
 echo "...complete. RC=$rc"
 
