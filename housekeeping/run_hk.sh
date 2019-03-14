@@ -2,6 +2,7 @@
 #------------------------------------------------------------------------        
 # PURPOSE : Performs housekeeping for the moodsf account on mdb-apps.
 #------------------------------------------------------------------------
+# MB-1938: Add regression test housekeeping.               Sheila Needham
 # MB-1841: Add ServiceHub housekeeping.                    Sheila Needham
 # MB-1763 : Initial version.                               Andy Moorhouse
 #------------------------------------------------------------------------
@@ -99,6 +100,18 @@ echo "> ...done!"
 echo "> Tidying up ServiceHub data files..."
 find /tmp -maxdepth 1 -name "*data*.csv" -mmin +180 -print -exec rm -fr {} +
 echo "> ...done!"
+
+#------------------------------------------------------------------------
+# Tidy up regression test output and web pages after 100 days.          
+#------------------------------------------------------------------------
+echo "> Tidying up Regression tests log files..."
+cd /var/www/html/regression/output
+find . -type f -mtime +100 -print -exec rm {} +
+find . -type d -empty -delete
+
+cd /var/www/html/regression/archive
+find . -type f -mtime +100 -print -exec rm {} +
+find . -type d -empty -delete
 
 echo "$0: ended at `date`"
 exit
