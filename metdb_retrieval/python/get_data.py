@@ -7,6 +7,10 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1810: Feb 2019 Expand environment variables if given in the 
+#                   config file. Also, write to a temp file first and
+#                   rename at the end (to allow asynchronous
+#                   file transfers).                                SN
 # MB-1891: Jan 2019 Cater for retrieval periods of > 1 hour and for
 #                   "days ago" retrievals, both needed for AIRQAL and
 #                   AIRQALEU ServiceHub retrievals.                 AM
@@ -70,7 +74,18 @@ class Settings():
             self.parser.read(cfg)
             for section in self.parser.sections():
                 for name, value in self.parser.items(section):
-                    setattr(self, name, value)
+             
+                    # Expand the environment variables checking if they exist
+                    # and have been set first
+
+                    if value.find('$') >= 0:
+                        expanded = os.path.expandvars(value)
+                        if expanded == '' or expanded.find('$') >=0:
+                            print 'ERROR environment variable not set in ', value
+                            sys.exit(2) 
+                        setattr(self, name, expanded)
+                    else:
+                        setattr(self, name, value)
 
         except:
             print 'Error reading config file ', cfg
@@ -198,12 +213,12 @@ class Elements():
                 self.titles.append(title)
                 self.units.append(units)
                 self.uom.append(v[2])
+
+            f.close()
         except:
             print 'ERROR reading elements file ', elem
             traceback.print_exc()
             sys.exit(2)
-        finally:
-            f.close()
 
     @staticmethod
     def parse_elements(line):
@@ -640,7 +655,7 @@ def get_data():
             # create output directory if neccessary
             if not os.path.exists(outdir):
                 os.makedirs(outdir)
-            output = outdir + '/' + settings.output_file
+            output = outdir + '/' + 'tmp.' + settings.output_file
             output = output.replace('<timestamp>', timestamp)
             output = output.replace('<dt>', ob_dt)
 
@@ -680,6 +695,7 @@ def get_data():
                 sys.exit(2)
             finally:
                 f.close()
+                os.rename(output, output.replace('tmp.', ''))
 
     # end of loop over requests
 
@@ -691,3 +707,4 @@ def get_data():
 
 if __name__ == '__main__':
     get_data()
+

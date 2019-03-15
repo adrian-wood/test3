@@ -16,7 +16,6 @@
 #
 # REVISION INFO :
 #
-# MB-1798: Switch to binary transfers to avoid extra CR problem  SN
 # MB-1790: First version.                                        Sheila Needham
 #
 #-----------------------------------------------------------------------
@@ -36,6 +35,7 @@ sendfile(){
   DESTDIR=$3
   OUTFILE=$4
   echo "copying $INFILE to $DESTDIR/$OUTFILE on $SERVER"
+
   ftplog=$(mktemp /tmp/ftplog.XXXXXXXX)
 
 ftp -v $SERVER <<EOF > $ftplog

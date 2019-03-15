@@ -1,0 +1,31 @@
+[meta]
+    title = "AMDARS"
+    description = "Extract AMDARS from the MetDB as CSV and send to ServiceHub via CTS."
+    URL = https://metnet2/content/metdb-provision-data-servicehub
+    group = "ServiceHub"
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = next(T-25; T-55)
+    [[special tasks]]
+        clock-trigger = get_data(PT0M)
+    [[dependencies]]
+        [[[PT30M]]]
+            graph = """
+            # regular dependencies
+            get_data[-PT30M] => get_data
+            get_data:start & send_data[-PT30M] => send_data
+
+            """
+[runtime]
+    [[root]]
+        [[[environment]]]
+            %include /var/moods/cylc-run/servicehub/base_env.rc
+            CONFIG = $BASE_DIR/servicehub/amdars.cfg
+            SCRIPTS = $BASE_DIR/scripts
+            CYCLE = $CYLC_TASK_CYCLE_POINT
+    [[get_data]]
+        script = $SCRIPTS/get_data.sh $CONFIG $CYCLE
+    [[send_data]]
+        script = $SCRIPTS/send_data.sh $CONFIG $CYCLE
+
