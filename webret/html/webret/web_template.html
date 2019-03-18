@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <title>Web Retrieval (prototype)</title>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="MetDB Locked server display">
+                <meta name="author" content="sheila.needham">
+
+                <!--Bootstrap core CSS -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+        </head>
+        <body>
+                <div class="container">
+                   <h2> {{ subtype }} </h2>
+                        <table class="table table-bordered" >
+                                <tr>
+                                     <th>Header</th>
+                                     <th>Report</th>  
+                                </tr>     
+                                {% for o in obs %}
+
+                                <tr>
+                                        <td> {{ o[0:44] }} </td>
+                                        <td> {{ o[44:] }} </td>
+                                </tr>
+
+                                {% endfor %}
+                        </table>
+
+                </div>
+                <!-- Bootstrap core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+                <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        </body>
+</html>
+

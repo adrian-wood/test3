@@ -1,0 +1,18 @@
+ : report_date_time (dd/mm/yyyy hh\:mmZ)              :            : servicehub.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT) 
+ : wmo_block_number                                              :       :  WMO_BLCK_NMBR
+ : wmo_station_number                                            :       :  WMO_STTN_NMBR
+ : wmo_region_number                                             :       :  WMO_REGN_NMBR
+ : bulletin_id                                                   :       :  BLTN_IDNY
+ : collecting_centre                                             :       :  COLTN_CNTR
+ : correction_number                                             :       :  CORTN_NMBR
+ : amend_number                                                  :       :  AMND_NMBR
+ : latitude (angular degrees)                                    : deg   :  LTTD                                     
+ : longitude (angular degrees)                                   : deg   :  LNGD    
+ : station_height (meters)                                       : m     :  STTN_HGHT
+ : pressure_sensor_height (meters)                               : m     :  PESR_SNSR_HGHT
+22: current_weather (code table 020003)                           :       :  code_lookup(%020003,CRNT_WTHR_TYPE)
+ : surface_wind_direction (degrees true)                         : deg   :  SRFC_WIND_DRCTN 
+ : surface_Wind_speed (meters per second)                        : m/s   :  SRFC_WIND_SPED
+ : surface_air_temperature (Kelvin)                              : K     :  SRFC_AIR_TMPR 
+ : surface_dewpoint_temperature (Kelvin)                         : K     :  SRFC_DEW_PONT_TMPR
+ : horizontal_visibility (meters)                                : m     :  HRZL_VSBLY
