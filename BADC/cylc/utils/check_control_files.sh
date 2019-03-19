@@ -1,8 +1,26 @@
 #!/bin/bash -l
+# ----------------------------------------------------------------------------
+# Function:
+# A script to check that the BADC Control Files are as they should be.
+#
+# Calls the Python utility recreate_control_files.py to create a new set of
+# files then does a diff of them to make sure the current set match the 
+# generated. If not then exit with non-zero RC which will result in an email
+# if the cron job is as follows:
+
+# 00 09 * * * LOG=/tmp/BADC_Control_File_Check_`date "+\%Y\%m\%d"`.log; /var/moods/BADC/utils/check_control_files.sh > $LOG 2>&1 || mailx -s "Errors checking BADC Control Files" metdb@metoffice.gov.uk < $LOG
+#
+# Execution:
+# Execute it with cron as above, daily at 9am should be OK.
+#
+# Revision:
+# MB-576   Initial Version                                      Andy Moorhouse
+# ----------------------------------------------------------------------------
+
 module load scitools
 module display scitools
 
-#DATATYPES=METARS
+# NB CLIMAT datatype not in list below  as its control file is different.
 DATATYPES="AMDARS LNDSYN METARS OZONEPRF PILOT RASS SHPSYN TEMP WINPRO"
 
 # Call the utility script to create a set of control files as they should be currently...
