@@ -11,12 +11,13 @@
 
 import sys
 import os
-import urllib2
+import urllib.request
+import urllib.parse
+import urllib.error
 import logging
 import getopt
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from datetime import datetime, timedelta
-
 sys.path.append('/var/moods/metdb_utils/web')
 from jinja_render import jinja_render
 from daily_archive import daily_archive
@@ -57,8 +58,8 @@ def parse_storedf(jobname, stdout_files, server_url):
                           "/cgi-bin/moods/printfile.pl?",
                           "fullname=/var/moods/logs/",
                           jobname, "/", a_file])
-        response = urllib2.urlopen(stdout)
-        s = response.read()
+        response = urllib.request.urlopen(stdout)
+        s = response.read().decode()
 
         # process startup text - we're definiteley going to get this...
         start = '----   ---------   -------------------'
@@ -153,8 +154,8 @@ def parse_gribdat(jobname, stdout_files, expected, server_url):
                           "/cgi-bin/moods/printfile.pl?",
                           "fullname=/var/moods/logs/",
                           jobname, "/", a_file])
-        response = urllib2.urlopen(stdout)
-        s = response.read()
+        response = urllib.request.urlopen(stdout)
+        s = response.read().decode()
 
         # We are looking for the last line of output for the "nn GRIB DATASETS
         # READ and nn COPIED", which is the 4th last line of the HTML response.
@@ -230,7 +231,8 @@ def get_stdout_matches(jobname, dates, server_url):
 
     # now match the files with dates...
     for date in dates:
-        date = date.translate(None, '/')  # stdout file name date is different
+        # stdout file name date is different...
+        date = date.translate(str.maketrans('', '', '/'))
         matches = [s for s in stdout_files if date in s]
         logging.debug(" ".join(['matches for', date, 'are', str(matches)]))
         stdout_matches[date] = matches
@@ -246,18 +248,18 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hc:")
     except getopt.GetoptError:
-        print sys.argv[0], " -c <configfile>"
+        print(sys.argv[0], " -c <configfile>")
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == "-h":
-            print sys.argv[0], " -c <configfile>"
+            print(sys.argv[0], " -c <configfile>")
             sys.exit()
         elif opt == "-c":
             config_file = arg
 
     if not config_file:
-        print sys.argv[0], "must supply config file with -c"
+        print(sys.argv[0], "must supply config file with -c")
         sys.exit(2)
 
     # Read the configuration
@@ -285,7 +287,6 @@ def main():
     archive_url = "/non_BUFR_stats_archive/" + server
     number_of_days = 5  # how far to go back
     template_name = "non_BUFR_stats_template.html"
-    
 
     # Some date manipulation to get today and yesterday
     now = datetime.now()
@@ -329,7 +330,7 @@ def main():
                 logging.debug(" ".join(['stdouts for', job_name,
                                         'are', str(stdouts)]))
 
-                for date, match_list in sorted(stdouts.iteritems()):
+                for date, match_list in sorted(stdouts.items()):
                     if match_list:
                         if jobtype == 'gribdat':
                             a_result = parse_gribdat(job_name,
@@ -359,8 +360,8 @@ def main():
                       server_url,
                       "/cgi-bin/moods/printfile.pl?",
                       "fullname=/var/moods/logs/MONITOR.errorlog"])
-    response = urllib2.urlopen(monerr)
-    s = response.read()
+    response = urllib.request.urlopen(monerr)
+    s = response.read().decode()
     start = '<pre>'  # we want everything between the <pre> and </pre> tags
     end = '</pre>'
     monitor_errorlog = s[s.find(start) + len(start):s.rfind(end)].rstrip()
@@ -380,8 +381,10 @@ def main():
         }
 
     # Render the HTML from template, create a page and archive it
-    htmlout = jinja_render('/var/moods/non_BUFR_stats', template_name, **templateVars)
+    htmlout = jinja_render('/var/moods/non_BUFR_stats', template_name,
+                           **templateVars)
     daily_archive(symLink, archiveDir, htmlout)
+
 
 if __name__ == "__main__":
     main()
