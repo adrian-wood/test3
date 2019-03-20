@@ -17,7 +17,6 @@ from datetime import datetime
 import cgitb
 import sys
 import os
-import urllib
 import metdbEnv
 sys.path.append('/var/moods/regression/scripts')  # for metdbEnv
 sys.path.append('/var/moods/metdb_utils/web')     # local utils
@@ -32,6 +31,7 @@ class TAP:
 
 # ----------------------------------------------------------------------------------
     def __init__(self, filename):
+
         self.tests = {}
         self.testCount = 0   # total number of tests
         self.testPass = 0    # number passed
@@ -62,9 +62,9 @@ class TAP:
                     todo = False
                 self.addTest(Test(testnum, result, description, todo))
 
-
 # ----------------------------------------------------------------------------------
     def addTest(self, test):
+
         key = test.getNumber()
         if key in self.tests:
             pass
@@ -78,40 +78,40 @@ class TAP:
             else:
                 self.testFail += 1
 
-
 # ------------------------------------------------------------------------------------
     def getTest(self, testNumber):
+
         if testNumber in self.tests:
             return self.tests[testNumber]
 
-
 # ------------------------------------------------------------------------------------
     def getTestCount(self):
-        return self.testCount
 
+        return self.testCount
 
 # ------------------------------------------------------------------------------------
     def getT1(self):
-        return self.t1
 
+        return self.t1
 
 # ------------------------------------------------------------------------------------
     def getT2(self):
-        return self.t2
 
+        return self.t2
 
 # ------------------------------------------------------------------------------------
     def getTestPass(self):
-        return self.testPass
 
+        return self.testPass
 
 # ------------------------------------------------------------------------------------
     def getTestFail(self):
-        return self.testFail
 
+        return self.testFail
 
 # ------------------------------------------------------------------------------------
     def getTestBonus(self):
+
         return self.testBonus
 
 
@@ -124,35 +124,36 @@ class Test:
         self.description = description
         self.todo = todo
 
-
 # ------------------------------------------------------------------------------------
     def getNumber(self):
-        return self.number
 
+        return self.number
 
 # ------------------------------------------------------------------------------------
     def getResult(self):
-        return self.result
 
+        return self.result
 
 # ------------------------------------------------------------------------------------
     def getDescription(self):
-        return self.description
 
+        return self.description
 
 # ------------------------------------------------------------------------------------
     def getTodo(self):
-        return self.todo
 
+        return self.todo
 
 # ------------------------------------------------------------------------------------
     def displayTest(self):
-        print '%3d : %-6s %-20s - %-30s ' % \
-            (self.number, self.todo, self.result, self.description)
+
+        print('%3d : %-6s %-20s - %-30s ' %
+              (self.number, self.todo, self.result, self.description))
 
 
 # ---------------------------------------------------------------------------
 def readData(filename):
+
     inp = open(filename, 'r')
     lines = inp.readlines()
     inp.close()
@@ -161,6 +162,7 @@ def readData(filename):
 
 # --------------------------------------------------------------------------
 def parseData(table, results):
+
     rows = []
 
     for row in table:
@@ -178,6 +180,7 @@ def parseData(table, results):
 
 # --------------------------------------------------------------------------
 def readInp(infile):
+
     fullname = metdbEnv.subEnv(infile)
     content = readData(fullname)
     return ''.join(content)
@@ -185,6 +188,7 @@ def readInp(infile):
 
 # --------------------------------------------------------------------------
 def testDisplay():
+
     viewer = r"testplan_template.html"
     error = r"testplan_error.html"
     dateDir = datetime.utcnow().strftime('%Y/%m/%d')
@@ -199,19 +203,19 @@ def testDisplay():
     try:
         table = readData(testPlan)
     except Exception as err:
-        print "Error reading testPlan: ", err
+        print("Error reading testPlan: ", err)
         sys.exit(1)
     # read the test results
     try:
         tap = TAP(testResults)
     except Exception as err:
-        print "Error reading testResults: ", err
+        print("Error reading testResults: ", err)
         sys.exit(1)
     # set up rows to be output on web page
     try:
         rows = parseData(table, tap)
     except Exception as err:
-        print "Error parsing data: ", err
+        print("Error parsing data: ", err)
         sys.exit(1)
 
     sys1 = os.environ.get('SYS1')
