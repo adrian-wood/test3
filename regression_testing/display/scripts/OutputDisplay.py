@@ -71,7 +71,7 @@ def main():
                     "sys1": sys1,
                     "sys2": sys2}
     hdr = "Content-Type: text/html;charset=utf-8\n\n"
-    print jinja_render(webRoot, viewer, hdr, **templateVars)
+    print(jinja_render(webRoot, viewer, hdr, **templateVars))
 
 
 # --------------------------------------------------------------------------
