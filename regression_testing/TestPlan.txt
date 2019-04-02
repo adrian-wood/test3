@@ -64,3 +64,6 @@
 64  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/VA_LIDAR $SYS1 $SYS2   : $INDIR/VA_LIDAR : NetCDF Volcanic Ash Lidar data      
 65  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/LNDSYNUK $SYS1 $SYS2   : $INDIR/LNDSYNUK : Block 03 and 99 11Z LNDSYN  
 66  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/ARGOB $SYS1 $SYS2   : $INDIR/ARGOB : ARGOB data                  
+67  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/LNDSYNRAD $SYS1 $SYS2   : $INDIR/LNDSYNRAD : LNDSYN radiation groups                  
+68  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/AMV1 $SYS1 $SYS2   : $INDIR/AMV1 : AMV general request                      
+69  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/OLCI1 $SYS1 $SYS2   : $INDIR/OLCI1 : OLCI all elements                      
