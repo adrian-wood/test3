@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MetDB Station Utilities</title>
+  <!--Bootstrap core CSS -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> 
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
+
+<body>
+
+  <div class="container">
+    <h2>MetDB Station Utilities</h2>
+
+      <h3>Browse Station Datasets</h3>
+        <h4>WMO Abbreviated Station List</h4>
+      
+      <div class="row">
+        <div class="col-xs-4">
+          <div class="btn-group">
+            <a href="http://mdbdb-prod/cgi-bin/moods/printfile.pl?fullname=/var/moods/data/STATIONS/abrv_stnlist" class="btn btn-default btn-lg" role="button">prod</a>
+            <a href="http://mdbdb-preprod/cgi-bin/moods/printfile.pl?fullname=/var/moods/data/STATIONS/abrv_stnlist" class="btn btn-default btn-lg" role="button">preprod</a>
+      
+          </div>
+        </div>
+       <div class="col-xs-3">
+             <p> Earlier versions available in BitBucket (from 02 May 2018) </p>
+           </div>
+        <div class='col-xs-5'>
+            <a href="https://exxgitrepo:8443/projects/MOOD/repos/metdb/browse/install/abrv_stnlist" class="btn btn-default btn-lg" role="button">Go to BitBucket</a>
+
+            
+        </div>
+        
+      </div>
+
+<hr/>
+        <h4>ICAO Station List</h4>
+
+         <div class="row">
+           <div class="col-xs-5">
+             <div class="btn-group">
+               <a href="http://mdbdb-prod/cgi-bin/moods/printfile.pl?fullname=/usr/local/moods/tables/icao_list" class="btn btn-default btn-lg" role="button">prod</a>
+               <a href="http://mdbdb-preprod/cgi-bin/moods/printfile.pl?fullname=/usr/local/moods/tables/icao_list" class="btn btn-default btn-lg" role="button">preprod</a>
+             </div>
+           </div>
+          
+          <div class="col-xs-1">
+             <p> </p>
+           </div>
+           
+           <div class='col-xs-6'>
+           </div>    
+        </div>
+   
+<hr/>
+        <h4>Beacon List</h4>
+
+        <div class="row">
+           <div class="col-xs-5">
+             <div class="btn-group">
+               <a href="http://mdbdb-prod/cgi-bin/moods/printfile.pl?fullname=/usr/local/moods/tables/beacons" class="btn btn-default btn-lg" role="button">prod</a>
+               <a href="http://mdbdb-preprod/cgi-bin/moods/printfile.pl?fullname=/usr/local/moods/tables/beacons" class="btn btn-default btn-lg" role="button">preprod</a>
+            </div>
+          </div> 
+          
+          <div class="col-xs-1">
+          </div>
+          
+          <div class='col-xs-5'>
+          </div> 
+                          
+          
+  
+        </div>  <!-- row -->            
+<hr/>
+
+  </div> <!-- container -->
+
+
+</body>
+</html>
