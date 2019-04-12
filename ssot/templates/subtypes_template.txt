@@ -1,0 +1,11 @@
+# Merge these code fragments with subtypes.py in the metdb module
+
+CREP_ELEMENTS = {
+         u'{{datatype}}' : u'{{report_text}}'
+                }
+DTYPE_MAPS = {
+    "{{datatype}}":{ {{ '\n' -}}
+{%- for element in elements %}
+  {{- "%-43s" | format(["        u'", element.element,"'"]|join)}} : {{"%-10s" | format(["'",element.returned_type,"'"]|join)}}, # {{element.description}}{{ '\n' -}}
+{% endfor %}    },
+

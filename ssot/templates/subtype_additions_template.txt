@@ -1,0 +1,14 @@
+# Use these code snippets in your python program to update the metdb module
+
+{% if report_text is defined  %}
+metdb.subtypes.CREP_ELEMENTS = ["{{datatype}}"]="{{report_text}}"
+metdb.subtypes.DTYPE_MAPS["{{datatype}}"][u'{{report_text}}'] = 'S500'
+{% endif %}
+
+metdb.subtypes.DTYPE_MAPS["{{datatype}}"] = {
+           {% for element in elements %}
+             u'{{element.element}}' : '{{element.returned_type}}'  ,# {{element.description}}
+           {% endfor %}
+             }
+
+
