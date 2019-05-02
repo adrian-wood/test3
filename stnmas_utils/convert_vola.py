@@ -7,10 +7,10 @@
     AUTHOR        : Sheila Needham
 
     REVISION INFO :
+    MB-1952: Apr 2019 update to Python 3
     MB-1683: June 2018 Original
 
 """
-from __future__ import print_function
 import sys
 from pandas import read_csv
 import numpy as np
@@ -70,7 +70,7 @@ def main():
 
     # Read legacy VolA into a Dataframe
     try:
-        pandas_data = read_csv(VolA, delimiter='\t')
+        pandas_data = read_csv(VolA, delimiter='\t', encoding='utf-8')
     except:
         print('Unable to read ', VolA)
         sys.exit(8)
@@ -86,7 +86,7 @@ def main():
 
     # Open output file and write header lines
     abrv_file = VolA + '.stnmas'
-    outp = open(abrv_file, 'w')
+    outp = open(abrv_file, 'w', encoding='utf-8')
 
     line1 = '  WMO      LAT      LONG   SENSOR   STN   STN            STATION\n'
     line2 = ' INDEX   DEG/THS  DEG/THS  HT (M)  HT (M) TYPE           NAME\n'
