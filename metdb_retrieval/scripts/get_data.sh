@@ -19,6 +19,7 @@
 #                 metdb_retrieval directory
 #
 # REVISION INFO :
+# MB-1916: switch to Python 3 environment
 #
 #-----------------------------------------------------------------------
 # (C) CROWN COPYRIGHT 2018 - MET OFFICE. All Rights Reserved.
@@ -43,8 +44,8 @@ function finish () {
 
 trap "finish $?" EXIT
 
-module load scitools/experimental_legacy-current
-module display scitools/experimental_legacy-current 2>&1
+module load scitools/experimental-current
+module display scitools/experimental-current 2>&1
 
 : "${BASE_DIR:?Need to set BASE_DIR non-empty}"
 

@@ -24,7 +24,7 @@ class Sites():
             self.count = 1
             self.type = 'LNDSYN'
         else:
-            print 'Error: no site details for ', site_file
+            print('Error: no site details for ', site_file)
             sys.exit(2)
 
     def required(self, obs, i):
@@ -44,5 +44,5 @@ class Sites():
             else:
                 return True
         else:
-            print 'Error: no site selection available'
+            print('Error: no site selection available')
             sys.exit(2)

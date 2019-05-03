@@ -1,2 +1,2 @@
-import convert
-import sites  
+from . import convert
+from . import sites  

@@ -89,7 +89,7 @@ def code_lookup(fxy, value):
             # save it for next time
             codes[codetable] = table
         except:
-            print("Code table not found:" + path + '/codetables/' + filename)
+            print(("Code table not found:" + path + '/codetables/' + filename))
             codes[codetable] = None
 
     if table:
@@ -168,7 +168,7 @@ def get_bitwidth(fxy):
     if fxy in tableb:
         return int(tableb[fxy])
     else:
-        print " Table B not found ", fxy
+        print(" Table B not found ", fxy)
         sys.exit(2)
 
 
@@ -186,11 +186,11 @@ def set_bufr_path(fxy):
             wmo_path = paths[0]
             local_path = paths[1]
         else:
-            print 'Invalid ECCODES paths - needs wmo and local paths',
+            print('Invalid ECCODES paths - needs wmo and local paths', end=' ')
             EC_PATHS
             sys.exit(2)
     else:
-        print 'ECCODES_DEFINITION_PATH required'
+        print('ECCODES_DEFINITION_PATH required')
         sys.exit(2)
 
     # see if it's an international or local entry
