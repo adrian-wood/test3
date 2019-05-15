@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MOODS daily stats comparison</title>
+  <!--Bootstrap core CSS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container">
+  <h2>Daily Stats Comparison (run at {{runtime}})</h2>
+  <div class="row">
+    <div class="col-xs-3">
+      <div><a class="btn btn-danger btn-lg btn-block" href={{prod_stats_page}} role="button">Prod Daily Stats</a></div>
+    </div>
+    <div class="col-xs-3">
+      <div><a class="btn btn-warning btn-lg btn-block" href={{pre_stats_page}} role="button">Pre-Prod Daily Stats</a></div>
+    </div>
+    <div class="col-xs-3">
+      <div><a class="btn btn-success btn-lg btn-block" href={{yesterdays_page}} role="button">This page yesterday</a></div>
+    </div>
+    <div class="col-xs-3">
+      <div><a class="btn btn-info btn-lg btn-block" href={{archive_url}} role="button">Archive of this page</a></div>
+    </div>
+  </div> <!-- /.row -->
+  <hr>
+
+  <h3>Summary (copy and paste into Daily Checks Log)</h3>
+    {% if moreOnPre|length > 0 %}<p>More on Pre : {{moreOnPre}}</p>{%endif %}
+    {% if moreOnProd|length > 0 %}<p>More on Prod: {{moreOnProd}}</p>{%endif %}
+    {% if missingOnPre|length > 0 %}<p>Missing on Pre : {{missingOnPre}}</p>{%endif %}
+    {% if missingOnProd|length > 0 %}<p>Missing on Prod: {{missingOnProd}}</p>{%endif %}
+
+  <h3>Detail</h3>
+  <table class="table table-bordered table-condensed">
+    <tr><th>Data Type</th><th>Count on Prod</th><th>Count on Pre-Prod</th></tr>
+    {% for row in detailRows %}
+    <tr class="{{row[3]}}">
+      <td>{{row[0]}}</td><td>{{row[1]}}</td><td>{{row[2]}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+<p  class="text-center">Created by script {{creator}} running as user {{runner}} on {{where}}</p>
+</div> <!-- /.container -->
+</body>
+</html>
