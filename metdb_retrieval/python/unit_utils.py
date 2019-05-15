@@ -6,6 +6,7 @@
 #                 required output format.
 #
 # REVISION INFO :
+# MB-1916: May 2019 Update to Python 3.                              SN
 # MB-1803: Oct 2018 Change code/flag table output to let the csv module
 #                   handle quoting correctly.                        SN
 #
@@ -127,7 +128,7 @@ def flag_lookup(fxy, value):
                 decode = new_val
             else:
                 decode = decode + ';' + new_val
-        value = value/2
+        value = value//2
 
     return decode
 

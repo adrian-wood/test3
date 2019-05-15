@@ -1,6 +1,10 @@
 import unittest
-from . import get_data
+import numpy as np
+import get_data
+import unit_utils
 from datetime import datetime
+
+MDI = np.ma.masked
 
 
 class Test_time_from_ref(unittest.TestCase):
@@ -36,6 +40,48 @@ class Test_time_from_ref(unittest.TestCase):
         for args, expected in cases:
             result = get_data.time_from_ref(ref, **args)
             self.assertEqual(expected, result)
+
+
+class Test_code_lookup(unittest.TestCase):
+    def test_cases(self):
+
+        # normal case
+        self.assertEqual(unit_utils.code_lookup("020192", 1), "1 LIGHT")
+        # code table has no text
+        self.assertEqual(unit_utils.code_lookup("020192", 4), "4")
+        # normal case
+        self.assertEqual(unit_utils.code_lookup("020192", 5), "5 IN VICINITY")
+        # code table doesn't contain value
+        self.assertEqual(unit_utils.code_lookup("020192", 6), "6")
+        # missing data in value
+        self.assertEqual(unit_utils.code_lookup("020192", MDI), "")
+        # table not found
+        self.assertEqual(unit_utils.code_lookup("020199", 1), "1")
+
+
+class Test_flag_lookup(unittest.TestCase):
+    def test_cases(self):
+
+        # missing data
+        self.assertEqual(unit_utils.flag_lookup("020193", MDI), "")
+        # single flag, undefined
+        self.assertEqual(unit_utils.flag_lookup("020193", 0), "")
+        # single flag, defined
+        self.assertEqual(unit_utils.flag_lookup("020193", 128), "1 PARTIAL       PR")
+        # single flag, defined
+        self.assertEqual(unit_utils.flag_lookup("020193", 64), "2 SUPERCOOLED   FZ")
+        # two consecutive flags
+        self.assertEqual(unit_utils.flag_lookup("020193", 192),
+                         "2 SUPERCOOLED   FZ;1 PARTIAL       PR")
+        # flag at other end of table
+        self.assertEqual(unit_utils.flag_lookup("020193", 1), "8 SHALLOW       MI")
+        # two flags at either end of table
+        self.assertEqual(unit_utils.flag_lookup("020193", 129),
+                         "8 SHALLOW       MI;1 PARTIAL       PR")
+        # table not found (can't do anything without bitwidth)
+        with self.assertRaises(SystemExit) as cm:
+            unit_utils.flag_lookup("020199", 1)
+        self.assertEqual(cm.exception.code, 2)
 
 
 if __name__ == '__main__':
