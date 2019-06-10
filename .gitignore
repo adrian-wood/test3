@@ -1,3 +1,6 @@
 *.py[co]
 metdb_retrieval/queued/
 metdb_retrieval/processed/
+metdb_utils/bufr/docs/_build/
+metdb_utils/bufr/docs/_templates/
+metdb_utils/bufr/docs/_static/
