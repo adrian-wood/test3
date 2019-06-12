@@ -2,7 +2,8 @@ import sys
 import csv
 import numpy as np
 from unit_utils import *
-
+# REVISION INFO:
+# MB-1916: Upgrade to Python 3.                                     SN
 
 # ----------------------------------------------------------------------
 class Sites():
@@ -32,7 +33,7 @@ class Sites():
            true or False accordingly.
         '''
         if self.type == 'METARS':
-            id = obs['ICAO_ID'][i]
+            id = obs['ICAO_ID'][i].decode()
             if id == MDI or id[0:2] == self.site_lookup:
                 return False
             else:
