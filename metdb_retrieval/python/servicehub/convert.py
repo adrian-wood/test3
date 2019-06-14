@@ -195,7 +195,7 @@ def local_code(table, code):
         if table in code_tables:
             value = code_tables.get(table).get(code, "")
         else:
-            print "Invalid code table ", table
+            print("Invalid code table ", table)
     return value
 
 

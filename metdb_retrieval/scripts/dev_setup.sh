@@ -9,12 +9,13 @@
 # of from cylc.
 # 
 
-module load scitools/experimental_legacy-current
-module display scitools/experimental_legacy-current
+module load scitools/experimental-current
+module display scitools/experimental-current
 
-export BASE_DIR=/home/sneedham/metdb-misc-clean/metdb_retrieval
+export BASE_DIR=/home/sneedham/metdb-misc//metdb_retrieval
 export ECCODES=/var/moods/eccodes
 export ECCODES_DEFINITION_PATH=$ECCODES/share/eccodes/definitions:$BASE_DIR/local_defs
+export CONTACT=sheila.needham@metoffice.gov.uk
 
 echo "Testing MetDB Retrievals from $BASE_DIR"
 

@@ -5,7 +5,7 @@ task: $CYLC_TASK_ID
 
 See http://$HOSTNAME/rose-bush/taskjobs/$USER?&suite=$CYLC_SUITE_NAME&cycles=$CYLC_TASK_CYCLE_POINT 
 
-Further documentation at https://metnet2/content/metdb-provision-data-servicehub
+Further documentation at https://metnet2/content/metdb-technote-36b-provision-data-servicehub
 
 sent from: $HOSTNAME
 
