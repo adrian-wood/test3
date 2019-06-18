@@ -7,6 +7,8 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-1955: Jun 2019 Correct time_from_ref for time-spans not starting
+#                   from 00Z.                                       SN
 # MB-1916: May 2019 Update to Python 3.                             SN
 # MB-1810: Feb 2019 Expand environment variables if given in the
 #                   config file. Also, write to a temp file first and
@@ -281,7 +283,7 @@ class Elements():
         """Split field into components of title and units where units
            are optional and enclosed in brackets.
         """
-        pattern = re.compile("(.*)(\()(.*)(\))")
+        pattern = re.compile(r"(.*)(\()(.*)(\))")
         m = pattern.match(field)
         if m:
             title = m.group(1)
@@ -306,7 +308,7 @@ class Elements():
            ('sig_wx',(('SIG_WX_INSY','SIG_WX_DSC','SIG_WX_PHNM'),3))
 
         """
-        pattern = re.compile("(.*)(\()(.*)(\))")
+        pattern = re.compile(r"(.*)(\()(.*)(\))")
         m = pattern.match(expression)
         if m:
             func = m.group(1)
@@ -335,7 +337,7 @@ class Elements():
         func = ''
         # parse the expression to find the layer name and the
         # element function
-        pattern = re.compile("(.*?\()(.*?),(.*?\))")
+        pattern = re.compile(r"(.*?\()(.*?),(.*?\))")
         m = pattern.match(expression)
         if m:
             func = m.group(3)
@@ -367,25 +369,24 @@ def time_from_ref(ref, hour=None, start=True, days_ago=0, time_span=1):
        If the requested hour is in the future and we are retrieving from today
        (i.e. days_ago is 0) then use the day before the ref date instead.
     """
-    ref = ref - timedelta(days=days_ago)
-    copy_ref = ref
+    copy_ref = ref - timedelta(days=days_ago)
 
     if hour is None:
-        hr = ref.hour
-        min = ref.minute
+        copy_ref = copy_ref.replace(hour=ref.hour, minute=ref.minute)
     else:
-        hr = hour
+        copy_ref = copy_ref.replace(hour=hour)
+
         if start:
-            min = 0
+            copy_ref = copy_ref.replace(minute=0)
         else:
-            hr = (hr + time_span - 1)
-            min = 59
+            increment = (time_span - 1)/24.0
+            copy_ref = copy_ref + timedelta(days=increment)
+            copy_ref = copy_ref.replace(minute=59)
 
-    if ref.hour < hr and days_ago == 0:
-        copy_ref = copy_ref - dt.timedelta(days=1)
+    if copy_ref > ref and days_ago == 0:
+        copy_ref = copy_ref - timedelta(days=1)
 
-    return copy_ref.strftime("%Y%m%d/") + \
-        '{:02d}{:02d}'.format(hr, min) + 'Z'
+    return copy_ref.strftime("%Y%m%d/%H%MZ")
 
 
 # -------------------------------------------------------------------
