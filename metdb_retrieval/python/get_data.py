@@ -383,7 +383,7 @@ def time_from_ref(ref, hour=None, start=True, days_ago=0, time_span=1):
             copy_ref = copy_ref + timedelta(days=increment)
             copy_ref = copy_ref.replace(minute=59)
 
-    if copy_ref > ref and days_ago == 0:
+    if copy_ref.hour > ref.hour and days_ago == 0:
         copy_ref = copy_ref - timedelta(days=1)
 
     return copy_ref.strftime("%Y%m%d/%H%MZ")
