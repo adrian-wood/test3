@@ -27,6 +27,8 @@ class Test_time_from_ref(unittest.TestCase):
           ({'hour': 19},                                                 '20190106/1900Z'),
           ({'hour': 8,  'start': False},                                 '20190107/0859Z'),
           ({'hour': 19, 'start': False},                                 '20190106/1959Z'),
+          ({'hour': 13},                                                 '20190107/1300Z'),
+          ({'hour': 13, 'start': False},                                 '20190107/1359Z'),
           ({'hour': 3,  'days_ago': 1},                                  '20190106/0300Z'),
           ({'hour': 20, 'days_ago': 1},                                  '20190106/2000Z'),
           ({'hour': 11, 'days_ago': 2},                                  '20190105/1100Z'),
@@ -35,6 +37,9 @@ class Test_time_from_ref(unittest.TestCase):
           ({'hour': 11, 'days_ago': 4, 'start': False, 'time_span': 2},  '20190103/1259Z'),
           ({'hour': 0,  'days_ago': 1},                                  '20190106/0000Z'),
           ({'hour': 0,  'days_ago': 1, 'start': False, 'time_span': 24}, '20190106/2359Z'),
+          ({'hour': 6,  'days_ago': 1, 'start': False, 'time_span': 24}, '20190107/0559Z'),
+          ({'hour': 18, 'days_ago': 1, 'start': False, 'time_span': 24}, '20190107/1759Z'),
+          ({'hour': 18, 'start': False, 'time_span': 24},                '20190107/1759Z'),
         ]
 
         for args, expected in cases:
