@@ -1,0 +1,10 @@
+1 : LONGITUDE_BAND_CODE             :       :  package.convert.long_band_code(LNGD)
+2 : OB_TIME                         :       :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR,MINT)
+3 : LATITUDE                        :       :  LTTD
+4 : LONGITUDE                       :       :  LNGD
+5 : ID                              :       :  package.convert.id(BUOY_IDNY,CALL_SIGN)
+6 : ID_TYPE                         :       :  package.convert.id_type(BUOY_IDNY,CALL_SIGN)
+7 : VERSION_FLAG                    :       :  %1
+8 : MET_DOMAIN_NAME                 :       :  %SHIP
+11: WIND_DIRECTION                  :       :  SRFC_WIND_DRCTN 
+12: WIND_SPEED                      :       :  SRFC_WIND_SPED
