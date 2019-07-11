@@ -158,7 +158,12 @@ class TableD:
                     seq = temp[1].split()
                 else:
                     temp = line.split()
-                    ndes = int(temp[1])
+                    if len(temp[0]) > 6:
+                        a = temp[0]
+                        ndes = int(a[6:8])
+                        temp[2:] = temp[1:]
+                    else:                       
+                        ndes = int(temp[1])
                     seq = temp[2:]
                 descr = f
 
@@ -170,7 +175,7 @@ class TableD:
                     else:
                         tabled[descr] = seq
                 ndes = 0
-        print('...', len(tabled), ' D sequences read')
+        # print('...', len(tabled), ' D sequences read')
         return tabled
 
 # =========================================================================
@@ -272,7 +277,7 @@ class TableB:
         finally:
             if inp:
                 inp.close()
-        print('...', len(TableB.tableb), ' Table B descriptors read.')
+        #print('...', len(TableB.tableb), ' Table B descriptors read.')
     # ---------------------------------------------------------------------
 
     @classmethod
