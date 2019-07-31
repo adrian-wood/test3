@@ -40,20 +40,23 @@ def lookup(filename):
             text = '\n  description = '
             desc = e.name.split(' ')[0]
             name = element.name.strip()
-            units = tableb.lookup(desc).unit
-            if 'CODE' in units or 'FLAG' in units:
-                text += '\n  reported_units = code'
-                text += '\n  table_id = ' + desc.strip()
-                text += '\n  python_type = I'
-            else:
-                text += '\n  reported_units = '
-                if any(x in name for x in ints):
+            if desc[0] == '0':
+                text += '\n  descriptor = ' + desc.strip()
+                units = tableb.lookup(desc).unit
+                if 'CODE' in units or 'FLAG' in units:
+                    text += '\n  reported_units = code'
+                    text += '\n  table_id = ' + desc.strip()
                     text += '\n  python_type = I'
                 else:
-                    text += '\n  python_type = R'
-
-            print('  [[{:s}]]  {:s}\n  descriptor = {:s}\n'.\
-                  format(name, text, desc))
+                    text += '\n  reported_units = '
+                    if any(x in name for x in ints):
+                        text += '\n  python_type = I'
+                    else:
+                        text += '\n  python_type = R'
+            else:
+                text += '\n  reported_units = numeric'
+                text += '\n  python_type = I'
+            print('  [[{:s}]]  {:s}\n'. format(name, text))
 
 if __name__ == "__main__":
     filename = sys.argv[1]
