@@ -13,11 +13,13 @@
 '''
 
 import new_segments
+import bufr
 import ElementClass as ec
 import parse_elements as parse
 import sys
 
-text = '\n  description = \n  reported_units = \n  python_type =\n'
+tableb = bufr.TableB()
+ints = ['YEAR', 'MNTH', 'DAY', 'HOUR', 'MINT', 'SCND']
 
 def find_in_table(tab, serial_number, seg, pos):
     for e in tab.elements:
@@ -35,9 +37,23 @@ def lookup(filename):
         (s1, p1) = e.location[1]
         element = find_in_table(table, serial_number, s1, p1)
         if element:
+            text = '\n  description = '
             desc = e.name.split(' ')[0]
             name = element.name.strip()
-            print('  [[{:s}]]  {:s}  descriptor = {:40s}\n'.format(name, text, desc))
+            units = tableb.lookup(desc).unit
+            if 'CODE' in units or 'FLAG' in units:
+                text += '\n  reported_units = code'
+                text += '\n  table_id = ' + desc.strip()
+                text += '\n  python_type = I'
+            else:
+                text += '\n  reported_units = '
+                if any(x in name for x in ints):
+                    text += '\n  python_type = I'
+                else:
+                    text += '\n  python_type = R'
+
+            print('  [[{:s}]]  {:s}\n  descriptor = {:s}\n'.\
+                  format(name, text, desc))
 
 if __name__ == "__main__":
     filename = sys.argv[1]
