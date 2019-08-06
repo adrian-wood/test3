@@ -44,7 +44,10 @@ def lookup(filename):
                 text += '\n  descriptor = ' + desc.strip()
                 units = tableb.lookup(desc).unit
                 if 'CODE' in units or 'FLAG' in units:
-                    text += '\n  reported_units = code'
+                    if 'CODE' in units:
+                        text += '\n  reported_units = code'
+                    if 'FLAG' in units:
+                        text += '\n  reported_units = flag'
                     text += '\n  table_id = ' + desc.strip()
                     text += '\n  python_type = I'
                 else:
