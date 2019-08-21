@@ -49,7 +49,6 @@ def lookup(filename):
                     if 'FLAG' in units:
                         text += '\n  reported_units = flag'
                     text += '\n  table_id = ' + desc.strip()
-                    text += '\n  python_type = I'
                 else:
                     text += '\n  reported_units = '
                     if any(x in name for x in ints):
