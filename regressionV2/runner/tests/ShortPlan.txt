@@ -1,0 +1,4 @@
+1  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/14b_TEST $SYS1 $SYS2   : $INDIR/14b_TEST : STNMAS by WMO block                
+2  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET10a $SYS1 $SYS2   : $INDIR/RUNRET10a : LNDSYN and METARS                
+3  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET2 $SYS1 $SYS2   : $INDIR/RUNRET2 : AIRQAL,AIREPS,AMDARS   
+4  : $SCRIPTS/diff_gribrtvl.sh $INDIR/08_TEST $SYS1 $SYS2   : $INDIR/08_TEST : GRIB retrieval from old style datasets                

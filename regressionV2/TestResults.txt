@@ -1,0 +1,75 @@
+1..72
+# START Tue 03 Sep @ 10:30:04Z
+ok 1 Collection of 32 simple satellite retrievals (totals only)
+ok 2 Collection of 8 simple satellite retrievals
+ok 3 ESAWS complete elements list
+ok 4 GPSRO select 0 (data from centres apart from EUMETSAT)
+ok 5 GPSRO select 1 (data from EUMETSAT)
+ok 6 MSGWINDS select 5
+ok 7 High vol satellite retrievals with large array
+ok 8 High vol satellite retrievals sampled with small array
+ok 9 AIREPS,AMDARS,OPENROAD,WOW (expect differences in totals)
+ok 10 Archive data AIREPS,AMDARS,BOGUS,TROPADV
+ok 11 'Recent' data types
+ok 12 STNMAS by ICAO ID
+ok 13 STNMAS by WMO block
+ok 14 OPS style 6-hour period BUFR types
+ok 15 OPS style 6 hour period TAC types
+ok 16 Large amount of data, different types
+ok 17 Satellite data
+ok 18 LNDSYN and METARS
+ok 19 LNDSYN and METARS
+ok 20 AIRQAL,AIREPS,AMDARS
+ok 21 Satellite winds
+ok 22 TEMP,TESAC,TAMDAR,TRACKOB
+ok 23 Random mixture of data types using different retrieval modules
+ok 24 DROPSONDE,OZONPRF/SAT,TRACKOB,TRYAXIS etc.
+ok 25 SREW all data for 1 hour
+ok 26 LIDAR
+ok 27 BOGUS,METARS,TEMP
+ok 28 AIRQALEU
+ok 29 GRIB retrieval from old style datasets
+ok 30 ARGO data in BUFR format
+ok 31 SSMIS in BUFR format with PLATFORM and SELECT
+ok 32 ASCAT in BUFR, multiple PLATFORM values at end of request
+ok 33 New for July 2016 OMPSTC, BUOYB, MWRI
+ok 34 Unusual keyword ordering, short requests or invalid
+ok 35 Merged data (counts only)
+ok 36 BOGUS all versions, CLIMAT and NCM
+ok 37 Typical SSPA requests (BUOY)
+ok 38 Typical SSPA requests (LNDSYN)
+ok 39 Typical SSPA requests (NCM)
+ok 40 Typical SSPA requests (OPENRNWY - not yet in MetDB so no data retrieved)
+ok 41 Typical SSPA requests (OPENROAD - totals may be different)
+ok 42 Typical SSPA requests (SHPSYN - totals may be different)
+ok 43 Typical SSPA requests (SREW - ToRs likely to be different)
+ok 44 No data expected
+ok 45 SHPSYN (may be totals differences)
+ok 46 TROPCYCL
+ok 47 WAVENET
+ok 48 WOW 1 hour (can expect slightly different totals)
+ok 49 OPENROAD 1 hour (can expect slightly different totals)
+ok 50 METAR raw report text, 1 hour EG only (expect different ToRs)
+ok 51 TROPCYCL 24 hours
+ok 52 SHPSYN in UKV area (can expect small differences in totals)
+ok 53 BUFR Synop full elements list to check elements index - will usually fail on ToR minute
+ok 54 BUFR BUOY single ID from release 4.31.0 onwards
+ok 55 NetCDF LIDAR atomic access
+ok 56 NetCDF Copernicus data
+ok 57 NetCDF Copernicus data
+ok 58 NetCDF Copernicus data
+ok 59 HDF5 Radar refractivity
+ok 60 HDF5 Radar QC
+ok 61 NetCDF Ship/Buoy AWS
+ok 62 HDF5 MSG snow cover
+ok 63 NetCDF Sun photometer
+ok 64 NetCDF Volcanic Ash Lidar data
+ok 65 Block 03 and 99 11Z LNDSYN
+ok 66 ARGOB data
+ok 67 LNDSYN radiation groups
+ok 68 AMV general request
+ok 69 OLCI all elements
+ok 70 ABICSR 2 requests
+ok 71 NetCDF Sentinel-3 Sig wave heights
+not ok 72 Web API unit tests
+# END Tue 03 Sep @ 10:40:02Z
