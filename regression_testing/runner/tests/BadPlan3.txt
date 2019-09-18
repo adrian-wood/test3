@@ -1,0 +1,2 @@
+01   $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0002 $SYS1 $SYS2   : $INDIR/mdb0002 :Collection of 32 simple satellite retrievals (totals only)
+O2   $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0003 $SYS1 $SYS2   : $INDIR/mdb0003 :Collection of 32 simple satellite retrievals (totals only)

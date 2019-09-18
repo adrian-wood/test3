@@ -2,13 +2,20 @@
 
 BASE=/var/moods/regression
 SYS1=mdbap-preprod
-SYS2=mdbapus-prod
+SYS2=mdbap-preprod
+WEB1=mdbdb-preprod
+WEB2=mdbdb-prod
+V1=5.21.0
+V2=5.20.0
+
 TESTPLAN=/var/moods/regression/TestPlan.txt   
 TESTRESULTS=/var/moods/regression/TestResults.txt
+
 SCRIPTS=/var/moods/regression/scripts
 INDIR=/var/moods/regression/input
 OUTDIR=/var/www/html/regression/output
 BINDIR=/var/moods/regression/bin
+CGIBIN=/var/www/cgi-bin/regression/
 WEBROOT=/var/www/html/regression/
 WEBLINK=/mdb-apps-test/regression/archive
 ARCHIVEDIR=/var/www/html/regression/archive

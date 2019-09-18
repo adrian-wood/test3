@@ -1,0 +1,1 @@
+1  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0002 $SYS1 $SYS2   : $INDIR/mdb0002 

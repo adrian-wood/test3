@@ -1,0 +1,26 @@
+[meta]
+    title = "Regression Testing"
+    description = "MetDB retrieval regression tests"
+    URL = https://metnet2/content/metdb-technote-18a-regression-test-retrievals
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = next(T0630)
+    [[special tasks]]
+        clock-trigger = test_runner(PT0M)
+    [[dependencies]]
+        [[[P1D]]]      # daily
+            graph = """
+            # regular dependencies
+            test_runner[-P1D] => test_runner => test_display
+
+            """
+[runtime]
+    [[root]]
+        [[[environment]]]
+            %include /home/moodsf/cylc-run/regression/set_env.rc
+    [[test_runner]]
+        script = $SCRIPTS/daily_run.sh
+    [[test_display]]
+        script = $CGIBIN/display_results.sh
+
