@@ -176,12 +176,12 @@ class TestPlan:
         """Open dataset for writing"""
 
         try:
-            path = os.path.dirname(os.path.abspath(filename))
-            if not os.path.exists(path):
-                os.makedirs(path)
+            filepath = os.path.dirname(os.path.abspath(filename))
+            if not os.path.exists(filepath):
+                os.makedirs(filepath)
             self.fo = open(filename, "w+")
-        except (IOError, TypeError):
-            print('Error opening TAP output -', filename)
+        except (IOError, TypeError) as err:
+            print('Error opening TAP output -', filename, err)
             sys.exit(1)
 
         self.output('1..' + str(self.count))

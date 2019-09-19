@@ -12,7 +12,7 @@ setenv=/home/moodsf/cylc-run/regression/set_env.rc
 source $setenv
 export $(cut -d= -f1 $setenv)
 
-python ./TestOne.py $*
+python $SCRIPTS/TestOne.py $*
 
 echo "Clean up /tmp/TestOne when you're finished"
 find /tmp/TestOne -type f -ls

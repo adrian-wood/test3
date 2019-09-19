@@ -12,7 +12,7 @@
 
 import os
 import sys
-sys.path.append('/var/moods/regression/runner/scripts/')
+sys.path.append('/var/moods/regression/scripts/')
 import TestAnything as ta
 import re
 import cgi
