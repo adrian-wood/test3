@@ -2,7 +2,7 @@
 MetDB Retrieval Regression Testing
 ==================================
 
-See https://metnet2.metoffice.gov.uk/content/metdb-technote-18a-integration-test-retrievals
+See https://metnet2/content/metdb-technote-18a-regression-test-retrievals 
 
 Installation Instructions
 -------------------------
@@ -33,13 +33,14 @@ cd cylc-run/regression
 ```
 Edit set_env.rc and assign V1 to the new version to be tested and V2 to the current operational version:
 ```
- V1=5.21.0
- V2=5.20.0
+ VER1=5.21.0
+ VER2=5.20.0
 ```
 Reload the cylc suite to pick up the changes:
 ```
 cylc reload regression
 ```
 Suite runs at 0630Z daily.
+
 Output is http://mdb-apps-test/regression/latest_regression_tests.html
 
