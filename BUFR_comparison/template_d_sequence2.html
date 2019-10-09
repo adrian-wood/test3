@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+    <title> {{ctitle}} </title>
+<style>table th , td { border-collapse: collapse; }
+th , td { padding: 2px; text-align: left; }
+table#t01 { width: 100% }
+tr:nth-child(even) {background-color: #f2f2f2;}
+</style></head>
+<table style width = "100%"  border ="1" >
+<tr><th width="100%" bgcolor="#92a8d1" >MetDB - D sequences unrecognised by the MetDB Storage and Recovery process</th></tr></table>
+<br>
+{% for xbz in ddict1.keys() %}
+   {% if xbz != 'BUFR or 77777777 missing from Bulletin' %}   
+      {% set dref = ddict1[xbz] %}
+      {% set dref2 = ddict1[xbz]| length %}      
+      {% if xbz == 'Incorrect length for Section 1' %}
+         <table style width = "100%"  ><tr><td width="100%"  bgcolor="#92a8d1" > Incorrect length for Section 1</td></tr></table> 
+         <table style width = "100%"  ><tr><td width="15%" bgcolor="#92a8d1"> Data Type </td><td width="60%"  bgcolor="#92a8d1" > Bulletin ID </td><td width="25%" bgcolor="#92a8d1"> Message No </td></tr></table> 
+	 <table style width = "100%"  >
+	 {% for xbx in range(0,dref2) %} 
+	    {% set bidt = dref[xbx][2] %}     
+	    {% set bid = dref[xbx][0] %}
+	    {% set bidn = dref[xbx][1] %}
+	    <tr><td width="15%" >{{ bidt }}</td><td width="60%" >{{ bid }}</td><td width="25%" >{{ bidn }}</td></tr>
+	 {% endfor %}      
+	 </table>   
+	 <br>
+      {% elif xbz == 'Encoding sequence not represented in the Elements Index' %}
+         <table style width = "100%"  ><tr><td width="100%"  bgcolor="#92a8d1" > Encoding sequence not represented in the Elements Index</td></tr></table>
+         <table style width = "100%"  ><tr><td width="20%" bgcolor="#92a8d1"> Data Type </td><td width="25%"  bgcolor="#92a8d1" > Bulletin ID </td><td width="10%" bgcolor="#92a8d1"> Message No </td><td width="10%" bgcolor="#92a8d1"> TTAAii CCCC </td><td width="35%" bgcolor="#92a8d1"> Encoding Sequence </td></tr></table>	  
+     	 <table style width = "100%"  >
+	 {% for xbx in range(0,dref2) %}  	    
+	    {% set bidt = dref[xbx][2] %} 
+	    {% set bid = dref[xbx][0] %}
+	    {% set bidn = dref[xbx][1] %}
+	    {% set ttaa11 = dref[xbx][3] %}
+	    {% set encsq = dref[xbx][4] %}	    	    	    
+	    <tr><td width="20%">{{ bidt }}</td><td width="25%">{{ bid }}</td><td width="10%" >{{ bidn }}</td><td width="10%" >{{ ttaa11 }}</td><td width="55%" >{{ encsq }}</td></tr>
+	 {% endfor %}   
+	 </table> 
+         <br> 
+      {% elif xbz == 'TTAAii not identified' %}
+         <table style width = "100%"  ><tr><td width="50%" bgcolor="#92a8d1" > TTAAii not identified </td></tr></table> 
+         <table style width = "100%"  ><tr><td width="50%" bgcolor="#92a8d1"> Bulletin ID </td><td width="50%" bgcolor="#92a8d1" > Data Type </td></tr></table> 
+	 <table style width = "100%"  >
+	 {% for xbx in range(0,dref2) %}  
+	    {% set bidn = dref[xbx][1] %}     
+	    {% set bid = dref[xbx][0] %}
+	    
+	    <tr><td width="50%" >{{ bid }}</td><td width="50%" >{{ bidn }}</td></tr>
+	 {% endfor %}   
+	 </table> 
+	 <br>
+      {% endif %} 	 
+   {% else %}
+         {% set dref = ddict1[xbz] %}
+         {% set dref2 = ddict1[xbz]| length %} 
+         <table style width = "100%"  ><tr><td width="50%" bgcolor="#92a8d1" > BUFR or 77777777 missing from Bulletin </td></tr></table>
+         <table style width = "100%"  ><tr><td width="50%"  bgcolor="#92a8d1" > Bulletin ID </td></tr></table> 
+	 <table style width = "100%"  >
+	 {% for xbx in range(0,dref2) %}
+	    {% set bid = dref[xbx] %}   
+	    <tr><td width="50%"  >{{ bid }}</td></tr>
+	 {% endfor %}   
+	 </table> 
+	 <br>  
+   {% endif %}    
+{% endfor %} 
+<br>
+<table style width = "100%"  border ="1" >
+<tr><th width="100%" bgcolor="#92a8d1" >Details of the data sources referenced</th></tr></table>
+<table style width = "100%"  ><tr><td width="15%" bgcolor="#92a8d1"> Data Type </td><td width="35%"  bgcolor="#92a8d1" > Source directory </td><td width="50%" bgcolor="#92a8d1"> Start & End  Date / time of Testing Period  </td></tr></table>
+<table style width = "100%"  >
+{% for xbz in ddict2.keys() %}
+   {% set xref = ddict2[xbz][0] %}
+   {% set xref2 = ddict2[xbz][1] %}
+   <tr><td width="15%" >{{ xbz }}</td><td width="35%" >{{ xref }}</td><td width="50%" >{{ xref2 }}</td></tr>
+{% endfor %} 
+</table>  
+<br>
+<table style width = "50%"  >
+<tr><td width="50%" >{{ extp }}</td><td width="50%" > </td></tr>
+</table> 
+<br>
+</html>
