@@ -7,6 +7,7 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-2012: Oct 2019 Switch to mdbapop server.                       SN
 # MB-1955: Jun 2019 Correct time_from_ref for time-spans not starting
 #                   from 00Z.                                       SN
 # MB-1916: May 2019 Update to Python 3.                             SN
@@ -627,7 +628,8 @@ def get_data():
             obs = metdb.obs(settings.contact,
                             settings.subtype,
                             keywords,
-                            elements_list)
+                            elements_list,
+                            hostname='mdbapop-prod')
             print('Retrieved ', len(obs), ' observations')
             nobs += len(obs)
         except IOError:
