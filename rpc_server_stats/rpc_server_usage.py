@@ -1,4 +1,3 @@
-#!/usr/local/sci/bin/python2.7
 """Extract current RPC usage from the web page that shows locked servers.
    Count them for linux and gpcs user ranges and append this with a
    timestamp to a text file. Retrieve the last 300 entries and plot a graph.
@@ -9,7 +8,7 @@
    Needs one argument: either oper or user to produce stats for mdbabop
    or mdbapus respectively.
 """
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import re
 import sys
 import logging
@@ -20,13 +19,13 @@ import datetime as dt
 import matplotlib.pyplot as plt
 
 # Set the logging level for debugging
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 # One argument being the server ID (no options yet)
 parser = OptionParser()
 (options, args) = parser.parse_args()
 if len(args) != 1:
-    print 'One argument required - oper or user'
+    print('One argument required - oper or user')
     sys.exit(8)
 
 # check for valid argument
@@ -43,26 +42,26 @@ elif arg.lower() == 'user':
     server = 'mdbapus-prod'
     title = 'Production - General Users'
 else:
-    print 'Invalid argument - oper or user'
+    print('Invalid argument - oper or user')
     sys.exit(8)
 
 # Set variables for this server
 URL = r'http://' + server + '/cgi-bin/moods/rpcprog.pl'
-HTML = r'/home/h01/usmdb/public_html/moods/misc/plots/'
-HOME = r'/home/h01/usmdb/moods/rpc_stats/'
+HTML = r'/var/www/html/rpc_stats/plots/'
+HOME = r'/var/www/html/rpc_stats/'
 
 # Get RPC usage details from the locked server web page
 inp = None
 try:
-    inp = urllib.urlopen(URL)
+    inp = urllib.request.urlopen(URL)
     response = inp.read()
 except IOError:
-    print 'error opening file'
+    print('error opening file')
     sys.exit(8)
 
 # parse the page, first splitting it into lines
 string = []
-lines = response.split('<tr>')
+lines = response.decode().split('<tr>')
 
 linuxtot = 0
 linuxfree = 0
@@ -129,7 +128,11 @@ for line in reversed(open(HOME+filename + "_server_usage.data").readlines()):
     if t > maxback:
         break
 
-fig = plt.figure()
+# convert str to float due to changes to matplotlib
+yo = list(map(float, yo))
+yu = list(map(float, yu))
+
+fig = plt.figure(figsize=(9,7))
 ax = fig.add_subplot(111)
 
 ax.plot_date(x, yo, "r-", label="Linux users")
@@ -141,7 +144,7 @@ ax.xaxis.set_major_formatter(dateFmt)
 hoursLoc = mpl.dates.HourLocator(interval=1)
 ax.xaxis.set_major_locator(hoursLoc)
 
-plt.setp(ax.get_xticklabels(), fontsize=8.)
+plt.setp(ax.get_xticklabels(), fontsize=7.)
 fig.autofmt_xdate(bottom=0.18)  # adjust for date labels display
 
 ax.set_xlabel('Local time (dd/hh:mm)')
