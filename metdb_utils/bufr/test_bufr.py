@@ -59,6 +59,44 @@ class Test_bufrD(unittest.TestCase):
         self.assertEqual(bufr.fxy(37888), '220000')
         self.assertEqual(bufr.fxy(49411), '301003')
 
+class Test_is_a_descriptor(unittest.TestCase):
+
+    def test_valid(self):
+        '''All valid descriptors'''
+        self.assertTrue(bufr.is_a_descriptor('015012'))
+        self.assertTrue(bufr.is_a_descriptor('112232'))
+        self.assertTrue(bufr.is_a_descriptor('212412'))
+        self.assertTrue(bufr.is_a_descriptor('323012'))
+
+    def test_empty(self):
+        '''Empty string'''
+        self.assertFalse(bufr.is_a_descriptor(''))
+
+    def test_type(self):
+        '''Non-string inputs'''
+        self.assertFalse(bufr.is_a_descriptor(312212))
+        self.assertFalse(bufr.is_a_descriptor(True))
+
+    def test_alpha(self):
+        '''Not digits'''
+        self.assertFalse(bufr.is_a_descriptor('rubbish'))
+        self.assertFalse(bufr.is_a_descriptor('$@#'))
+
+    def test_decimal(self):
+        '''Wrong sort of numbers'''
+        self.assertFalse(bufr.is_a_descriptor('12.234'))
+        self.assertFalse(bufr.is_a_descriptor('-12312'))
+
+    def test_length(self):
+        '''Invalid length'''
+        self.assertFalse(bufr.is_a_descriptor('11'))
+        self.assertFalse(bufr.is_a_descriptor('1234567'))
+
+    def test_range(self):
+        '''Descriptors must start with 0,1,2 or 3'''
+        self.assertFalse(bufr.is_a_descriptor('401001'))
+
+
 
 if __name__ == '__main__':
   unittest.main()

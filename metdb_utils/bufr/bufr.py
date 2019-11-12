@@ -1,12 +1,12 @@
 """
-The bufr module provides access to MetDB BUFR tables in Python.
+The `bufr.py` module provides access to MetDB BUFR tables in Python.
 
-BUFR tables are `bufr_tableb` and `bufr_tabled` in standard MetDB format.
-Environment variable `BUFR_LIBRARY` gives the path to both files; if not
-defined then tables should be in the current working directory.
+Specify a location for the tables with BUFR_LIBRARY or use the 
+current working directory.
 
     >>> import os
-    >>> os.environ.update({'BUFR_LIBRARY':'/home/moodsf/MetDB_BUFR24.0.00/tables/'})
+    >>> os.environ.update(
+    ... {'BUFR_LIBRARY':'/home/moodsf/MetDB_BUFR25.0.00/tables/'})
 
 Access BUFR tables as follows:
     >>> tabled = bufr.TableD()
@@ -19,17 +19,20 @@ Access BUFR tables as follows:
     'SATELLITE IDENTIFIER'
 
 Expand a nested BUFR sequence as follows:
-    >>> seq = tableD.expander(['300010'])
+    >>> seq = tabled.expander(['300010'])
     >>> print(seq)
     ['000010','000011','000012','101000','031001','000030'])
-    >>> seq = tableD.expander(['001007', '300003'])
+    >>> seq = tabled.expander(['001007', '300003'])
     >>> print(seq)
     ['001007', '000010', '000011', '000012'])
+
 
 """
 import os
 import sys
+import re
 # =========================================================================
+
 
 def fxy(desc):
     """ Utility function to convert integer to FXXYYY.
@@ -44,13 +47,34 @@ def fxy(desc):
         Returns:
 
         * fxy (str) : 'FXXYYY' equivalent
+
     """
     fx = desc // 256
     f = desc // 16384
     x = fx - (fx // 64) * 64
-    y = desc -(desc //256) * 256
+    y = desc - (desc // 256) * 256
     return "{:01d}{:02d}{:03d}".format(f, x, y)
+
+
+def is_a_descriptor(text):
+    """Check if a string contains 6 digits that could be a BUFR descriptor.
+
+    This is a utility function useful when parsing a text file.
+
+    Args:
     
+    * text (string) : input string
+
+    Returns:
+
+    * (Boolean) : True if string is FXXYYY format, otherwise False
+    """
+
+    return isinstance(text, str) and \
+        text.isdigit() and \
+        len(text) == 6 and \
+        text[0] in {'0', '1', '2', '3'}
+
 
 class TableD:
     """ The TableD class represents a complete table D as a dictionary.
@@ -61,13 +85,18 @@ class TableD:
 
         Attributes:
 
-        * tabled (dict) : {'descriptor': ['d1','d2',...,]}
+        * tabled (dict) : {'descriptor': {'seq': ['d1','d2',...,],
+                                          'title': text} }
             Key is an F3 descriptor as a string and the value is a sequence of
             descriptors (also as strings).
+
+        * header (str) : first line of bufr_tabled file
+
     """
     # ---------------------------------------------------------------------
 
     tabled = {}
+    header = None
 
     def __init__(self):
         """ Read TableD into dictionary.
@@ -91,7 +120,7 @@ class TableD:
         inp = None
         try:
             inp = open(tabledFile, 'r')
-            TableD.tabled = self.__parseTabled(inp)
+            (TableD.header, TableD.tabled) = self.__parseTabled(inp)
         except IOError:
             print('Cannot find file:', tabledFile)
             sys.exit(8)
@@ -114,7 +143,25 @@ class TableD:
             * list (str): list of expansion or None
         """
         if descr in cls.tabled:
-            return cls.tabled[descr]
+            return cls.tabled[descr]['seq']
+        else:
+            return None
+    # ---------------------------------------------------------------------
+
+    @classmethod
+    def description(cls, descr):
+        """ Return any text associated with the given descriptor.
+
+            Args:
+
+            * descr (str) : 3XXYYY descriptor
+
+            Returns:
+
+            * text (str): Up to 80 bytes of text
+        """
+        if descr in cls.tabled:
+            return cls.tabled[descr]['title']
         else:
             return None
     # ---------------------------------------------------------------------
@@ -136,16 +183,80 @@ class TableD:
             if d[0] != '3':
                 final.extend([d])
             else:
-                newseq = TableD.lookup(d)
-                final.extend(TableD.expander(newseq))
+                newseq = cls.lookup(d)
+                final.extend(cls.expander(newseq))
         return final
     # ---------------------------------------------------------------------
+
+    @classmethod
+    def add(cls, descriptor, sequence, text):
+        """Add a new sequence to Table D.
+
+            Args:
+
+            * descriptor (str) : F=3 descriptor
+            * seq(list of str) : sequence of descriptors
+            * text (str)       : Description of sequence (can be blank)
+
+         """
+        if descriptor in cls.tabled:
+            print(f"{descriptor} already in Table D")
+        else:
+            cls.tabled[descriptor] = {'seq': sequence, 'title': text}
+            print(f"sequence {descriptor} added")
+
+    @classmethod
+    def writeTabled(cls, filename):
+        """Write out TableD structure in MetDB format.
+
+           Args:
+
+           * filename (str): name of new file to be created
+        """
+
+        outp = None
+        newline = "\n"
+        try:
+            outp = open(filename, "w+")
+            outp.write(cls.header)
+            outp.write(newline)
+
+            for k, v in sorted(cls.tabled.items()):
+                desc = k
+                seq = v['seq']
+                text = v['title']
+                ndes = len(seq)
+                if text:
+                    outp.write(f"{' ':10s}{text:60s}{newline}")
+                outp.write(f"{desc:6s}{ndes:3d} ")
+                for i in range(0, ndes, 10):
+                    for p in seq[i:i + 10]:
+                        outp.write(f"{p:7s}")
+                    outp.write(f"  {newline}")
+                outp.write(f"  {newline}")
+
+        except IOError as err:
+            print("Failed to write new TableD {err}")
+        finally:
+            if outp:
+                outp.close()
 
     def __parseTabled(self, inp):
         # Parse MetDB Format Table D
         ndes = 0
         tabled = {}
-        for line in inp:
+        text = ''
+        pattern = re.compile(r'[a-zA-Z]')  # chars in titles but not in descr
+
+        for count, line in enumerate(inp):
+            if count == 0:
+                header = line
+                continue
+
+            if re.search(pattern, line):
+                if ndes == 0:
+                    text = line.strip()
+                continue
 
             f = line[0:6]
             if f[0].isdigit() and ndes > 10:
@@ -160,9 +271,9 @@ class TableD:
                     temp = line.split()
                     if len(temp[0]) > 6:
                         a = temp[0]
-                        ndes = int(a[6:8])
+                        ndes = int(a[6:9])
                         temp[2:] = temp[1:]
-                    else:                       
+                    else:
                         ndes = int(temp[1])
                     seq = temp[2:]
                 descr = f
@@ -173,10 +284,11 @@ class TableD:
                     if descr in tabled:
                         print(descr, ' already in table D')
                     else:
-                        tabled[descr] = seq
-                ndes = 0
+                        tabled[descr] = {'seq': seq, 'title': text}
+                        text = ''
+                    ndes = 0
         # print('...', len(tabled), ' D sequences read')
-        return tabled
+        return (header, tabled)
 
 # =========================================================================
 
@@ -277,7 +389,6 @@ class TableB:
         finally:
             if inp:
                 inp.close()
-        #print('...', len(TableB.tableb), ' Table B descriptors read.')
     # ---------------------------------------------------------------------
 
     @classmethod

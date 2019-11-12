@@ -1,4 +1,4 @@
-import segments
+import elements
 import unittest
 import re
 import os
@@ -17,6 +17,8 @@ def get_elements(lines):
         if len(c) >= 3:
             p.append(c[-1])
             s.append(c[-2])
+        else:
+            break
     return (s, p)
 
 
@@ -30,7 +32,7 @@ class MockDevice():
         pass
 
 
-class Test_segments(unittest.TestCase):
+class Test_elements(unittest.TestCase):
 
     def setUp(self):
         os.environ.update({'BUFR_LIBRARY': '/home/moodsf/MetDB_BUFR24.0.00/tables/'})
@@ -47,14 +49,18 @@ class Test_segments(unittest.TestCase):
         seg = ['1'] * 12
         pos = [str(_) for _ in range(1, 13)]
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
-        self.assertIn(summary, lines[7])
-        self.assertIn(map1, lines[9])
 
-        (s, p) = get_elements(lines[13:])
+        self.assertIn(summary, lines[9])
+        self.assertIn(map1, lines[11])
+
+        (s, p) = get_elements(lines[17:])
         self.assertEqual(s, seg)
         self.assertEqual(p, pos)
 
@@ -72,15 +78,18 @@ class Test_segments(unittest.TestCase):
         seg = ['1'] * 26
         pos = [str(_) for _ in range(1, 27)]
 
+        table =  elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[8])
-        self.assertIn(map1, lines[10])
+        self.assertIn(summary, lines[10])
+        self.assertIn(map1, lines[12])
 
-        (s, p) = get_elements(lines[14:])
+        (s, p) = get_elements(lines[18:])
         self.assertEqual(s, seg)
         self.assertEqual(p, pos)
 
@@ -97,15 +106,18 @@ class Test_segments(unittest.TestCase):
         seg = ['1'] * 26
         pos = [str(_) for _ in range(1, 27)]
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[8])
-        self.assertIn(map1, lines[10])
+        self.assertIn(summary, lines[10])
+        self.assertIn(map1, lines[12])
 
-        (s, p) = get_elements(lines[14:])
+        (s, p) = get_elements(lines[18:])
         self.assertEqual(s, seg)
         self.assertEqual(p, pos)
 
@@ -142,16 +154,19 @@ class Test_segments(unittest.TestCase):
                 '9   7   0']
         reps = '-1   4  15   4'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[21])
+        self.assertIn(summary, lines[23])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[23 + i])
+            self.assertIn(map1[i], lines[25 + i])
 
-        self.assertIn(reps, lines[33])
+        self.assertIn(reps, lines[35])
 
     def test_amv(self):
 
@@ -173,16 +188,19 @@ class Test_segments(unittest.TestCase):
                 '12   1   0']
         reps = '-1  -1  -1  -1  -1   4  -1'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[6])
+        self.assertIn(summary, lines[8])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[8 + i])
+            self.assertIn(map1[i], lines[10 + i])
 
-        self.assertIn(reps, lines[21])
+        self.assertIn(reps, lines[23])
 
     def test_atms(self):
 
@@ -217,16 +235,19 @@ class Test_segments(unittest.TestCase):
                 '11   9   1   6']
         reps = '22   3  -1  -1   3  -1'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[18])
+        self.assertIn(summary, lines[20])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[20 + i])
+            self.assertIn(map1[i], lines[22 + i])
 
-        self.assertIn(reps, lines[32])
+        self.assertIn(reps, lines[34])
 
     def test_gpsro(self):
 
@@ -243,20 +264,23 @@ class Test_segments(unittest.TestCase):
                 '7   7   0']
         reps = '-1  -1  -1  -1'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[6])
+        self.assertIn(summary, lines[8])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[8 + i])
+            self.assertIn(map1[i], lines[10 + i])
 
-        self.assertIn(reps, lines[16])
+        self.assertIn(reps, lines[18])
 
     def test_iasi(self):
 
-        ''' Nested, delayed replications, 15 segments, 203 operators       '''
+        ''' Nested, delayed replications, 15 elements, 203 operators       '''
 
         text = ('001007 004001 004002 004003 004004 004005 004006 005001 '
                 '006001 008012 008070 001031 008070 001031 005040 055023 '
@@ -291,16 +315,19 @@ class Test_segments(unittest.TestCase):
                 '15   2   0']
         reps = '20  10  10  -1  -1   3   7   6'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[18])
+        self.assertIn(summary, lines[20])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[20 + i])
+            self.assertIn(map1[i], lines[22 + i])
 
-        self.assertIn(reps, lines[36])
+        self.assertIn(reps, lines[38])
 
     def test_mwts(self):
 
@@ -324,16 +351,18 @@ class Test_segments(unittest.TestCase):
                 '6   2   1   3']
         reps = '-1  -1  -1'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
 
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[12])
+        self.assertIn(summary, lines[14])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[14 + i])
+            self.assertIn(map1[i], lines[16 + i])
 
-        self.assertIn(reps, lines[21])
+        self.assertIn(reps, lines[23])
 
     def test_abicsr(self):
 
@@ -372,16 +401,19 @@ class Test_segments(unittest.TestCase):
                 '19   1   1  11']
         reps = '10   2  10 161  30  30  30  30  30  30  30'
 
+        table = elements.process(sequence)
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            print(table)
+
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[14])
+        self.assertIn(summary, lines[16])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[16 + i])
+            self.assertIn(map1[i], lines[18 + i])
 
-        self.assertIn(reps, lines[36])
+        self.assertIn(reps, lines[38])
 
     def test_tamdar(self):
 
@@ -397,15 +429,18 @@ class Test_segments(unittest.TestCase):
         map1 = ['1  44   0']
 
         with patch('sys.stdout', new=StringIO()) as out:
-            segments.process(sequence)
+            table = elements.process(sequence)
+            print(table)
 
+        self.assertEqual(table.sequences[1][0].nseq, len(sequence))
+        
         lines = out.getvalue().split('\n')
 
-        self.assertIn(summary, lines[9])
+        self.assertIn(summary, lines[12])
         for i in range(len(map1)):
-            self.assertIn(map1[i], lines[11 + i])
+            self.assertIn(map1[i], lines[14 + i])
 
-        self.assertIn('WARNING', lines[-2])
+        self.assertIn('WARNING', lines[0])
 
 
 if __name__ == '__main__':
