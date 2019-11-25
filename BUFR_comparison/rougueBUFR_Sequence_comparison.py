@@ -84,7 +84,7 @@ def ind_read(S1):
                 start = 1
                                         # the strings  'BUFR SEQUENCES
                                         # & 'INDEX'
-                line = fi.next()
+                line = next(fi)
             elif line.find(I1) > -1 or len(line.replace(" ", "")) == 0:
                                         # end of index values
                 flist.append(plist)
@@ -548,7 +548,7 @@ def fprocess(indct,errq):
     nm = {}
     nrrf = -1
 #         
-    for mik in indct.keys():
+    for mik in list(indct.keys()):
         dty = indct[mik][0][0]          # data type  'SONDE Etc'         
         dataf = indct[mik][0][8]        # last entry in the list will be a        
                                         # listing of the MHSR data associated
@@ -564,14 +564,14 @@ def fprocess(indct,errq):
                     break                           
                 else: 
                     (brdict,errw) = sum_bin(filein,errq,dty)                                              
-                    for keyx in brdict.keys():                                                                                                                  
+                    for keyx in list(brdict.keys()):                                                                                                                  
                        abx = brdict[keyx]            
                        (abf) = thin_ob(abx,dty)                         
                        if abf == 1:                                       
                           abx.append(dty)
                           abx.append(hddata)
                           abx.append(hrange) 
-                          if keyx not in nm.keys():
+                          if keyx not in list(nm.keys()):
                              nm[keyx] = abx                                                                                               
 #                       
     return(nm,errw)
@@ -603,7 +603,7 @@ def read_config(cnfgin, trigger):
             if line.find(trigger) >= 0:
                 fields=line.split()
                 keyf=fields[-1].split('/')[-2]
-                if keyf in fdict.keys():
+                if keyf in list(fdict.keys()):
                     tlist=fdict[keyf]
                     tlist.append(fields[1:])
                     fdict[keyf]= tlist
@@ -637,7 +637,7 @@ def thin_ob(obin,dtp):
    dataid['SYNOPT'] = [['ISA','01-59','SYNOP'],['ISI','01-59','SYNOP'],['ISM','01-59','SYNOP'],\
                      ['ISN','01-59','SYNOP']]
    dataid['CLIMAT'] = [['ISC','01-59','CLIMAT']]
-   dataid['SHIPB'] = [['ISS','01-59','SHIP']]
+   dataid['SHPSYNB'] = [['ISS','01-59','SHIP']]
    dataid['AMDAR'] = [['IUA',' ','AMDAR']]
    dataid['PILOT'] = [['IUJ','01-59','PILOT'],['IUW','01-59','PILOT']]
    dataid['SONDE'] = [['IUK','01-59','TEMP']]
@@ -711,7 +711,7 @@ def read_hdr(def_file,sname):
     lflist=[] 
     with open(def_file,'r') as fd:
         for x in range(0,7):
-            line=fd.next() 
+            line=next(fd) 
         for line in fd:
             linesub=line[0:24]
             line2=linesub.split()            
@@ -750,7 +750,7 @@ def fnproc(dictin,errw):
 #  
    nx = 0
    nz = 0
-   for keyx in dictin.keys():
+   for keyx in list(dictin.keys()):
       dtp =  dictin[keyx][23] 
       hrange = dictin[keyx][24]                # header range
       headid = dictin[keyx][0][0].split(' ')   # TTAAii CCCC
@@ -824,7 +824,7 @@ brdictxf={}                             # Final out put dictionary, will
                                         # contain processed data ready to be 
                                         # output by web_dout        
 #
-for key in cnfg.keys():    
+for key in list(cnfg.keys()):    
     tdir =cnfg[key][0][4]               # definition of the tables directory
                                         # from the config file  
     break                               # taken on first loop 
@@ -852,7 +852,7 @@ hdict = {}
 # 
 dpq = {}
 #
-for cn1 in cnfg.keys():
+for cn1 in list(cnfg.keys()):
     dlist = []
     dlist.append( cnfg[cn1][0][0])
     dlist.append( cnfg[cn1][0][5])                                          
@@ -874,7 +874,7 @@ for cn1 in cnfg.keys():
     dpq[cn1] = dlist
     cnfg[cn1]=df                                     
 #          
-for cn2 in cnfg.keys():
+for cn2 in list(cnfg.keys()):
     dfl = len(cnfg[cn2])
     for xv in range(0,dfl):
         ein = cnfg[cn2][xv] 
@@ -898,7 +898,7 @@ xt=i.strftime('%Y/%m/%d %H:%M:%S')
 #  construct and output to a *.csv file_in#
 #  
 with open(dt2, 'w') as fmx:   
-   for keyx in erryx2.keys():
+   for keyx in list(erryx2.keys()):
       if keyx == '1':
          ft1='{message:{fill}{align}{width}}'.format(message = keyx ,fill=' ',align='<',width=5)
          ft2='{message:{fill}{align}{width}}'.format(message = erryx2[keyx][0][0] ,fill=' ',align='<',width=10)     # error title            
@@ -1001,7 +1001,7 @@ with open(dt2, 'w') as fmx:
             fmx.write(('%s')%(' , ')) 
             fmx.write(('%s\n')%(fx55))
   
-   for keyz in dpq.keys():   
+   for keyz in list(dpq.keys()):   
          
       fz0a = 'Data Type,' + dpq[keyz][0] + ','
       fz1a = 'Data Directory,' + dpq[keyz][1]+ ','  
