@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="Tester">
+                <meta name="author" content="sheila.needham">
+
+                <!--Bootstrap core CSS -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        </head>
+<script>
+function clearForms()
+{
+  var i;
+  for (i = 0; (i < document.forms.length); i++) {
+    document.forms[i].reset();
+  }
+}
+</script>
+</head>
+ <body onLoad="clearForms()" onUnload="clearForms()">
+                <div class="container">
+
+<h2>MetDB Station Details </h2>
+<p>Search by name will attempt to find any partial match in both WMO and ICAO station lists.</p>
+<p>For ICAO and WMO ID searches a partial entry e.g. 037 or EG will match identifiers starting with those characters.</p>
+<p>For decimal latitudes and longitudes a negative value indicates South and West respectively.</p>
+
+
+<form name="myForm" action="http://mdb-apps/cgi-bin/stations/station_search.py" method="post" >
+<p>Search by location name:</p>
+<input type="hidden" name="tsearch" value="both">
+<input type="text" name="pattern">
+<input type="submit" value="Search">
+</form>
+<hr/>
+
+<form name="myForm" action="http://mdb-apps/cgi-bin/stations/station_search.py" method="post" >
+<p>Search by ICAO ID:</p>
+<input type="hidden" name="tsearch" value="icao">
+<input type="text" name="pattern">
+<input type="submit" value="Search">
+</form>
+
+<hr/>
+<form name="myForm" action="http://mdb-apps/cgi-bin/stations/station_search.py" method="post" >
+<p>Search by WMO ID:</p>
+<input type="hidden" name="tsearch" value="wmo">
+<input type="text" name="pattern">
+<input type="submit" value="Search">
+</form>
+
+<hr/>
+
+<div class="footer navbar-fixed-bottom">
+
+<p> <a href="mailto:metdb@metoffice.gov.uk">MetDB Team</a></p>
+</div>
+
+
+
+   </div>
+                <!-- Bootstrap core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+                <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+                <script>
+                  $(document).ready(function(){
+                  $('[data-toggle="popover"]').popover();
+                  });
+                </script>
+
+
+
+</body>
+</html>
