@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <title>General form viewer</title>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="description" content="Tester">
+                <meta name="author" content="sheila.needham">
+
+                <!--Bootstrap core CSS -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        </head>
+        <body>
+                <div class="container">
+                        <h2>Station Details</h2>
+                    <p>Links to latest METAR observations for stations found in the ICAO list and to LNDSYN
+                       observations for stations found in the WMO station list</p>
+
+                       <p> {{ fields['errcode'] }} </p>
+                    <table class="table">
+                    <tr>
+                        <th>ICAO ID</th>
+                         <th>WMO ID</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Station ht(m)</th>
+                         <th>Sensor ht(m)</th>
+                        <th>Name</th> 
+                        <th>Latest Observation</th>
+                    </tr> 
+                    {%  for v in fields['stations'] %}
+                     <tr><td>{{ v[0] }}</td>
+                         <td>{{ v[1] }}</td>
+                         <td>{{ v[2] }}</td>
+                         <td>{{ v[3] }}</td> 
+                         <td>{{ v[4] }}</td> 
+                         <td>{{ v[5] }}</td>
+                         <td>{{ v[6] }}</td> 
+                         <td><a href="{{v[7]}}">Latest observation</a></td>
+                     </tr>
+                    {% endfor %}
+ 
+                    </table>
+
+                </div>
+                <!-- Bootstrap core JavaScript
+                ================================================== -->
+                <!-- Placed at the end of the document so the pages load faster -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+                <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+                <script>
+                  $(document).ready(function(){
+                  $('[data-toggle="popover"]').popover();
+                  });
+                </script>
+        </body>
+</html>
