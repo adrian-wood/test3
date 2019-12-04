@@ -24,13 +24,15 @@
 		<div class="container">
 			<h2>{{count}} locked servers @ {{now}}</h2>
 			<table class="table table-bordered sortable" >
+			    <thead>	
 				<tr>
 					<th>Userid</th>
 					<th>Number</th>
 					<th>Time</th>
 					<th>Server Output</th>
 				</tr>
-
+                            </thead>
+                            <tbody>
 				{% for r in row %}
 
 				<tr>
@@ -41,6 +43,7 @@
 				</tr>
 
 				{% endfor %}
+                             </tbody>
 			</table>
 
 			<p>

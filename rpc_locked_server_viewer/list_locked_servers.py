@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/scitools/environments/default/2019_02_27/bin/python
 import re
 import cgi
 from datetime import datetime
@@ -61,7 +61,7 @@ def parseData(table,user):
 #--------------------------------------------------------------------------
 def main():
   operURL=r"http://mdbapus-prod/cgi-bin/moods/rpcprog.pl"
-  webRoot=r"/home/h01/usmdb/public_html/moods/viewers/"
+  webRoot=r"/var/www/html/viewers/"
   viewer=r"viewer_template.html"
   error=r"viewer_error.html"
   now=datetime.utcnow().strftime('%H:%M:%S')+'Z'
