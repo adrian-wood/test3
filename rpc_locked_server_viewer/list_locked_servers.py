@@ -4,7 +4,7 @@ import cgi
 from datetime import datetime
 import cgitb; cgitb.enable()
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from jinja2 import FileSystemLoader, Environment
 
 def render(directory, template_name, **kwargs):
@@ -18,7 +18,7 @@ def render(directory, template_name, **kwargs):
 def readData(filename):
   inp=None
 
-  inp=urllib.urlopen(filename)
+  inp=urllib.request.urlopen(filename)
   lines=inp.read() 
      
 # regular expression to extract the whole table from the html text    
@@ -72,12 +72,12 @@ def main():
     table=readData(operURL)
   except IOError as err:
     templateVars={"errorMsg" : err }
-    print render(webRoot,error,**templateVars)
+    print(render(webRoot,error,**templateVars))
     sys.exit(1)
     
   rows=parseData(table,user)
   templateVars={"row" : rows, "count" : len(rows), "now" : now}
-  print render(webRoot,viewer,**templateVars)
+  print(render(webRoot,viewer,**templateVars))
 
 #--------------------------------------------------------------------------
 if __name__ == "__main__":
