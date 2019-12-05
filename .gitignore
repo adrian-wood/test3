@@ -1,4 +1,5 @@
 *.py[co]
+.vscode/
 metdb_retrieval/queued/
 metdb_retrieval/processed/
 metdb_utils/bufr/docs/_build/
