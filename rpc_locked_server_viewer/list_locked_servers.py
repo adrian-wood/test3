@@ -1,8 +1,8 @@
-#!/opt/scitools/environments/default/2019_02_27/bin/python
+#!/opt/scitools/environments/default/2019_02_27/bin/python 
 import re
 import cgi
 from datetime import datetime
-import cgitb; cgitb.enable()
+#import cgitb; cgitb.enable()
 import sys
 import urllib.request, urllib.parse, urllib.error
 from jinja2 import FileSystemLoader, Environment
@@ -19,7 +19,7 @@ def readData(filename):
   inp=None
 
   inp=urllib.request.urlopen(filename)
-  lines=inp.read() 
+  lines=inp.read().decode() 
      
 # regular expression to extract the whole table from the html text    
   rexpTable=r'<body>(.*)</body>'
