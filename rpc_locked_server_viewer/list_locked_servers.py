@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/opt/scitools/environments/default/2019_02_27/bin/python 
 import re
 import cgi
 from datetime import datetime
-import cgitb; cgitb.enable()
+#import cgitb; cgitb.enable()
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from jinja2 import FileSystemLoader, Environment
 
 def render(directory, template_name, **kwargs):
@@ -18,8 +18,8 @@ def render(directory, template_name, **kwargs):
 def readData(filename):
   inp=None
 
-  inp=urllib.urlopen(filename)
-  lines=inp.read() 
+  inp=urllib.request.urlopen(filename)
+  lines=inp.read().decode() 
      
 # regular expression to extract the whole table from the html text    
   rexpTable=r'<body>(.*)</body>'
@@ -61,7 +61,7 @@ def parseData(table,user):
 #--------------------------------------------------------------------------
 def main():
   operURL=r"http://mdbapus-prod/cgi-bin/moods/rpcprog.pl"
-  webRoot=r"/home/h01/usmdb/public_html/moods/viewers/"
+  webRoot=r"/var/www/html/viewers/"
   viewer=r"viewer_template.html"
   error=r"viewer_error.html"
   now=datetime.utcnow().strftime('%H:%M:%S')+'Z'
@@ -72,12 +72,12 @@ def main():
     table=readData(operURL)
   except IOError as err:
     templateVars={"errorMsg" : err }
-    print render(webRoot,error,**templateVars)
+    print(render(webRoot,error,**templateVars))
     sys.exit(1)
     
   rows=parseData(table,user)
   templateVars={"row" : rows, "count" : len(rows), "now" : now}
-  print render(webRoot,viewer,**templateVars)
+  print(render(webRoot,viewer,**templateVars))
 
 #--------------------------------------------------------------------------
 if __name__ == "__main__":
