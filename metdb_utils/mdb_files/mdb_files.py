@@ -11,7 +11,7 @@ class RetrievalTable:
                 if _line.strip():
                     datatype, dataset = self.unpack_line(_line)
                     if datatype not in self.datatypes:  # new dict entry needed
-                        self.datatypes[datatype: None]
+                        self.datatypes[datatype] = Datatype()
                     self.datatypes[datatype].add_dataset(dataset)
                 else:
                     break  # blank line so we're done with dataset lines
