@@ -14,7 +14,7 @@ class RetrievalTable:
                         self.datatypes[datatype: None]
                     self.datatypes[datatype].add_dataset(dataset)
                 else:
-                    break  # blank line so we're done
+                    break  # blank line so we're done with dataset lines
             self.footers = _rtlines[(_count + 7):]
 
     def unpack_line(self, line):
@@ -56,10 +56,13 @@ class RetrievalTable:
     def list_datatypes(self):
         return list(self.datatypes.keys())
 
+    def write_file(self, filename):
+        pass  # TODO
+
 
 class Datatype:
 
-    def __init__(self, datatype):
+    def __init__(self):
         self.datasets = []
         self.number_of_datasets = 0
 
