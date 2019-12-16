@@ -88,10 +88,10 @@ class TableObj:
                 ' (SEGMENT THEN POSITION IN EACH PAIR OF COLS)\n'
         line += '\n{:{width}s}'.format('ELEMENT NAME',
                                        width=ElementObj.namelen)
-        line += ' T ID'
+        line += '   T ID'
         for i in range(self.numindex):
             line += '{:4d}{:4d}'.format(i+1, i+1)
-        line += '\n<' + '-' * (ElementObj.namelen - 2) + '>'
+        line += '\n <' + '-' * (ElementObj.namelen - 1) + '>'
         line += ' - --'
         for i in range(self.numindex):
             line += '  --  --'
@@ -125,12 +125,12 @@ class SeqObj:
     def __str__(self):
         """Print in the format required for part 1 of an elements index"""
 
-        line = '\n{:6d}{:4d}  '.format(self.index_ref, self.nseq)
+        line = '\n {:4d}{:4d}  '.format(self.index_ref, self.nseq)
         for pos, item in enumerate(self.desc):
             if pos % 8 == 0 and pos > 0:
                 line += '\n{:12s}{:7s}'.format(' ', item)
             else:
-                line += '{:7s}'.format(item)
+                line += ' {:7s}'.format(item)
         line += self.text.strip()
         return line
 
@@ -162,7 +162,7 @@ class SegmentObj:
         """Print in the format required for part 2 of and elements index"""
 
         prlev = ''.join(["%4d" % _ for _ in self.reps])
-        line = '\n{:4d}{:4d}{:4d}{:}         {:}'.format(
+        line = '\n {:4d}{:4d}{:4d}{:}         {:}'.format(
                self.segnum, self.posnum, self.repcount, prlev, self.text)
         return line
 
@@ -199,8 +199,8 @@ class IndexObj:
         self.replications = replications
 
     def __str__(self):
-        section = '\n\nINDEX{:4d} {:s}'.format(self.serial, self.text)
-        section += ('\n\n{:4d}{:4d}{:4d}  segments, replications,'
+        section = '\n\nINDEX{:3d} {:s}'.format(self.serial, self.text)
+        section += ('\n\n {:4d}{:4d}{:4d}  segments, replications,'
                     ' nesting level\n').format(self.nseg, self.nrep,
                                                self.ndep)
         for s in self.segments:
@@ -208,7 +208,7 @@ class IndexObj:
 
         if len(self.replications) > 0:
             prrep = ''.join("%4d" % _ for _ in self.replications)
-            section += '\n\n' + prrep
+            section += '\n\n ' + prrep
 
         return section
 
@@ -245,7 +245,7 @@ class ElementObj:
 
     def __str__(self):
         width = ElementObj.namelen
-        line = '\n{:{width}s}{:>2s}{:>3s}'.format(self.name, self.T,
+        line = '\n {:{width}s}{:>2s}{:>3s} '.format(self.name, self.T,
                                                   self.id, width=width)
         for i, v in self.location.items():
             line += '{:4d}{:4d}'.format(v[0], v[1])

@@ -18,6 +18,9 @@ Access BUFR tables as follows:
     >>> print(entry.name)
     'SATELLITE IDENTIFIER'
 
+Help will give you a list of the entry attributes:
+    >>> help(entry)
+
 Expand a nested BUFR sequence as follows:
     >>> seq = tabled.expander(['300010'])
     >>> print(seq)

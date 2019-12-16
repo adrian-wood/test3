@@ -21,8 +21,8 @@ Once you have the output from this program you should work out which elements
 you want to be retrievable and create MetDB element names in the usual way.
 
 Limitations:
-  * It does not generate a working elements_index but the output has all the
-    pertinent details (apart from element name).
+  * It generates a working elements_index apart from the element names which
+    you have to update by hand (See Technote 9).
   * It only works on one sequence at a time; you have to use the output to
     update an existing elements_index manually.
   * It does not recognise local Table D sequences that are not in the MetDB
@@ -36,7 +36,8 @@ Usage:
 
     >>> import elements
     >>> seq=['315009']
-    >>> elements.process(seq)
+    >>> new_index = elements.process(seq)
+    >>> print(new_index)
         (example output below)
 
 .. literalinclude:: examples/315009.txt
