@@ -1,8 +1,10 @@
+1   NEW DATATYPE
 
+BUFR SEQUENCES
 
-                    315009
+     1   1  315009 New sequence
 
-
+INDEX   1
 
    8   5   2  segments, replications, nesting level
 
@@ -15,73 +17,79 @@
    7   7   1   4
    8   8   1   5
 
-  -2  -1  -2  -2  -2    <--- replication counts
+  -2  -1  -2  -2  -2
 
-                               WMO MARINE OBSERVING PLATFORM EXTENDED IDENTIFIER  1   1
-                                                       LONG STATION OR SITE NAME  1   2
-                                                               TYPE OF DATA BUOY  1   3
-                                                               TIME SIGNIFICANCE  1   4
-                                                                            YEAR  1   5
-                                                                           MONTH  1   6
-                                                                             DAY  1   7
-                                                                            HOUR  1   8
-                                                                          MINUTE  1   9
-                                                        LATITUDE (HIGH ACCURACY)  1  10
-                                                       LONGITUDE (HIGH ACCURACY)  1  11
-                                                  PLATFORM TRANSMITTER ID NUMBER  1  12
-                                          DATA COLLECTION AND/OR LOCATION SYSTEM  1  13
-                              DIRECTION OF MOTION OF MOVING OBSERVING PLATFORM**  1  14
-                                           PLATFORM DRIFT SPEED (HIGH PRECISION)  1  15
-                                          QUALITY OF BUOY SATELLITE TRANSMISSION  1  16
-                                                        QUALITY OF BUOY LOCATION  1  17
-                     LOCATION QUALITY CLASS (RANGE OF RADIUS OF 66 % CONFIDENCE)  1  18
-                                                   BATTERY VOLTAGE (LARGE RANGE)  1  19
-                                                                     DROGUE TYPE  1  20
-                                                LAGRANGIAN DRIFTER DROGUE STATUS  1  21
-                                                                    DROGUE DEPTH  1  22
-                               LAGRANGIAN DRIFTER SUBMERGENCE (% TIME SUBMERGED)  1  23
-                                                               TIME SIGNIFICANCE  1  24
-                                                                            YEAR  1  25
-                                                                           MONTH  1  26
-                                                                             DAY  1  27
-                                                                            HOUR  1  28
-                                                                          MINUTE  1  29
-                                            PRECISION OF TEMPERATURE OBSERVATION  1  30
-                                                           SEA/WATER TEMPERATURE  1  31
-                                            METHOD OF SALINITY/DEPTH MEASUREMENT  1  32
-                                                            SEA SURFACE SALINITY  1  33
-                                                                    SURFACE TYPE  1  34
-                                                                   ICE THICKNESS  1  35
-                                                                     REPLICATION  0   1
-                                     SHORT DELAYED DESCRIPTOR REPLICATION FACTOR  2   1
-                                            PRECISION OF TEMPERATURE OBSERVATION  2   2
-                                                      INDICATOR FOR DIGITIZATION  2   3
-                                            METHOD OF SALINITY/DEPTH MEASUREMENT  2   4
-                                                                     REPLICATION  0   2
-                                                   DEPTH BELOW SEA/WATER SURFACE  3   1
-                                                           SEA/WATER TEMPERATURE  3   2
-                                                                        SALINITY  3   3
-                                            PRECISION OF TEMPERATURE OBSERVATION  4   1
-                                                                        PRESSURE  5   1
-                                              PRESSURE REDUCED TO MEAN SEA LEVEL  5   2
-                                                                     REPLICATION  0   3
-                                     SHORT DELAYED DESCRIPTOR REPLICATION FACTOR  6   1
-                               HEIGHT OF SENSOR ABOVE WATER SURFACE (SEE NOTE 6)  6   2
-                                                TEMPERATURE/DRY-BULB TEMPERATURE  6   3
-                                                                     REPLICATION  0   4
-                                     SHORT DELAYED DESCRIPTOR REPLICATION FACTOR  7   1
-                                                                 ANEMOMETER TYPE  7   2
-                               HEIGHT OF SENSOR ABOVE WATER SURFACE (SEE NOTE 6)  7   3
-                                                               TIME SIGNIFICANCE  7   4
-                                                     TIME PERIOD OR DISPLACEMENT  7   5
-                                                                  WIND DIRECTION  7   6
-                                                                      WIND SPEED  7   7
-                                                                     REPLICATION  0   5
-                                     SHORT DELAYED DESCRIPTOR REPLICATION FACTOR  8   1
-                                                         DURATION OF WAVE RECORD  8   2
-                                                         SIGNIFICANT WAVE HEIGHT  8   3
-                                                             MAXIMUM WAVE HEIGHT  8   4
-                                                             AVERAGE WAVE PERIOD  8   5
-                                                       SPECTRAL PEAK WAVE PERIOD  8   6
-                                  DIRECTION FROM WHICH DOMINANT WAVES ARE COMING  8   7
-                                             DIRECTIONAL SPREAD OF DOMINANT WAVE  8   8
+ELEMENT NAMES AND LOCATIONS  (SEGMENT THEN POSITION IN EACH PAIR OF COLS)
+
+ELEMENT NAME                                                 T ID   1   1
+<----------------------------------------------------------> - --  --  --
+001087 WMO MARINE OBSERVING PLATFORM EXTENDED IDENTIFIER            1   1
+001019 LONG STATION OR SITE NAME                                    1   2
+002149 TYPE OF DATA BUOY                                            1   3
+008021 TIME SIGNIFICANCE                                            1   4
+004001 YEAR                                                         1   5
+004002 MONTH                                                        1   6
+004003 DAY                                                          1   7
+004004 HOUR                                                         1   8
+004005 MINUTE                                                       1   9
+005001 LATITUDE (HIGH ACCURACY)                                     1  10
+006001 LONGITUDE (HIGH ACCURACY)                                    1  11
+001051 PLATFORM TRANSMITTER ID NUMBER                               1  12
+002148 DATA COLLECTION AND/OR LOCATION SYSTEM                       1  13
+001012 DIRECTION OF MOTION OF MOVING OBSERVING PLATFORM**           1  14
+001014 PLATFORM DRIFT SPEED (HIGH PRECISION)                        1  15
+033022 QUALITY OF BUOY SATELLITE TRANSMISSION                       1  16
+033023 QUALITY OF BUOY LOCATION                                     1  17
+033027 LOCATION QUALITY CLASS (RANGE OF RADIUS OF 66 % CONFI        1  18
+025026 BATTERY VOLTAGE (LARGE RANGE)                                1  19
+002034 DROGUE TYPE                                                  1  20
+022060 LAGRANGIAN DRIFTER DROGUE STATUS                             1  21
+007070 DROGUE DEPTH                                                 1  22
+002190 LAGRANGIAN DRIFTER SUBMERGENCE (% TIME SUBMERGED)            1  23
+008021 TIME SIGNIFICANCE                                            1  24
+004001 YEAR                                                         1  25
+004002 MONTH                                                        1  26
+004003 DAY                                                          1  27
+004004 HOUR                                                         1  28
+004005 MINUTE                                                       1  29
+002005 PRECISION OF TEMPERATURE OBSERVATION                         1  30
+022043 SEA/WATER TEMPERATURE                                        1  31
+002033 METHOD OF SALINITY/DEPTH MEASUREMENT                         1  32
+022059 SEA SURFACE SALINITY                                         1  33
+008029 SURFACE TYPE                                                 1  34
+013115 ICE THICKNESS                                                1  35
+103000 REPLICATION                                                  0   1
+031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                  2   1
+002005 PRECISION OF TEMPERATURE OBSERVATION                         2   2
+002032 INDICATOR FOR DIGITIZATION                                   2   3
+002033 METHOD OF SALINITY/DEPTH MEASUREMENT                         2   4
+103000 REPLICATION                                                  0   2
+007062 DEPTH BELOW SEA/WATER SURFACE                                3   1
+022043 SEA/WATER TEMPERATURE                                        3   2
+022062 SALINITY                                                     3   3
+002005 PRECISION OF TEMPERATURE OBSERVATION                         4   1
+010004 PRESSURE                                                     5   1
+010051 PRESSURE REDUCED TO MEAN SEA LEVEL                           5   2
+102000 REPLICATION                                                  0   3
+031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                  6   1
+007033 HEIGHT OF SENSOR ABOVE WATER SURFACE (SEE NOTE 6)            6   2
+012101 TEMPERATURE/DRY-BULB TEMPERATURE                             6   3
+101000 REPLICATION                                                  0   4
+031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                  7   1
+002169 ANEMOMETER TYPE                                              7   2
+007033 HEIGHT OF SENSOR ABOVE WATER SURFACE (SEE NOTE 6)            7   3
+008021 TIME SIGNIFICANCE                                            7   4
+004025 TIME PERIOD OR DISPLACEMENT                                  7   5
+011001 WIND DIRECTION                                               7   6
+011002 WIND SPEED                                                   7   7
+101000 REPLICATION                                                  0   5
+031000 SHORT DELAYED DESCRIPTOR REPLICATION FACTOR                  8   1
+022078 DURATION OF WAVE RECORD                                      8   2
+022070 SIGNIFICANT WAVE HEIGHT                                      8   3
+022073 MAXIMUM WAVE HEIGHT                                          8   4
+022074 AVERAGE WAVE PERIOD                                          8   5
+022071 SPECTRAL PEAK WAVE PERIOD                                    8   6
+022076 DIRECTION FROM WHICH DOMINANT WAVES ARE COMING               8   7
+022077 DIRECTIONAL SPREAD OF DOMINANT WAVE                          8   8
+
+(Blank line indicates end)

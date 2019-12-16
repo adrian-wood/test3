@@ -15,9 +15,10 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../.'))
-import bufr
-import segments
-
+#import bufr
+#import elements
+#import ElementClass
+os.environ['BUFR_LIBRARY'] = '/home/moodsf/MetDB_BUFR25.0.00/tables/'
 
 # -- Project information -----------------------------------------------------
 
@@ -77,7 +78,8 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinxdoc'
+#html_theme = 'sphinxdoc'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -88,7 +90,7 @@ html_theme = 'sphinxdoc'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

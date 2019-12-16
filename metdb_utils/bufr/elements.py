@@ -1,5 +1,5 @@
 """
-`segments.py` creates an outline MetDB elements_index from a BUFR sequence.
+`elements.py` contains functions for managing MetDB elements_indexes.
 
 Code is currently installed on `mdb-apps-test:/var/moods/metdb_utils/bufr`
 and can be run from there.
@@ -11,7 +11,7 @@ Environment variable `BUFR_LIBRARY` gives the path to both files; if not
 defined then tables should be in the current working directory.
 
     >>> import os
-    >>> os.environ.update({'BUFR_LIBRARY':'/home/moodsf/MetDB_BUFR24.0.00/tables/'})
+    >>> os.environ.update({'BUFR_LIBRARY':'/home/moodsf/MetDB_BUFR25.0.00/tables/'})
 
 The generator is based on
 `Technote 28 <https://metnet2/content/metdb-technical-note-28-metdb-element-indexes>`_
@@ -21,8 +21,8 @@ Once you have the output from this program you should work out which elements
 you want to be retrievable and create MetDB element names in the usual way.
 
 Limitations:
-  * It does not generate a working elements_index but the output has all the
-    pertinent details.
+  * It generates a working elements_index apart from the element names which
+    you have to update by hand (See Technote 9).
   * It only works on one sequence at a time; you have to use the output to
     update an existing elements_index manually.
   * It does not recognise local Table D sequences that are not in the MetDB
@@ -34,12 +34,21 @@ Limitations:
 
 Usage:
 
-    >>> import segments
+    >>> import elements
     >>> seq=['315009']
-    >>> segments.process(seq)
+    >>> new_index = elements.process(seq)
+    >>> print(new_index)
         (example output below)
 
 .. literalinclude:: examples/315009.txt
+
+If you get this error or something similar:
+
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position
+3441: ordinal not in range(128)
+
+it is probably because your system has the setting LANG=C. Change it
+to LANG=en_GB.UTF-8
 
 
 The easiest way to pass a sequence to the program is to cut-and-paste from an
@@ -50,7 +59,7 @@ mhs_decode of sample data, e.g.
     ...         '007065 008080 033050 022045 008080 033050 022064 008080 '
     ...         '033050')
     >>> seq = text.strip().split(' ')
-    >>> segments.process(seq)
+    >>> elements.process(seq)
 
 
 """
@@ -58,6 +67,7 @@ import os
 import sys
 import bufr
 import numpy as np
+import ElementClass as ec
 
 
 def hasvalue(desc):
@@ -107,8 +117,8 @@ def hasvalue(desc):
     return True
 
 
-def process(seq):
-    '''Expands sequence and divide into segments ready to
+def process(input_seq):
+    """Expands sequence and divide into segments ready to
        create an elements index.
 
        Start by assuming the sequence has no replications
@@ -126,23 +136,17 @@ def process(seq):
 
        Returns:
 
-       * None
+       * TableObj: representing an elements_index
 
-       Stdout:
+    """
 
-       * Input sequence formatted for elements_index
-
-       * Segment summary
-
-       * Segment map
-
-       * Replications
-
-       * Elements, segment and position
-    '''
+    # make a local copy since we don't want to change the original list
+    seq = input_seq.copy()
 
     tableD = bufr.TableD()
     tableB = bufr.TableB()
+
+    table = ec.TableObj(1, 'NEW DATATYPE')
 
     ndes = len(seq)
     rep = [[0] for _ in range(ndes)]
@@ -160,13 +164,10 @@ def process(seq):
     repcount = {}
     maxrep = 0
 
-    # Start by printing the sequence in the format required by
-    # an elements index
-    print('\n\n{:>20s}'.format(''), end='')
-    for s in range(0, len(seq), 8):
-        for t in seq[s:s+8]:
-            print('{:8s}'.format(t), end='')
-        print('\n{:>20s}'.format(''), end='')
+    # Start by creating a SeqObj representing the sequence
+    orig_seq = seq.copy()
+    new_sequence = ec.SeqObj(orig_seq, len(seq), 1, 'New sequence')
+    table.add_sequence(new_sequence)
 
     # variable i is the current position in seq; seq is updated
     # dynamically so we can't use a simple loop.
@@ -326,18 +327,15 @@ def process(seq):
         else:
             position.append(0)
 
-    print('\n\n')
-
-    # print summary information
+    # Create an index object
     nsegs = max(segment)
     nlevels = max([len(_) for _ in rep]) - 1
     nreps = max([max(_) for _ in rep])
-    print('{:4d}{:4d}{:4d}  segments, replications, nesting level\n'.
-          format(nsegs, nreps, nlevels))
 
     s = np.array(segment)
     p = np.array(position)
     r = np.array(rep)
+    segList = []
 
     for i in range(1, max(s)+1):
         npos = max(np.where(s == i, p, 0))
@@ -347,17 +345,16 @@ def process(seq):
         nr = max([len(_) for _ in thisRep]) - 1
         levels = thisRep[0][1:]
         prlev = ''.join(["%4d" % _ for _ in levels])
-        print('{:4d}{:4d}{:4d}{:}'.format(i, npos, nr, prlev))
+        segList.append(ec.SegmentObj(i, npos, nr, levels, ''))
 
-    print(' ')
+    # convert repcount dict to list
+    replist = [ v for k, v in sorted(repcount.items())] 
+    indexObj = ec.IndexObj(1, ' ', nsegs, nreps, nlevels, segList, replist)
+    table.add_index(indexObj)
 
-    for i in range(1, nreps+1):
-        print('{:4d}'.format(repcount[i]), end='')
+    # The best we can do for element names is Table B descriptors.
+    elem_list = []
 
-    print('    <--- replication counts \n')
-
-    # Print out an element table. The best we can do for element names is
-    # Table B descriptors.
     for i in range(len(seq)):
         desc = seq[i]
         (F, X, Y) = (desc[0], desc[1:3], desc[3:6])
@@ -372,21 +369,186 @@ def process(seq):
         else:
             name = ''
         if position[i] != 0:
-            print('{:>80} {:2d}  {:2d}'.format(name, segment[i], position[i]))
+            fullname = desc + ' ' + name
+            edict = {1: (segment[i], position[i])}
+            elem_list.append(ec.ElementObj(fullname,' ', ' ',edict))
 
-    # We can't print out the extra elements generated by 204 operations so just
+    table.add_elements(elem_list)
+
+    # We can't handle the extra elements generated by 204 operations so just
     # print out a warning instead. The resulting output will be correct but
     # will not include the associated data.
     if warning:
         print(warning)
 
-    return
+    return table
 
+def read_elements(filename):
+    try:
+        f = open(filename)
+        lines = f.read().splitlines()
+        f.close()
+    except FileNotFoundError:
+        print("File not found:", filename)
+        sys.exit(1)
+
+    # The first few lines in the element index are used for titles and other comments.
+    # These can be spread over as many lines as needed.  The 2000 character width version
+    # is indicated by the character '1' in column one of the title line.  A space in
+    # this position indicates version 0 and is the default version.
+
+    # After the title there is a line with the heading "BUFR SEQUENCES"
+    # starting in column 1 followed by a blank line.
+
+    ptr = 0  # current line
+    try:
+        version = int(lines[ptr][0:1])
+    except ValueError:
+        version = 0
+    title = lines[ptr][1:].strip()
+    table = ec.TableObj(version, title)
+
+    while lines[ptr].find('BUFR SEQUENCES') == -1:
+        ptr += 1
+
+    ptr += 2
+
+    # Each sequence is preceded by two integers, a serial number for the index and
+    # the number of descriptors in the sequence listed. The format is (T2,2I4,2X,8I7)
+    # for the first line of each sequence and descriptors are listed eight to a line
+    # for as many lines as necessary. Any spare space on the last line can be used for
+    # comment.
+
+    while lines[ptr].strip() != '':
+        serial_number = int(lines[ptr][0:5])
+        ndesc = int(lines[ptr][5:9])
+
+    # work out how many lines we need to get the whole sequence
+        nlines = (ndesc - 1) // 8 + 1
+        seq = []
+        for i in range(nlines):
+            text = lines[ptr][10:].strip()
+            items = text.split(' ')
+            seq.extend(items)
+            ptr += 1
+
+    # remove any extra text following the sequence
+        text = ' '.join(_ for _ in seq[ndesc:])
+        seq = seq[0:ndesc]
+
+    # store the sequence in a dictionary keyed on the serial number
+        sequence = ec.SeqObj(seq, ndesc, serial_number, text)
+        table.add_sequence(sequence)
+
+    # move on to the index section
+    ptr += 1
+
+    # After the BUFR sequences and a blank line the indexes are listed giving
+    # details of the structure of the segments of the BUFR messages. These are
+    # listed consecutively with a blank line between each. The first line has
+    # the word "INDEX" followed by a serial number (1, 2, 3, etc.) in the format
+    # (A5,I3) after which the rest of the line can be used for comments as
+    # can the following line.
+
+    while lines[ptr].strip() != '':
+        if lines[ptr].find('ELEMENT NAMES AND LOCATIONS') > -1:
+            break   # to get the element names
+        serial_number = int(lines[ptr][5:8])
+        index_text = lines[ptr][9:]
+    # skip a line
+        ptr += 2
+
+    # The next line contains three numbers in the format (T2,3I4),
+    # the numbers being the total number of segments, the number of
+    # replications and the maximum depth of nesting of replications
+
+        nseg = int(lines[ptr][0:5])
+        nrep = int(lines[ptr][5:9])
+        ndep = int(lines[ptr][9:13])
+
+    # After a blank line there follows details of the structure of each segment
+    # listed one to a line with the data listed in format (I6,16I4).
+    # The first number is the segment number, the second is the number of data
+    # values in that segment and the third is the number of replications that segment
+    # is in. If this last number is greater than zero, it is followed by the replication
+    # numbers concerned starting with the outermost one.
+        ptr += 2
+        segments = []
+        for i in range(nseg):
+            segnum = int(lines[ptr][0:5])
+            posnum = int(lines[ptr][5:9])
+            repcount = int(lines[ptr][9:13])
+            col = 13
+            rep = []
+            for j in range(repcount):
+                rep.append(int(lines[ptr][col:col+4]))
+                col += 4
+            text = lines[ptr][col:].strip()
+            segments.append(ec.SegmentObj(segnum, posnum, repcount, rep, text))
+            ptr += 1
+    # The last segment is followed by a blank line and then the replication
+    # counts for all replications in order in format (T2,17I4).
+        if nrep > 0:
+            ptr += 1
+            col = 1
+            replications = []
+            for j in range(nrep):
+                replications.append(int(lines[ptr][col:col+4]))
+                col += 4
+            ptr += 1
+        else:
+            replications = []
+
+        indexObj = ec.IndexObj(serial_number, index_text, nseg, nrep, ndep, segments, replications)
+        table.add_index(indexObj)
+
+    # skip blank line at end of this index
+        ptr += 1
+
+    numindexes = table.numindex
+
+    # This section starts with the heading "ELEMENT NAMES AND LOCATIONS" preceded
+    # and followed by blank lines after which there are two lines of column headings.
+    # The first item is "ELEMENT NAME" and the amount of space assigned for this is indicated
+    # by a line of dashes in angle brackets: this starts in column 2 and can be any suitable
+    # size as long as it is long enough for the longest element name.
+
+    element_list = []
+    ptr += 3
+    namelen = lines[ptr].find('>')
+    ptr += 1
+    offset = namelen
+    while lines[ptr] != '':
+        element_dict = {}
+        name = lines[ptr][0:offset]
+        col = offset + 2
+        T = lines[ptr][col:col+1]
+        col += 2
+        id = lines[ptr][col:col+2]
+        col += 2
+        for i in range(numindexes):
+            try:
+                seg = int(lines[ptr][col:col+4])
+                pos = int(lines[ptr][col+4:col+8])
+            except ValueError:
+                seg = 0
+                pos = 0
+            col += 8
+            serial_number = i + 1
+            if serial_number in element_dict:
+                print('Error: duplicate INDEX ID', serial_number)
+            else:
+                element_dict[serial_number] = (seg, pos)
+
+        element_list.append(ec.ElementObj(name, T, id, element_dict))
+        ptr += 1
+
+    table.add_elements(element_list)
+
+    return(table)
 
 if __name__ == '__main__':
-    text = ('301011 301013 301021 007002 007010 001008 204002 031021 '
-            '001013 012001 011001 011002 002064 011037 011038 020041 '
-            '204000 204007 031021 013009 204000 204001 031021 013009 '
-            '013009 204000')
-    seq = text.strip().split(' ')
-    process(seq)
+
+    seq = ['315009']
+    table = process(seq)
+    print(table)
