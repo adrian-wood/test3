@@ -101,6 +101,10 @@ class RetrievalTable:
             datatypes.remove(pseud)
         return datatypes
 
+    def dataset_count(self, datatype):
+        '''Return count of Datasets for a given Datatype'''
+        return self.datatypes[datatype].number_of_datasets
+
     def write_file(self, filename):
         pass  # TODO
 
@@ -119,6 +123,7 @@ class Datatype:
 
     def add_dataset(self, dataset):
         '''Add a Dataset object to the list for this Datatype.
+        
         Args:
             dataset: a Dataset object
         '''
