@@ -2,9 +2,7 @@ import sys
 import os
 import calendar
 import datetime as dt
-miscPath = os.environ.get('MISC_BASE_DIR')
-if miscPath is None:
-    miscPath = '/var/moods'
+miscPath = os.environ.get('MISC_BASE_DIR', '/var/moods')
 sys.path.append(os.path.join(miscPath, 'metdb_utils'))
 import mdb_files.RetrievalTable as RT
 import mdb_files.DataAccessLog as DA
@@ -84,9 +82,9 @@ def main():
         sys.exit(2)
 
     # Local variables
-    da_dir = os.environ.get('DATA_ACCESS_LOG_DIR')  # data_access logfiles
-    if da_dir is None:
-        da_dir = '/var/www/html/mdb_activity/data_access_logs'
+    # data_access logfiles
+    da_dir = os.environ.get('DATA_ACCESS_LOG_DIR',
+                            '/var/www/html/mdb_activity/data_access_logs')
     servers = sorted(os.listdir(da_dir))
     archive_base = '/var/www/html/mdb_activity/monthly_datatype_retrievals_archive'
     template_dir = os.path.join(miscPath, 'mdb_activity/templates')

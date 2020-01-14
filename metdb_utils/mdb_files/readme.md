@@ -11,18 +11,18 @@ The intention is that when access to a MetDB file is required from Python, a new
 There is also the possibility at some point in the future of the MetDB files being created by these libraries.
 
 ## Generated Documentation
-See [http://mdb-apps-test/ssot/html/](http://mdb-apps-test/ssot/html/) for generated documentation.
+See [http://mdb-apps-test/mdb_files/html/](http://mdb-apps-test/mdb_files/html/) for generated documentation.
 
 To re-create documentation:
 
 ```
-$ cd <metdb-ssot>/docs
+$ cd <metdb-misc-repo>/metdb_utils/docs
 $ module load scitools
 $ make html
 Running Sphinx v1.8.4
 ...
 ```
-Copy the resulting `html` and `doctrees` subdirectories (under `_build`) to the desired location, probably `/var/www/html/ssot`.
+Copy the resulting `html` and `doctrees` subdirectories (under `_build`) to the desired location, usually `/var/www/html/mdb_files`.
 
 ## Tests
 Every module should have unit tests written for it; they should be added to the `test_mdb_files.py` script.

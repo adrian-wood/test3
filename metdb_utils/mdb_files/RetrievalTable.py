@@ -9,15 +9,12 @@ represents a "dataset" - online or archived, for example.
 
 
 class RetrievalTable:
-    '''This class represents a collection of retrievals from MetDB, typically
-    but not necessarily all the retrievals recorded in a data_access.log file.
+    '''This class represents all the entries in a MetDB retrieval_table file.
 
     Attributes:
-        * retrievals (list): a list of MetDBRetrieval objects.
-        * count_by_datatype (dict): the number of times that a retrieval for a
-                                    specific datatype occurs in the collection
-        * count_by_user (dict): the number of times that a retrieval for a
-                                    specific user occurs in the collection.
+        * headers (list): The 1st 7 lines in the file.
+        * datatypes (dict): A dictionary of Datatype objects in the file.
+        * footers (list): The final lines after the "dataset" lines.
     '''
     def __init__(self, rt_file=None):
         '''Initialise a new RetrievalTable object  and populate it with the
@@ -123,7 +120,7 @@ class Datatype:
 
     def add_dataset(self, dataset):
         '''Add a Dataset object to the list for this Datatype.
-        
+
         Args:
             dataset: a Dataset object
         '''
@@ -135,25 +132,25 @@ class Datatype:
 
 
 class Dataset:
-    """ This class represents a single Dataset entry line in a retrieval table.
+    '''This class represents a single Dataset entry line in a retrieval table.
 
         Attributes:
-        * model (int): Model or area of coverage
-        * raw_merged_flag (str): R for Raw, M for Merged
-        * start_time (str): of storage period, blank if on-line dataset
-        * end_time (str): of storage period, blank if on-line dataset
-        * storage_medium (int): 1=disk, 2=tape
-        * list_code_number (int): Associated data code number
-        * elements_list (int): Number of ELEMENTS library
-        * elements_index (str): name of relevant element_index file
-        * retention_period_days (int): retention period in days
-        * index_records_per_dataset (int): index records per dataset
-        * index_period_minutes (int) index period in minutes
-        * record_length (int): record length of dataset
-        * skeleton_flag (str): T if dataset name is a MASS skeleton, else F
-        * mass_stream (str): Archive MASS stream
-        * dataset_name (str): Name of dataset
-    """
+            * model (int): Model or area of coverage.
+            * raw_merged_flag (str): R for Raw, M for Merged.
+            * start_time (str): of storage period, blank if on-line dataset.
+            * end_time (str): of storage period, blank if on-line dataset.
+            * storage_medium (int): 1=disk, 2=tape.
+            * list_code_number (int): Associated data code number.
+            * elements_list (int): Number of ELEMENTS library.
+            * elements_index (str): name of relevant element_index file.
+            * retention_period_days (int): retention period in days.
+            * index_records_per_dataset (int): index records per dataset.
+            * index_period_minutes (int) index period in minutes.
+            * record_length (int): record length of dataset.
+            * skeleton_flag (str): T if dataset name is a MASS skeleton, else F.
+            * mass_stream (str): Archive MASS stream.
+            * dataset_name (str): Name of dataset.
+    '''
     def __init__(self,
                  model,
                  raw_merged_flag,
