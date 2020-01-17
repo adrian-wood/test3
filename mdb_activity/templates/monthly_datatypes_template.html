@@ -35,6 +35,15 @@
     
     <hr>
 
+    {% if warning is sameas true %}
+      <div  class="alert alert-danger" role="alert">
+      <p><b>WARNING:</b> data_access logfiles for the following days are missing:</p>
+      {% for key, values in missing_files.items() %}
+        {{key}} {{ values|join(", ") }}
+      {% endfor %}
+      </div>
+    {%endif %}
+
     <h3>Retrieval Requests by Datatype and Server</h3>
     <table class="table table-bordered sortable">
       <thead>
@@ -69,12 +78,11 @@
       </tfoot>
     </table>
 
-    <h3>Datatypes Never Retrieved</h3>          
-    <p><em>NB this is a list of datatypes that have not been retrieved during this month.</em></p>          
-    <p>{{not_requested}}</p>
-    <!-- {% for dtype in not_requested %}
-      {{dtype}}
-    {% endfor %} -->
+    {% if not_requested is not none %}
+      <h3>Datatypes Never Retrieved</h3>          
+      <p><em>NB this is a list of datatypes that have not been retrieved during this month.</em></p>          
+      <p>{{not_requested}}</p>
+    {%endif %}
 
     <hr>
 

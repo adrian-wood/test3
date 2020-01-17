@@ -92,11 +92,17 @@ def main():
     now = dt.datetime.now()
     datestr = now.strftime("%H:%M %d-%m-%Y")
     procDate = dt.datetime(year=year, month=month, day=1)
-    lastMonthsPage = procDate.strftime("/%Y/%b.html")
+    lastMonth = procDate - dt.timedelta(days=1)
+    lastMonthsPage = lastMonth.strftime("/%Y/%b.html")
+    warning = False
 
     # master dictionary with server as key, and values of a further
     # dictionary of dataype: count
     server_counts = {}
+
+    # dictionary with server as key, and values of a list of "misssing"
+    # data_access_log files
+    missing_files = {}
 
     print('Examining data_access.log files in directory', da_dir)
     print('Year:', year)
@@ -104,20 +110,39 @@ def main():
     print('Servers:', ', '.join(servers))
     print("-" * 80)
 
+    # Determine how many days are in this month (2nd part of tuple returned
+    # bycalendar.monthrange)
+    num_days = calendar.monthrange(year, month)[1]
+
     for server in servers:
         print(' Processing files for server:', server)
         counts_dict = {}
         da_path = os.path.join(da_dir, server, str(year), monthstr)
-        for da_file in os.listdir(da_path):
+        for day in range(1, num_days + 1):
+            da_file = ''.join(['data_access.log-',
+                               str(year),
+                               monthstr,
+                               str(day).zfill(2)])
             full_path = os.path.join(da_path, da_file)
-            print('  Reading file', full_path)
-            with open(full_path, errors='ignore') as f:
-                da_file = DA.DataAccessLog(f)
-                for datatype, count in da_file.count_by_datatype.items():
-                    if datatype in counts_dict:
-                        counts_dict[datatype] += count
-                    else:
-                        counts_dict[datatype] = count
+            if os.path.exists(full_path):
+                print('  Reading file', full_path)
+                with open(full_path, errors='ignore') as f:
+                    da_file = DA.DataAccessLog(f)
+                    for datatype, count in da_file.count_by_datatype.items():
+                        if datatype == '':
+                            datatype = '(blank)'
+                        if datatype in counts_dict:
+                            counts_dict[datatype] += count
+                        else:
+                            counts_dict[datatype] = count
+            else:
+                print('  ERROR:', da_file, 'does not exist')
+                warning = True
+                if server in missing_files.keys():
+                    missing_files[server].append(day)
+                else:
+                    missing_files[server] = [day]
+
         server_counts[server] = counts_dict  # add this count dict to master
 
     # The server_counts dictionaries won't have all datatypes in them, or the
@@ -133,9 +158,10 @@ def main():
     for datatype in all_datatypes:
         if datatype in rt_datatypes:
             valid = 'Y'
-        elif datatype == 'SPECI' and 'METARS' in rt_datatypes:
+        elif (datatype == 'SPECI') and 'METARS' in rt_datatypes:
             valid = 'Y'
-        elif (datatype == 'LTAFS' or 'STAFS') and 'TAFS' in rt_datatypes:
+        elif ((datatype == 'LTAFS' or datatype == 'STAFS') and
+              'TAFS' in rt_datatypes):
             valid = 'Y'
         else:
             valid = 'N'
@@ -165,6 +191,8 @@ def main():
                     "overall_totals": overall_totals,
                     "not_requested": not_requested,
                     "invalid_count": invalid_count,
+                    "warning": warning,
+                    "missing_files": missing_files,
                     "last_months_page": lastMonthsPage,
                     "creator": sys.argv[0],
                     "runner": os.getenv('USER'),

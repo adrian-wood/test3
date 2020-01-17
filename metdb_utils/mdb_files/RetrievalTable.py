@@ -94,7 +94,7 @@ class RetrievalTable:
         datatypes = list(self.datatypes.keys())
         # remove the "pseudo-datatypes" that are in the retrieval_table
         for pseud in ['ASSOC', 'ELEMENTS', 'ELEMIDX', 'OFFLINE', 'STNABRV',
-                      'STNICAO', 'STNIND', 'STNMAS']:
+                      'STNICAO', 'STNIND']:
             datatypes.remove(pseud)
         return datatypes
 
