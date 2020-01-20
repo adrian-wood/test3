@@ -43,10 +43,12 @@ RC=$?
 
 # If nothing retrieved, i.e. RC=8, then this is OK if today is in the latter
 # half of the month (day is >= 13)...
-if [[ "$RC" -eq 8 && `date +%d` -ge 13 ]]; then
+if [[ "$RC" -eq 8 && `date +%-d` -ge 13 ]]; then
     echo "retclm.exe return code 8, but acceptable as late in the month"
     cylc message "${CYLC_SUITE_NAME}" "${CYLC_TASK_JOB}" "NO_DATA_BUT_LATE"
     RC=0
+else
+    cylc message "${CYLC_SUITE_NAME}" "${CYLC_TASK_JOB}" "OK_DATA"
 fi
 
 # Record state of Control File again

@@ -7,6 +7,14 @@
 # USAGE         : get_data.py -c config.cfg
 #
 # REVISION INFO :
+# MB-2012: Oct 2019 Switch to mdbapop server.                       SN
+# MB-1955: Jun 2019 Correct time_from_ref for time-spans not starting
+#                   from 00Z.                                       SN
+# MB-1916: May 2019 Update to Python 3.                             SN
+# MB-1810: Feb 2019 Expand environment variables if given in the
+#                   config file. Also, write to a temp file first and
+#                   rename at the end (to allow asynchronous
+#                   file transfers).                                SN
 # MB-1891: Jan 2019 Cater for retrieval periods of > 1 hour and for
 #                   "days ago" retrievals, both needed for AIRQAL and
 #                   AIRQALEU ServiceHub retrievals.                 AM
@@ -33,7 +41,7 @@
 # Team at the above address.
 # ----------------------------------------------------------------------
 
-import ConfigParser
+import configparser
 import csv
 import datetime as dt
 from datetime import timedelta
@@ -65,15 +73,27 @@ class Settings():
 
     def __init__(self, cfg):
         """Read config file and initialise attributes from it."""
-        self.parser = ConfigParser.SafeConfigParser()
+        self.parser = configparser.SafeConfigParser()
         try:
             self.parser.read(cfg)
             for section in self.parser.sections():
                 for name, value in self.parser.items(section):
-                    setattr(self, name, value)
+
+                    # Expand the environment variables checking if they exist
+                    # and have been set first
+
+                    if value.find('$') >= 0:
+                        expanded = os.path.expandvars(value)
+                        if expanded == '' or expanded.find('$') >= 0:
+                            print('ERROR environment variable not set in ',
+                                  value)
+                            sys.exit(2)
+                        setattr(self, name, expanded)
+                    else:
+                        setattr(self, name, value)
 
         except:
-            print 'Error reading config file ', cfg
+            print('Error reading config file ', cfg)
             traceback.print_exc()
             sys.exit(2)
 
@@ -81,16 +101,16 @@ class Settings():
         """Update the config file. sections is a dictionary of name, value
            pairs.
         """
-        for name, value in sections.iteritems():
+        for name, value in sections.items():
             self.parser.set('REQUEST', name, value)
 
     def write_cfg(self, cfg):
         """Write to a config file."""
         try:
-            with open(cfg, 'wb') as configfile:
+            with open(cfg, 'w') as configfile:
                 self.parser.write(configfile)
         except:
-            print 'Error writing config file ', cfg
+            print('Error writing config file ', cfg)
 
     def __repr__(self):
         """Produce a nicely formatted string of config settings
@@ -191,19 +211,19 @@ class Elements():
             # create ordered lists of keys, titles and units
             # for the csv output
 
-            for k, v in sorted(self.element_map.iteritems(),
-                               key=lambda (k, v): v[0]):
+            for k, v in sorted(iter(self.element_map.items()),
+                               key=lambda k_v: k_v[1][0]):
                 self.fields.append(k)
                 (title, units) = self.get_title_and_units(k)
                 self.titles.append(title)
                 self.units.append(units)
                 self.uom.append(v[2])
+
+            f.close()
         except:
-            print 'ERROR reading elements file ', elem
+            print('ERROR reading elements file ', elem)
             traceback.print_exc()
             sys.exit(2)
-        finally:
-            f.close()
 
     @staticmethod
     def parse_elements(line):
@@ -217,11 +237,11 @@ class Elements():
         """
         s = ''
         if 'layer' not in line:
-            s = line.translate(None, string.ascii_lowercase)   # del lower-case
-            s = s.translate(None, '().')                       # del brackets
+            s = line.translate(str.maketrans('', '', string.ascii_lowercase))
+            s = s.translate(str.maketrans('', '', '().'))
             s = s.strip('_')                                   # del _
             s = s.strip(' ')                                   # del spaces
-        return list(filter(None, s.split(',')))
+        return list([_f for _f in s.split(',') if _f])
 
     def get_element_names(self):
         """Extract unique set of element names for the metdb request.
@@ -230,7 +250,7 @@ class Elements():
                List of unique element names
         """
         elements_list = []
-        for k, v in self.element_map.iteritems():
+        for k, v in self.element_map.items():
             elements = Elements.parse_elements(v[1])
             # delete any non-MetDB named elements
             for e in elements:
@@ -240,7 +260,7 @@ class Elements():
             elements_list = list(set(elements_list + elements))
 
         # add any layer elements
-        for k, v in self.layer_map.iteritems():
+        for k, v in self.layer_map.items():
             for e in v[0]:
                 if e in elements_list:
                     elements_list.remove(e)
@@ -255,8 +275,8 @@ class Elements():
               details for printing.
         """
         output = ''
-        for k, v in sorted(self.element_map.items(),
-                           key=lambda(k, (v1, v2, v3)): v1):
+        for k, v in sorted(list(self.element_map.items()),
+                           key=lambda k_v1_v2_v3: k_v1_v2_v3[1][0]):
             output += '{:35s}{:5s}{:40s}\n'.format(k, ' --- ', v[1])
         return output
 
@@ -264,7 +284,7 @@ class Elements():
         """Split field into components of title and units where units
            are optional and enclosed in brackets.
         """
-        pattern = re.compile("(.*)(\()(.*)(\))")
+        pattern = re.compile(r"(.*)(\()(.*)(\))")
         m = pattern.match(field)
         if m:
             title = m.group(1)
@@ -289,13 +309,13 @@ class Elements():
            ('sig_wx',(('SIG_WX_INSY','SIG_WX_DSC','SIG_WX_PHNM'),3))
 
         """
-        pattern = re.compile("(.*)(\()(.*)(\))")
+        pattern = re.compile(r"(.*)(\()(.*)(\))")
         m = pattern.match(expression)
         if m:
             func = m.group(1)
             argstr = m.group(3)
         else:
-            print 'Error in define_layer:', expression
+            print('Error in define_layer:', expression)
             sys.exit(2)
 
         args = argstr.split(',')
@@ -318,13 +338,13 @@ class Elements():
         func = ''
         # parse the expression to find the layer name and the
         # element function
-        pattern = re.compile("(.*?\()(.*?),(.*?\))")
+        pattern = re.compile(r"(.*?\()(.*?),(.*?\))")
         m = pattern.match(expression)
         if m:
             func = m.group(3)
             layer_name = m.group(2)
         else:
-            print 'Error in from_layer:', expression
+            print('Error in from_layer:', expression)
             sys.exit(2)
         layers = self.layer_map[layer_name][1]
 
@@ -350,25 +370,24 @@ def time_from_ref(ref, hour=None, start=True, days_ago=0, time_span=1):
        If the requested hour is in the future and we are retrieving from today
        (i.e. days_ago is 0) then use the day before the ref date instead.
     """
-    ref = ref - timedelta(days=days_ago)
-    copy_ref = ref
+    copy_ref = ref - timedelta(days=days_ago)
 
     if hour is None:
-        hr = ref.hour
-        min = ref.minute
+        copy_ref = copy_ref.replace(hour=ref.hour, minute=ref.minute)
     else:
-        hr = hour
+        copy_ref = copy_ref.replace(hour=hour)
+
         if start:
-            min = 0
+            copy_ref = copy_ref.replace(minute=0)
         else:
-            hr = (hr + time_span - 1)
-            min = 59
+            increment = (time_span - 1)/24.0
+            copy_ref = copy_ref + timedelta(days=increment)
+            copy_ref = copy_ref.replace(minute=59)
 
-    if ref.hour < hr and days_ago == 0:
-        copy_ref = copy_ref - dt.timedelta(days=1)
+    if copy_ref.hour > ref.hour and days_ago == 0:
+        copy_ref = copy_ref - timedelta(days=1)
 
-    return copy_ref.strftime("%Y%m%d/") + \
-        '{:02d}{:02d}'.format(hr, min) + 'Z'
+    return copy_ref.strftime("%Y%m%d/%H%MZ")
 
 
 # -------------------------------------------------------------------
@@ -390,7 +409,7 @@ def hours_back_from(now, hours):
 
 
 # -------------------------------------------------------------------
-def process_function(expression, obs, i, number=None):
+def process_function(expression, obs, i, number=-1):
     """Get arguments for the given function, evaluate it and
        returns the results as a string representation.
 
@@ -427,13 +446,19 @@ def process_function(expression, obs, i, number=None):
             value = f(*args)
 
         except:
-            print 'Error calling function', func, args
+            print('Error calling function', func, args)
             traceback.print_exc()
             sys.exit(2)
     else:
         num = args[0]
         if num is not MDI:
-            value = str(num)
+            value = num
+
+# Convert to string (from byte or a number)
+    if isinstance(value, bytes):
+        value = value.decode()
+    else:
+        value = str(value)
     return value
 
 
@@ -453,39 +478,39 @@ def get_data():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'htc:')
     except getopt.GetoptError:
-        print sys.argv[0], ' -c <configfile>'
+        print(sys.argv[0], ' -c <configfile>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt in ('-h'):
-            print sys.argv[0], ' [-t] -c <configfile>'
-            print 'Options: -t test mode - settings not updated'
+            print(sys.argv[0], ' [-t] -c <configfile>')
+            print('Options: -t test mode - settings not updated')
             sys.exit()
         elif opt in ('-t'):
-            print 'TEST MODE'
+            print('TEST MODE')
             test = True
         elif opt in ('-c'):
             config_file = arg
 
     if not config_file:
-        print sys.argv[0], ' must supply config file with -c'
+        print(sys.argv[0], ' must supply config file with -c')
         sys.exit(2)
 
 # Read config file to determine settings
 
     settings = Settings(config_file)
-    print 'Config file - ', config_file
-    print settings
+    print('Config file - ', config_file)
+    print(settings)
 
 # check which header lines are required
     if hasattr(settings, 'header'):
         try:
             header_lines = int(settings.header)
         except:
-            print 'Invalid header value:', settings.header
+            print('Invalid header value:', settings.header)
             sys.exit(2)
-        if header_lines not in range(4):
-            print 'Invalid header option (0,1,2,3):', settings.header
+        if header_lines not in list(range(4)):
+            print('Invalid header option (0,1,2,3):', settings.header)
             sys.exit(2)
     else:
         header_lines = 0
@@ -500,16 +525,16 @@ def get_data():
     if hasattr(settings, 'site_file'):
         site_file = settings.site_file
         sites = package.sites.Sites(settings.site_file)
-        print sites.count, ' sites read from', settings.site_file
+        print(sites.count, ' sites read from', settings.site_file)
     else:
         sites = None
 
 # Read element details
 
     elements = Elements(settings.element_file)
-    print elements.rows, ' parameters read from', settings.element_file
+    print(elements.rows, ' parameters read from', settings.element_file)
     if test:
-        print elements
+        print(elements)
     elements_list = elements.get_element_names()
 
 # Set up MetDB parameters
@@ -532,8 +557,8 @@ def get_data():
             hour_list = [int(t) for t in hours.split(',')]
             # cannot have negative hours and days_ago set
             if hasattr(settings, 'days_ago') and any(h < 0 for h in hour_list):
-                print ('Cannot combine negative start_time hours with '
-                       'days_ago parameter.')
+                print('Cannot combine negative start_time hours with '
+                      'days_ago parameter.')
                 sys.exit(2)
             if all(h < 0 for h in hour_list):
                 hour_list = hours_back_from(now, hour_list)
@@ -549,11 +574,11 @@ def get_data():
         try:
             time_span = int(settings.time_span)
         except:
-            print 'Invalid time_span value: ' + settings.time_span
+            print('Invalid time_span value: ' + settings.time_span)
             sys.exit(2)
         if time_span < 0:
-            print ('Invalid time_span (must be positive integer number of '
-                   'hours): ' + settings.time_span)
+            print(('Invalid time_span (must be positive integer number of '
+                   'hours): ' + settings.time_span))
             sys.exit(2)
 
 # days_ago (number of whole days previously for the retrieval) must be a
@@ -565,11 +590,11 @@ def get_data():
         try:
             days_ago = int(settings.days_ago)
         except:
-            print 'Invalid days_ago value: ' + settings.days_ago
+            print('Invalid days_ago value: ' + settings.days_ago)
             sys.exit(2)
         if days_ago < 0:
-            print ('Invalid days_ago (must be positive number of '
-                   'days): ' + settings.days_ago)
+            print(('Invalid days_ago (must be positive number of '
+                   'days): ' + settings.days_ago))
             sys.exit(2)
 
 # Get platform list, if any
@@ -599,15 +624,16 @@ def get_data():
             keywords.append('PLATFORM ' + platforms)
 
         try:
-            print 'Calling metdb', keywords, elements_list
+            print('Calling metdb', keywords, elements_list)
             obs = metdb.obs(settings.contact,
                             settings.subtype,
                             keywords,
-                            elements_list)
-            print 'Retrieved ', len(obs), ' observations'
+                            elements_list,
+                            hostname='mdbapop-prod')
+            print('Retrieved ', len(obs), ' observations')
             nobs += len(obs)
         except IOError:
-            print 'WARNING non-zero return from MetDB'
+            print('WARNING non-zero return from MetDB')
             continue  # with next period
 
 # Loop over observations
@@ -615,7 +641,7 @@ def get_data():
         for i in range(len(obs)):
             output_csv = {}
             if (sites and sites.required(obs, i)) or sites is None:
-                for k, v in elements.element_map.iteritems():
+                for k, v in elements.element_map.items():
                     expression = v[1]
                     # check if this is a layer element by looking for a
                     # prefix on the key
@@ -640,12 +666,12 @@ def get_data():
             # create output directory if neccessary
             if not os.path.exists(outdir):
                 os.makedirs(outdir)
-            output = outdir + '/' + settings.output_file
+            output = outdir + '/' + 'tmp.' + settings.output_file
             output = output.replace('<timestamp>', timestamp)
             output = output.replace('<dt>', ob_dt)
 
             try:
-                f = open(output, 'wb')
+                f = open(output, 'w')
 
                 # prepare file with ordered list of column names
                 writer = csv.DictWriter(f, fieldnames=elements.fields,
@@ -657,29 +683,30 @@ def get_data():
                     title = dict((n, n) for n in elements.fields)
                     writer.writerow(title)
                 elif header_lines == 2:
-                    title = dict(zip(elements.fields, elements.titles))
+                    title = dict(list(zip(elements.fields, elements.titles)))
                     writer.writerow(title)
-                    units = dict(zip(elements.fields, elements.units))
+                    units = dict(list(zip(elements.fields, elements.units)))
                     writer.writerow(units)
                 elif header_lines == 3:
-                    title = dict(zip(elements.fields, elements.titles))
+                    title = dict(list(zip(elements.fields, elements.titles)))
                     writer.writerow(title)
-                    units = dict(zip(elements.fields, elements.units))
+                    units = dict(list(zip(elements.fields, elements.units)))
                     writer.writerow(units)
-                    uom = dict(zip(elements.fields, elements.uom))
+                    uom = dict(list(zip(elements.fields, elements.uom)))
                     writer.writerow(uom)
 
                 # write the rows
                 for row in csv_list:
                     writer.writerow(row)
 
-                print ' '.join(keywords), ' output to ', output
+                print(' '.join(keywords), ' output to ', output)
             except:
-                print 'ERROR writing output file', output
+                print('ERROR writing output file', output)
                 traceback.print_exc()
                 sys.exit(2)
             finally:
                 f.close()
+                os.rename(output, output.replace('tmp.', ''))
 
     # end of loop over requests
 

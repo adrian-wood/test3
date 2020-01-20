@@ -1,1 +1,9 @@
 *.py[co]
+.vscode/
+metdb_retrieval/queued/
+metdb_retrieval/processed/
+metdb_utils/bufr/docs/_build/
+metdb_utils/bufr/docs/_templates/
+metdb_utils/bufr/docs/_static/
+metdb_utils/mdb_files/docs/_build/
+metdb_utils/mdb_files/docs/_templates/

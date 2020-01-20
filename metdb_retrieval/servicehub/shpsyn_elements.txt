@@ -72,3 +72,4 @@
 71: cloud_amount (code table 020011)                              :       :  from_layer(cloud,code_lookup(%020011,CLOD_AMNT))	
 72: cloud_type (code table 020012)                                :       :  from_layer(cloud,code_lookup(%020012,CLOD_TYPE))
 73: cloud_base_height (meters)                                    : m     :  from_layer(cloud,CLOD_BASE_HGHT)
+74: time_of_receipt (dd/mm/yyyy hh\:mmZ)                          :       : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

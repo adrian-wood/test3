@@ -10,5 +10,5 @@ INDIR=/var/moods/regression/input
 OUTDIR=/var/www/html/regression/output
 BINDIR=/var/moods/regression/bin
 WEBROOT=/var/www/html/regression/
-WEBLINK=/mdb-apps/regression/archive
+WEBLINK=/mdb-apps-test/regression/archive
 ARCHIVEDIR=/var/www/html/regression/archive

@@ -2,7 +2,8 @@ import sys
 import csv
 import numpy as np
 from unit_utils import *
-
+# REVISION INFO:
+# MB-1916: Upgrade to Python 3.                                     SN
 
 # ----------------------------------------------------------------------
 class Sites():
@@ -24,7 +25,7 @@ class Sites():
             self.count = 1
             self.type = 'LNDSYN'
         else:
-            print 'Error: no site details for ', site_file
+            print('Error: no site details for ', site_file)
             sys.exit(2)
 
     def required(self, obs, i):
@@ -32,7 +33,7 @@ class Sites():
            true or False accordingly.
         '''
         if self.type == 'METARS':
-            id = obs['ICAO_ID'][i]
+            id = obs['ICAO_ID'][i].decode()
             if id == MDI or id[0:2] == self.site_lookup:
                 return False
             else:
@@ -44,5 +45,5 @@ class Sites():
             else:
                 return True
         else:
-            print 'Error: no site selection available'
+            print('Error: no site selection available')
             sys.exit(2)

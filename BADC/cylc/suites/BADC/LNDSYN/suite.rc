@@ -4,38 +4,28 @@
     URL = https://metnet2.metoffice.gov.uk/content/metdb-provision-data-badc-using-cylc-mdb-apps
     group = "BADC"
 [scheduling] 
-    initial cycle point = 20181010T2030
+    initial cycle point = next(T0230; T0830; T1430; T2030)
     [[special tasks]]
         clock-trigger = cntlchk(PT0M)
     [[dependencies]] 
-        [[[T0230, T0830, T1430, T2030]]]
+        [[[PT6H]]]
             graph = """
-            # regular dependencies
-            cntlchk => catchup
-            catchup => normal
-            normal | cntlchk:sendonly => ftp
-            cntlchk:fail | catchup:fail | normal:fail | ftp:fail => errors
-
-            # suicide triggers
-            (cntlchk:sendonly & ftp) | (cntlchk & catchup & normal & ftp) => !errors
-            cntlchk:fail | cntlchk:sendonly  => !catchup
-            cntlchk:fail | cntlchk:sendonly | catchup:fail  => !normal
-            cntlchk:fail | catchup:fail | normal:fail => !ftp
+            cntlchk => catchup => normal => ftp
             """
 [runtime] 
     [[root]]
         [[[environment]]]
             DTYPE = LNDSYN
             SCRIPTS = /var/moods/BADC/scripts
+        %include /var/moods/BADC/include/job.config
     [[cntlchk]] 
         script = $SCRIPTS/cntlchk.sh
-        [[[outputs]]]
-            sendonly = "SENDONLY"
     [[catchup]] 
         script = $SCRIPTS/retbadc.sh CATCHUP
     [[normal]] 
         script = $SCRIPTS/retbadc.sh
+        # turn off retries for this job as it updates control file...
+        [[[job]]]
+            execution retry delays = 
     [[ftp]] 
         script = $SCRIPTS/ftp.sh
-    [[errors]] 
-        script = $SCRIPTS/errors.sh

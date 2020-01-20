@@ -1,0 +1,4 @@
+BASE_DIR=/var/moods/metdb_retrieval
+ECCODES=/var/moods/eccodes
+CONTACT=metdb@metoffice.gov.uk
+

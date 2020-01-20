@@ -1,0 +1,31 @@
+[meta]
+    title = "SONDE INTERNATIONAL"
+    description = "Extract SONDE from the MetDB as CSV and send to ServiceHub via CTS."
+    URL = https://metnet2/content/metdb-provision-data-servicehub
+    group = "ServiceHub"
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = next(T-50)
+    [[special tasks]]
+        clock-trigger = get_data(PT0M)
+    [[dependencies]]
+        [[[PT60M]]]
+            graph = """
+            # regular dependencies
+            get_data[-PT60M] => get_data
+            get_data:start & send_data[-PT60M] => send_data
+
+            """
+[runtime]
+    [[root]]
+        [[[environment]]]
+            %include /var/moods/cylc-run/servicehub/base_env.rc
+            CONFIG = $BASE_DIR/servicehub/sonde_international.cfg
+            SCRIPTS = $BASE_DIR/scripts
+            CYCLE = $CYLC_TASK_CYCLE_POINT
+    [[get_data]]
+        script = $SCRIPTS/get_data.sh $CONFIG $CYCLE
+    [[send_data]]
+        script = $SCRIPTS/send_data.sh $CONFIG $CYCLE
+

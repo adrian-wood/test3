@@ -19,7 +19,7 @@
 			<p>
 				RPC servers are locked for access if your program does not issue a "killserver"
 				call or your program fails before reaching that call (see
-				<a href="https://metnet2.metoffice.gov.uk/content/metdb-technote-10-mdb-users-guide-remote-procedure-calls-rpc#killing_the_server">TN10</a> for details). Each user can lock up to 20 servers after which there will be an error message:
+				<a href="https://metnet2.metoffice.gov.uk/content/metdb-technote-10-mdb-users-guide-remote-procedure-calls-rpc#killing_the_server">TN10</a> for details). Each user can lock up to 30 servers after which there will be an error message:
 			</p>
 			<div class="bg-warning">
 				<pre>
@@ -39,7 +39,7 @@
 				Enter your userid below to find out if you have locked all your servers.
 			</p>
 
-			<form class="form-horizontal" role="form" action="http://www-metdb/moods/viewers/list_locked_servers.py" method="get">
+			<form class="form-horizontal" role="form" action="http://mdb-apps/cgi-bin/viewers/list_locked_servers.py" method="get">
 
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="userid">Userid:</label>
@@ -62,6 +62,6 @@
 				<!-- Placed at the end of the document so the pages load faster -->
 				<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 				<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-	</body>
+	</bodyn>
 </html>
 

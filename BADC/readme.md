@@ -54,6 +54,26 @@ The directory structure (in this repo) is as follows:
 ```
 BADC/
   cylc/
+    control_files/  <--- sample control files used by the suite, one for each datatype
+      MDB.BADC.AMDARS.CONTROL
+      MDB.BADC.CLIMAT.CONTROL
+      ... etc
+
+    elements/  <--- the element lists for retrieval, one for each dataype
+      MDB.BADC.DATA.AMDARS
+      MDB.BADC.DATA.CLIMAT
+      ... etc
+
+    include/  <--- include files for common suite definitions
+      job.config
+
+    scripts/   <--- shell scripts that the cylc suites run
+      cntlchk.sh
+      ftp.sh
+      global_vars.sh 
+      retbadc.sh
+      retclm.sh
+
     suites/    <--- sample suite.rc files for each datatype
       BADC/
         AMDARS/
@@ -64,27 +84,9 @@ BADC/
           suite.rc
         ... etc
 
-    scripts/   <--- shell scripts that the cylc suites run
-      cntlchk.sh
-      errors.sh
-      ftp.sh
-      global_vars.sh 
-      retbadc.sh
-      retclm.sh
-
     utils/     <--- utility scripts, not executed by the cylc suites
       check_control_files.sh
       recreate_control_files.py
-      ... etc
-
-    control_files/  <--- sample control files used by the suite, one for each datatype
-      MDB.BADC.AMDARS.CONTROL
-      MDB.BADC.CLIMAT.CONTROL
-      ... etc
-
-    elements/  <--- the element lists for retrieval, one for each dataype
-      MDB.BADC.DATA.AMDARS
-      MDB.BADC.DATA.CLIMAT
       ... etc
 ```
 

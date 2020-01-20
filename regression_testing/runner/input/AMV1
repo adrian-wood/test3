@@ -1,0 +1,10 @@
+ &INPUT NPRINT=18, MAXOBS=80000, LAYOUT=1, NCOLS=6 /
+
+AMV       16
+START TIME TODAY-1/0000Z END TIME TODAY-1/0015Z
+ YEAR MNTH DAY HOUR MINT SCND                                           
+ FRST_GUES_ORGNG_CNTR FRST_GUES_U_WIND                                  
+ FRST_GUES_V_WIND FRST_GUES_PESR                                        
+ FRCT_U_WIND FRCT_V_WIND  FRCT_PESR                                     
+ BEST_FIT_LEVL_U_WIND  BEST_FIT_LEVL_V_WIND                             
+ BEST_FIT_LEVL_PESR                          

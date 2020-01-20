@@ -5,7 +5,6 @@
 5 : data_source (code table 001201)                   :         : code_lookup(%001201,DATA_SRCE)
 6 : transponder_icao_id                               :         : ICAO_ADDR
 7 : call_sign                                         :         : CALL_SIGN
-8 : airframe_manufacturer_id                          :         : ARCT_TYPE
 9 : pressure_altitude (meters)                        : m       : PESR_ALTD
 10: gnss_altitude (meters)                            : m       : GNSS_ALTD
 11: indicated_airspeed (meters per second)            : m/s     : INDCT_AIRSPD
@@ -30,3 +29,4 @@
 30: wind_speed_v_component (meters per second)        : m/s     : WIND_V
 31: radar_wind_speed_u_component (meters per second)  : m/s     : WIND_U_RADR
 32: radar_wind_speed_v_component (meters per second)  : m/s     : WIND_V_RADR 
+33: time_of_receipt (dd/mm/yyyy hh\:mmZ)              :         : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

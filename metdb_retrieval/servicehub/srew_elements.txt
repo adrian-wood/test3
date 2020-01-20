@@ -6,3 +6,4 @@
 6 : report_date_time (dd/mm/yyyy hh\:mmZ)              :            :  package.convert.datetime_from(YEAR,MNTH,DAY,HOUR)
 7 : hourly_rainfall_amount (kilogram per square meter) : kg/m2      :  package.convert.get_rain(Q1HOUR_PRCTN_AMNT)
 8 : correction_number                                  :            :  CORTN_NMBR
+9: time_of_receipt (dd/mm/yyyy hh\:mmZ)                :            : package.convert.datetime_from(RCPT_YEAR,RCPT_MNTH,RCPT_DAY,RCPT_HOUR,RCPT_MINT)

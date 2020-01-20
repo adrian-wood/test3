@@ -21,12 +21,12 @@ class Sites():
                 for site in site_reader:
                     mo_site = site['Met_Office_Id']
                     if mo_site in self.site_lookup:
-                        print 'WARNING: duplicate site in ', site_file,\
-                            mo_site
+                        print('WARNING: duplicate site in ', site_file,\
+                            mo_site)
                     else:
                         self.site_lookup[mo_site] = site['Site Id']
         except:
-            print 'ERROR: reading site data from ', site_file
+            print('ERROR: reading site data from ', site_file)
             sys.exit(2)
         finally:
             fp.close()

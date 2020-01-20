@@ -2,6 +2,7 @@
 #------------------------------------------------------------------------        
 # PURPOSE : Performs housekeeping for the moodsf account on mdb-apps.
 #------------------------------------------------------------------------
+# MB-1938: Add regression test housekeeping.               Sheila Needham
 # MB-1841: Add ServiceHub housekeeping.                    Sheila Needham
 # MB-1763 : Initial version.                               Andy Moorhouse
 #------------------------------------------------------------------------
@@ -72,11 +73,11 @@ echo "> ...done!"
 
 #------------------------------------------------------------------------        
 # BADC output files:
-# Shouldn't be anything in here when it is actually FTPing to BADC, but
-# for now keep a week's worth.
+# Keep 8 days online
 #------------------------------------------------------------------------
 echo "> Tidying up BADC output files..."
-find /var/moods/BADC/output -mtime +7 -print -exec rm -fr {} +
+AGE=8
+find /var/moods/BADC/output -mtime +$AGE -print -exec rm -fr {} +
 echo "> ...done!"
 
 #------------------------------------------------------------------------
@@ -89,16 +90,28 @@ echo "> Tidying up BADC empty directories..."
 echo "> ...done!"
 
 #------------------------------------------------------------------------
-# Tidy up ServiceHub files after 4 days. Do not look in sub-directories
+# Tidy up ServiceHub files after 3 days. Do not look in sub-directories
 # (because they may contain test files which might be kept for longer).
 #------------------------------------------------------------------------
 echo "> Tidying up ServiceHub log files..."
-find /tmp -name "get*.log" -maxdepth 1 -mtime +4 -print -exec rm -fr {} +
+find /tmp -maxdepth 1 -name "get*.log" -mtime +1 -print -exec rm -fr {} +
 echo "> ...done!"
 
 echo "> Tidying up ServiceHub data files..."
-find /tmp -name "*data*.csv" -maxdepth 1 -mtime +4 -print -exec rm -fr {} +
+find /tmp -maxdepth 1 -name "*data*.csv" -mmin +180 -print -exec rm -fr {} +
 echo "> ...done!"
+
+#------------------------------------------------------------------------
+# Tidy up regression test output and web pages after 100 days.          
+#------------------------------------------------------------------------
+echo "> Tidying up Regression tests log files..."
+cd /var/www/html/regression/output
+find . -type f -mtime +100 -print -exec rm {} +
+find . -type d -empty -delete
+
+cd /var/www/html/regression/archive
+find . -type f -mtime +100 -print -exec rm {} +
+find . -type d -empty -delete
 
 echo "$0: ended at `date`"
 exit
