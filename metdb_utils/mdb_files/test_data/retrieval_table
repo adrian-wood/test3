@@ -1,0 +1,242 @@
+                                               MET.D.B. RETRIEVAL TABLE
+                                               ------------------------
+ (T2,A8,I3,1X,A1,2(I5,4(1X,I2)),I2,I3,2(1X,A8),I6,I5,I6,I7,L2,1X,A3,1X,A60)              Format for reading table below
+
+  DATA    MO R    START TIME        END TIME     S LI ELEMENTS ELEMENTS  RTN. INDX INDEX RECORD S MAS
+  TYPE    DL M YYYY/MM/DD HH:MM YYYY/MM/DD HH:MM M ST   LIST    INDEX    DAYS RECS  MINS LENGTH F STM DATA SET NAME
+ -------- -- - ---------------- ---------------- - -- -------- -------- ----- ---- ----- ------ - --- -----------------------------------------------
+ AATSR     1 R 2003/02/22 00:00 2012/04/09 00:00 2  7          aatsr     3700   24    60  27998 T D10 $MOODS_RESTORED_DIR/MDB.DAAATSR.DYYMMDD
+ ASSOC     0       /  /     :       /  /     :   1                                           80 F     $MOODS_TABLE_DIR/retrieval_data/assoc
+ ELEMENTS  0       /  /     :       /  /     :   1                                           80 F     $MOODS_TABLE_DIR/retrieval_data
+ ELEMIDX   0       /  /     :       /  /     :   1                                           80 F     $MOODS_TABLE_DIR/elements_index
+ JASON2    1 R     /  /     :       /  /     :   1  7          jason2           20   360  27998 F     $MOODS_STORAGE_DIR/JASON2/MDB.JASON2
+ LIDAR     1 R 2014/01/27 00:00     /  /     :   1 12 netcdf             3700    1     1  30000 F N10 $MOODS_STORAGE_DIR/LIDAR/MDB.LIDAR.INDEX 
+ LNDSYN    1 R     /  /     :       /  /     :   1  6 lndsyn   lndsyn           56   360  27998 F     $MOODS_STORAGE_DIR/LNDSYN/MDB.LNDSYN
+ LNDSYN    1 R 2013/08/14 00:00     /  /     :   2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.DYYMMDD
+ LNDSYN    1 M     /  /     :       /  /     :   1  6 lndsyn   lndsyn           20   360  27998 F     $MOODS_MERGE_DIR/LNDSYN/MDB.LNDSYN.OPER.GAIR
+ LNDSYN    1 M 2004/07/11 00:00     /  /     :   2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.GAIR.DYYMMDD
+ LNDSYN    6 M 2004/07/11 00:00 2006/03/15 00:00 2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.GSTPR.DYYMMDD
+ LNDSYN   14 M 2006/03/18 00:00 2013/01/17 00:00 2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.MES4K.DYYMMDD
+ LNDSYN   15 M 2004/07/11 00:00 2006/11/02 00:00 2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.MAIRUK.DYYMMDD
+ LNDSYN   16 M 2005/03/01 00:00 2014/07/02 00:00 2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.NAE.DYYMMDD
+ LNDSYN   17 M     /  /     :       /  /     :   1  6 lndsyn   lndsyn           20   360  27998 F     $MOODS_MERGE_DIR/LNDSYN/MDB.LNDSYN.OPER.UKV
+ LNDSYN   17 M 2009/11/15 00:00     /  /     :   2  6 lndsyn   lndsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DALNDSYN.UKV.DYYMMDD
+ METARS    1 R     /  /     :       /  /     :   1  5 metars                    48   360  23476 F     $MOODS_STORAGE_DIR/METARS/MDB.METARS
+ METARS    1 R 1997/11/04 12:00     /  /     :   2  5 metars             3700    4   360  23476 T A10 $MOODS_RESTORED_DIR/MDB.DAMETARS.DYYMMDD
+ METARS    1 M     /  /     :       /  /     :   1  6 metarmrg metarmrg        120    60  27998 F     $MOODS_MERGE_DIR/METARS/MDB.METARS.OPER.GAIR
+ METARS    1 M 2011/02/01 00:00     /  /     :   2  6 metarmrg metarmrg  1100   24    60  27998 T L10 $MOODS_RESTORED_DIR/MDB.DAMETARS.GAIR.DYYMMDD
+ METARS   14 M 2011/02/01 00:00 2013/01/17 00:00 2  6 metarmrg metarmrg  1100    8   180  27998 T L10 $MOODS_RESTORED_DIR/MDB.DAMETARS.MES4K.DYYMMDD
+ METARS   16 M 2011/02/01 00:00 2014/07/02 00:00 2  6 metarmrg metarmrg  1100   24    60  27998 T L10 $MOODS_RESTORED_DIR/MDB.DAMETARS.NAE.DYYMMDD
+ METARS   17 M     /  /     :       /  /     :   1  6 metarmrg metarmrg         40   180  27998 F     $MOODS_MERGE_DIR/METARS/MDB.METARS.OPER.UKV
+ METARS   17 M 2011/02/01 00:00     /  /     :   2  6 metarmrg metarmrg  1100    8   180  27998 T L10 $MOODS_RESTORED_DIR/MDB.DAMETARS.UKV.DYYMMDD
+ OFFLINE   0       /  /     :       /  /     :   1                                           80 F     $MOODS_EXEC_DIR/retrieval/scripts/mdbmoose.sh
+ SHPSYN    1 R     /  /     :       /  /     :   1  6 shpsyn   shpsyn          112   180  27998 F     $MOODS_STORAGE_DIR/SHPSYN/MDB.SHPSYN
+ SHPSYN    1 R 2013/08/14 00:00     /  /     :   2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.DYYMMDD
+ SHPSYN    1 M     /  /     :       /  /     :   1  6 shpsyn   shpsyn           20   360  27998 F     $MOODS_MERGE_DIR/SHPSYN/MDB.SHPSYN.OPER.GAIR
+ SHPSYN    1 M 2004/07/15 00:00     /  /     :   2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.GAIR.DYYMMDD
+ SHPSYN    6 M 2004/07/11 00:00 2006/03/15 00:00 2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.GSTPR.DYYMMDD
+ SHPSYN    9 R     /  /     :       /  /     :   1  6 shpsyn   shpsyn           56   360  27998 F     $MOODS_STORAGE_DIR/SHPSYN/MDB.SHPSYN
+ SHPSYN    9 M     /  /     :       /  /     :   1  6 shpsyn   shpsyn           48   360  27998 F     $MOODS_MERGE_DIR/SHPSYN/MDB.SHPSYN.OPER.GSST
+ SHPSYN    9 M 2004/07/11 00:00     /  /     :   2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.GSST.DYYMMDD
+ SHPSYN   14 M 2006/03/18 00:00 2013/01/17 00:00 2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.MES4K.DYYMMDD
+ SHPSYN   15 M 2004/07/11 00:00 2006/11/02 00:00 2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.MAIRUK.DYYMMDD
+ SHPSYN   16 M 2005/03/01 00:00 2014/07/02 00:00 2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.NAE.DYYMMDD
+ SHPSYN   17 M     /  /     :       /  /     :   1  6 shpsyn   shpsyn           20   360  27998 F     $MOODS_MERGE_DIR/SHPSYN/MDB.SHPSYN.OPER.UKV
+ SHPSYN   17 M 2009/11/15 00:00     /  /     :   2  6 shpsyn   shpsyn    3700    4   360  27998 T J10 $MOODS_RESTORED_DIR/MDB.DASHPSYN.UKV.DYYMMDD
+ STNABRV   0       /  /     :       /  /     :   1                                          120 F     $MOODS_STORAGE_DIR/STATIONS/abrv_stnlist
+ STNICAO   0       /  /     :       /  /     :   1                                          120 F     $MOODS_TABLE_DIR/icao_list
+ STNIND    0       /  /     :       /  /     :   1                                          692 F     $MOODS_TABLE_DIR/stnmas_indexb
+ STNMAS    1 R     /  /     :       /  /     :   1  1 stnmas                                692 F     $MOODS_STORAGE_DIR/STATIONS/abrv_stnlist
+ SUNPHOTO  1 R 2016/01/01 00:00     /  /     :   1 12 netcdf             3700    1     1   9000 F N10 $MOODS_STORAGE_DIR/SUNPHOTO/MDB.SUNPHOTO.INDEX
+ TAFS      1 R     /  /     :       /  /     :   1  5 tafs                      48   360  23476 F     $MOODS_STORAGE_DIR/TAFS/MDB.TAFS
+ TAFS      1 R 1997/11/03 12:00     /  /     :   2  5 tafs               3700    4   360  23476 T A10 $MOODS_RESTORED_DIR/MDB.DALSTAFS.DYYMMDD
+ TEMP      1 R     /  /     :       /  /     :   1  9 temp     upperair         28   720  27998 F     $MOODS_STORAGE_DIR/UPRAIR/MDB.UPRAIR
+ TEMP      1 M     /  /     :       /  /     :   1  9 temp     upperair         20   360  27998 F     $MOODS_MERGE_DIR/UPRAIR/MDB.UPRAIR.OPER.GAIR
+ TEMP      1 R 2003/04/11 21:00     /  /     :   2  9 temp     upperair  3700    2   720  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.DYYMMDD
+ TEMP      1 M 2003/04/12 00:00 2013/01/15 23:59 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.GAIR.DYYMMDD
+ TEMP      1 M 2013/01/16 00:00 2013/02/05 23:59 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR_T.GAIR.DYYMMDD
+ TEMP      1 M 2013/02/06 00:00     /  /     :   2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.GAIR.DYYMMDD
+ TEMP      6 M 2003/04/12 00:00 2006/03/15 00:00 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.GSTPR.DYYMMDD
+ TEMP     14 M 2006/03/18 00:00 2013/01/17 00:00 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.MES4K.DYYMMDD
+ TEMP     15 M 2003/04/12 00:00 2006/11/02 00:00 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.MAIRUK.DYYMMDD
+ TEMP     16 M 2005/03/01 00:00 2014/07/02 00:00 2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.NAE.DYYMMDD
+ TEMP     17 M     /  /     :       /  /     :   1  9 temp     upperair         20   360  27998 F     $MOODS_MERGE_DIR/UPRAIR/MDB.UPRAIR.OPER.UKV
+ TEMP     17 M 2009/11/15 00:00     /  /     :   2  9 temp     upperair  3700    4   360  27998 T K10 $MOODS_RESTORED_DIR/MDB.DAUPRAIR.UKV.DYYMMDD
+ VA_LIDAR  1 R 2016/02/01 00:00     /  /     :   1 12 netcdf             3700    1     1   9000 F N10 $MOODS_STORAGE_DIR/VA_LIDAR/MDB.VA_LIDAR.INDEX 
+
+ (Blank line above indicates end of table entries)
+
+ (Blank line above indicates end of path variable definitions)
+
+ Table format
+ ============
+
+       DATA TYPE: MetDB subtype code (or identification code if an associated or other non-storage data set).
+            MODL: Model or area of coverage (0=N/A, 1=global, 6=Strat. model, 8=FOAM, 9=SST model, 15=Mesoscale, 26=N.A.FOAM).
+              RM: Indicator for Raw ('R') or Merged ('M') data.
+      START TIME: Start time in "yyyy/mm/dd hh:mm" format. Leave blank if on-line rolling data set.
+        END TIME: End time in "yyyy/mm/dd hh:mm" format. Leave blank if on-line rolling data set or 'open-ended' archive series).
+              SM: Storage medium (1=disk, 2=tape). This should always be specified.
+            LIST: Code number for associated data. Depends on retrieval routine (see data set pointed to by member ASSOC in table).
+   ELEMENTS LIST: Member of ELEMENTS library containing the list of retrieval element names and map numbers (leave blank if LIST=7).
+  ELEMENTS INDEX: Member of ELEMIDX library containing the appropriate BUFR index for the data.                                          
+       RTN. DAYS: Data retention period in days.
+      INDEX RECS: Number of index periods per data set.
+      INDEX MINS: Length of index period in minutes.
+   RECORD LENGTH: Record length of data set. This should always be specified.
+              SF: Skeleton flag. 'T'='true' (i.e. data set name is a skeleton requiring the date to be filled in), 'F'='false'.
+         MAS STM: Archive data stream for MASS retrievals (without MDB prefix).                                                          
+   DATA SET NAME: Name of data set or archive series. For the latter, specify a skeleton name with 'YYMMDD' for the date.
+
+ Notes
+ =====
+
+   - Non-applicable items in the table can be left blank.
+   - Entries for the same data type must be grouped together as must those for the same model/area for a given data type.
+   - There must not be more than one on-line rolling data set for the same data type, model code and raw/merge data flag.
+   - An 'open-ended' archive series must be associated with an on-line rolling data set which must precede it in the table.
+   - Time periods for archive series for the same data type, model code and raw/merge data flag must not overlap.
+   - Skeleton data set names and retention periods should only be specified for archived data.
+   - For a rolling data set not regularly updated (e.g. a test data set), specify a start time before that of any data it contains.
+   - For archived data, the total storage period ('INDEX DATA' x 'INDEX MINS', normally 24 hours) should apply to the whole series       
+     but the individual values of 'INDEX DATA' and 'INDEX MINS' need only apply to current data.                                        
+   - The table should contain entries for ASSOC (associated data set table) and ELEMENTS (library with lists of element names).
+   - To access an elements list on your own library, precede the member name specified in ELEMENT LIST with a digit 'n' (0-9) and
+     add an entry 'ELEMENTn' to the table, pointing to your library.
+   - Similarly, to access an element index on your own library, precede the member name specified in ELEMENTS INDEX with a digit
+     'n' (0-9) and add an entry 'ELEMIDXn' to the table, pointing to your library.
+
+ History
+ =======
+   20 FEB 06: OSSEAICE entry added. Global merged GOESBUFR archive start time corrected - B Barwell (CHG021439, CHG021779)               1.39
+   20 MAR 06: New entries for MES4K merges (REQ001836) and for GOESBUFR & MSGWINDS NAE merges (REQ001851); remove GOESAMW merge entries
+              (INC181683) and all time-expired entries; add Global merged JMAWINDS entry; minor corrections - B Barwell (CHG022793)      1.40
+   20 MAR 06: Remove entries for Stratospheric model merges and specify end times for archived data. Also correct the skeleton data set
+              name for archived AMSRE data - B Barwell (INC184045, INC185346, CHG023776)                                                 1.41
+   22 MAR 06: Correction to two entries accidentally changed on 20 March - B Barwell (CHG024026)    Revisioned using StarTeam.           ST.4
+   19 JUN 06: Allow for lost data due to a damaged MASS tape - S. Kellett  (CR842 CHG027130)       Revisioned using StarTeam             ST.5
+   17 JUL 06: Add entry for new GRIB data type HRSEAICE - B Barwell (CHG026840)                                                          ST.6
+   17 JUL 06: Add entry for new GRIB data type DRWIND - A Weir (REQ001833)                                                               ST.7
+   17 JUL 06: Add entries for on-line and archived GHRSST data - B Barwell. (CHG021343)                                                  ST.8
+   21 AUG 06: Remove entries for online GOESAMW/VIS/WV data and specify end times for archived data.  - B Barwell                        ST.9
+   20 NOV 06: Add offline JMAWINDS merge entry. Modify end dates for non BUFR GOES wind archive. Delete SATOB entries for Mesoscale and
+              SST merges. (B Barwell, CR1690)                                                                                            ST.10
+   20 NOV 06: Add MSGRAD on-line and archived entries. - A Weir (REQ001929/CR1720)                                                       ST.11
+   20 NOV 06: Termination of 12km Mes merge; remove entries for on-line MAIRUK d/s and
+              specify end time for archive d/s (S Needham REQ002382)                                                                     ST.12
+   18 DEC 06: SNOW - GRIB entry added and BUFR entries deleted (REQ002467). Entries added for online ASCAT (CHG020502) and online merged
+              ESAUWI data (REQ002458). Obsolete entries for online 'unmerged' 12km Mesoscale data sets deleted - B.Barwell.              ST.14
+   22 JAN 07: Addition of 3 new models for BATHY, TESAC and BUOYPROF.                                                                    ST.15 & 16
+   19 FEB 07: Add entry for ESAUWI merge archive. Update start dates for MSGRAD and merged JMAWINDS archive data - B Barwell. (CR2523)   ST.17
+   19 FEB 07: Also add entries for ESAUWI NAE merge on-line and archive data sets - B Barwell. (CR2523)                                  ST.18
+   19 FEB 07: Update AIRS, FOAMSST & UKMOSST for termination of storage and merged ATOVSG for index period change - B Barwell.           ST.19
+   19 MAR 07: Add entries for on-line and archived AIRSMS and IASIG data - R Lavery and B Barwell. (for REQs 002675 & 000896)            ST.20
+   16 APR 07: Add entries for on-line and archived IASIL data (REQ 000896). Also update ESAUWI merge start dates - B Barwell. (CR2799)   ST.21
+   16 APR 07: Add entries for missing LNDSYN and SHPSYN data (INC221384). - J NORTON                                                     ST.23
+   21 MAY 07: Add entry for archived ASCAT data (and delete meaningless retention period for on-line data!) - B Barwell. (CHG020502)     ST.24
+   18 JUN 07: Add on-line and archived entries for OPENROAD (REQ002679) - A.Weir.                                                        ST.25
+   19 NOV 07: HEALTHRR & PLAINOB entries removed. End dates supplied for archived ATAFS and IASIL - B Barwell. (CR4456)                  ST.26
+   26 NOV 07: ASCAT Global model merge and archive added.    S Needham (CR3508)                                                          ST.27
+   21 JAN 08: Add entries for on-line and archived WINDSAT data (REQ000895). Correct merged ASCAT retention to 370 days - B Barwell.     ST.28
+   20 APR 08: End times added for archived AIRSMS & SFLOC. On-line data entries: SFLOC deleted and MOBSYN added -  B Barwell.            ST.29
+   16 JUN 08: Add entries for archived MOBSYN, on-line MES4K ESAUWI & SEAWINDS and on-line NEMO BUOYPROF, BATHY & TESAC - B.Barwell.     ST.30
+   21 JUL 08: New entries: CMAWINDS (CR6223), on-line IASIHR (CR6222), merged TAMDAR (CR6057). Also archived IASIHR (ST32) - B.Barwell.  ST.31 & 32
+   15 SEP 08: New entries: AIRSL (on-line and archived), MOBSYN merges, ESAUWI & SEAWINDS Mesoscale merges, TAMDAR Global merge. Also
+              update to GPSIWV on-line storage period and deletion of entries for time-expired data - B Barwell (CRs 6106 & 6587)        ST.33
+   17 NOV 08: New entries for ARGO data (on-line and archived)   (CR6835).                                                               ST.34
+   17 NOV 08: Add entries for revived IASIL and archived Global NEMO data. Some start dates updated (see CR7792) - B Barwell.            ST.35
+   15 DEC 08: Add entries for MSGRADFD data (CR7795): ST.35 start dates updated again: add missing retention periods (ST37) - B Barwell. ST.36 & 37
+   19 JAN 09: Old FOAM merged data: delete online entries and supply end dates for archive entries (25 or 26 Nov 2008) - B Barwell.      ST.38
+   16 FEB 09: New data types AIRQAL & ASCATHR. MERIS now 5 days online & archived. SATOB merge terminated. (CRs 5247, 5458, 8450, 8569)  ST.39
+   20 APR 09: New data types GOESCSR, IMDWINDS & JASON2 (CRs 9517, 8405 & 8435).  Some time-expired entries deleted.  B Barwell.         ST.40
+   20 APR 09: Correction to record lengths for AIRQAL entries (27798 --> 27998).  B Barwell.                                             ST.41
+   17 AUG 09: RADRACCM & RADRRATE entries added. SSMIS index period updated. Online merge entries added for NAE ASCAT, Global WINDSAT,
+              NAE and Mesoscale GPSIWV, and UKV merged data for 15 data types. (CRs 8447, 8453, 9501, 9502, 10509, 10639, 10640)         ST.42
+   21 SEP 09: New archive entries for Global merged WINDSAT (CR8453) and NAE merged GPSIWV (CR8447). Also on-line entries for MSGAOD
+              (CR11099) & MSGRADUK (CR11204) - B Barwell.                                                                                ST.43
+   19 OCT 09: New entry for archived MSGAOD data (CR11099). Also on-line and archived WISDOM data (CR11205) - B Barwell.                 ST.44
+              Also new entry for archived MSGRADUK data (CR11204, ST.45) and correct retention period for MSGAOD (ST.46) - B Barwell.    ST.45 & 46
+   17 NOV 09: New merge archive entries (ASCAT/NAE, GPSIWV/MES4K, UKV merges). Delete MES4K & UKV entries for ESACMW, ESAHRVW, ESAHRWVW. ST.47 & 48
+   15 FEB 10: End time for SEAWINDS archive data added and references to on-line SEAWINDS data sets deleted - B Barwell.                 ST.49
+   16 MAR 10: Updated with new entry for Real Time Altimeter data SALTSSHT. Correction to start and end time for SALTSSHT.               ST.54
+   21 JUN 10: End time for archived SSMI merge data added and entries for on-line merged SSMI data deleted. Entry for online AIRSMS
+              data deleted - B Barwell.                                                                                                  ST.56
+   20 SEP 10: End time for archived IMDWINDS and PAOBS merge data added and entries for on-line PAOBS data deleted - B Barwell (CR16333) ST.57
+   27 JAN 11: Entries added for merged METAR data for Global, MES4K, NAE and UKV models (online and archive) - B Barwell (CR14190)       ST.58
+   21 MAR 11: WINDFARM entry added. AIRSRR, IMDWINDS, SAMOSX, TAMDAR, TCRTEMP storage terminated. Data set names for archived METAR
+              data corrected - B Barwell.                                                                                                ST.59
+   13 JUN 11: Switched to ZFS filesystem for ATOVSG,AMSRE,SSMIS,MSGRADFD,IASIG,MSGRAD,AIRSWF & MERIS - (S.Needham)                       ST.60
+   25 JUL 11: Updates for end of ERS-2 and AMSRE data. Entries for unmerged SEAWINDS data restored (for OCEANSAT-2) - B Barwell          ST.61
+   17 OCT 11: New entries for SATAOD (on-line and archived - CR17391), and on-line ATMS (CR17293) and wind farm data - B Barwell         ST.62
+   21 NOV 11: GOESBUFR switched to retrieval type 7 (MDBRET)  - S.Needham (CR25274)                                                      ST.63
+   12 DEC 11: More switches to MDBRET (AMSRE, ASCAT, JASON2, TAMDAR, Sat. winds & CSRs, SSTs, Radar rainfall) - B Barwell                ST.64
+   23 JAN 12: Entry for archived WFSSE added - B Barwell                                                                                 ST.65
+   20 FEB 12: Entry for SREW archive - S Needham                                                                                         ST.66
+   19 MAR 12: More switches to MDBRET (AATSR, AIRQAL, ARGO, GHRSST, MERIS, MSGAOD, MSGRAD, OPENROAD, OZONEPRF, OZONESAT, WAVENET,
+              WISDOM). Also new entries for online and archived TAMDAR - B Barwell (CR33557).                                            ST.67
+   19 MAR 12: Entries for SONDE and archived WFEON added. Some obsolete entries deleted - B Barwell                                      ST.68
+   16 APR 12: Entries for IMDWINDS, JMACSR and archived ATMS & TAMDAR added. Entries for MES4K & UKV merged MOBSYN deleted.
+              End time added for WISDOM data and index period corrected for MSGRADFD - B Barwell.                                        ST.69
+   16 APR 12: Entry for RADOP added - R Weedon                                                                                           ST.73
+   21 MAY 12: Entry for RADRF added - R Weedon.                                                                                          ST.74
+   21 MAY 12: End time supplied for ENVISAT data types (AATSR, ASARWVS, MERIS) and correction to online SEAWINDS entry - B Barwell       ST.75
+   18 JUN 12: Delete entries for online AATSR, ASARWVS, MERIS. Delete SAT120 & RA2 entries. Add CRIMSS entries (online & archive) - BRB  ST.76
+   25 JUL 12: Add entries for TRIAXYS - B Barwell.                                                                                       ST.77
+   20 AUG 12: Add entry for online UKV-merged OENROAD data - B Barwell (CR26425).                                                        ST.78
+   17 SEP 12: More switches to MDBRET (AIRS/L/RR/MS/WF, ASARWVS, GPSIWV, GPSRO, IASIG/HR/L, SEAWINDS, SSMIS, WINDSAT). Also entry for
+              on-line UKWINDS added and time-expired merged satellite entries deleted (ESAUWI, SEAWINDS, SSMI) - B Barwell (CR37494).    ST.79
+              ATDNET entries added - P Barnham (CR35811).                                                                                ST.80 & 81
+   15 OCT 12: Entry for archived UKWINDS added - B Barwell (CR36026).                                                                    ST.82
+   19 NOV 12: Final batch of switches to MDBRET (AMSUB, ATOVSG/L, AVHRRG, ESACSR, RASS, SSMI). Old entries deleted - B Barwell (CR38424).ST.83
+   17 DEC 12: Entries for archived SONDE, RADOP2 and UKV-merged OPENROAD data added - B Barwell.                                         ST.84
+    Feb.2014: ASCATCO entries added.
+   01 APR 14: Re-run of TEMP mergeback data for Global model covering 2013/1/16/ - 2013/5/02/ inserted with archive skel:
+              MDB.DAUPRAIR_T.GAIR.DYYMMDD - R Malone                                                                                    MB-272
+    Apr.2014: AMSR2 entries added. Some time-expired entries deleted. (B.R.B.)                                                          MB-277             
+    Jun.2014: Online SEAWINDS entry deleted. Archive end dates supplied for SEAWINDS & WFSSE. One time-expired entry deleted. (B.R.B.)   MB-48
+    Jul 2014: Changes for termination of WFEON data and NAE model merges. (B Barwell)                                                   MB-417
+    Oct 2014: Addition of SAPHIR (Sheila Needham)                                                                                       MB-447
+    Oct 2014: Entries for IRAS, MWHS and MWTS added.  (B Barwell)                                                                       MB-233
+    Dec 2014: New entries for GNSSTEC. Archived IMDWINDS entry restored. End date supplied for archived WFUPT. (B.R.B.)                 MB-470
+    Jan 2015: New SEAWINDS entries for RapidScat data. (B Barwell)                                                                      MB-743
+    Feb 2015: Corrections to index blocks/hours per block                                                                               MB-816
+    Mar 2015: New CARIBRAD entries for Caribbean radar reflectivity fields.  (B Barwell)                                                MB-809
+    Apr 2015: New entries for SMOS data.  (B Barwell)                                                                                   MB-788
+    May 2015: New entries for TIDEGAGE data. (B Barwell)                                                                                MB-886
+    Jun 2015: Reduction of JMAWINDS index periods from 6 to 3 hours - B Barwell.                                                        MB-910
+    Jul 2015: New entries for Himawari-8 clear sky radiances (data type HIMCSR).  (B Barwell)                                           MB-947
+    Sep 2015: New entries for satellite winds from COMS-1 (data type KMAWINDS) and Tarfaya wind farm data (WFTAR). (B.R.B.)     MB-75 & MB-968
+    Oct 2015: Delete online AVHRRRAD and MODIS entries. Supply end dates for AVHRRRAD, MODIS, SALTSSHT and WFVAT archive data. (B.R.B.) MB-984
+    Jan 2016: New entries for OMPS data. (B.R.B.)                                                                                       MB-195
+    Feb 2016: New entries for WFSYN data. (Andy Moorhouse).                                                                            MB-1000
+    Feb 2016: New entries for HIMRAD data.  (B.R.B.)                                                                                   MB-1001
+    Feb 2016: New entries for SUNPHOTO data. (Andy Moorhouse).                                                                         MB-1027
+    May 2016: Delete entry for online SALTSSHT (Mark Stewart)                                                                          MB-1247
+    May 2016: Delete online entry and date for offline data for SATOB (Mark Stewart)                                                   MB-1273
+    Apr 2016: New entries for AIRQALEU data. (Andy Moorhouse).                                                                         MB-1176
+    Jul 2016: New entries for OMPSTC data. (Richard Weedon)                                                                            MB-1020   
+    Jul 2016: New entries for MWRI. (Mark Stewart).                                                                                    MB-1264
+    Jul 2016: New entries for GMI. (Andy Moorhouse).                                                                                   MB-1270
+    Oct 2016: New entries for RADRFRQI. (Andy Moorhouse).                                                                              MB-1354
+    Feb 2017: GHRSST MetOp-A replacing dud MetOp-B data for period 23 Feb-23 Mar 2016 (Sheila Needham)                                 MB-1462
+    Feb 2017: OPENROAD ammended to store 20 years offline. (Mark Stewart)                                                              MB-1466
+    Aug 2017: New entry for COPTSMO. (Sheila Needham).                                                                                 MB-1581
+    Aug 2017: New entry for SML2NRT. (Sheila Needham)                                                                                  MB-1518
+    Sep 2017: XMETARS and XTAFS added. (Andy Moorhouse)                                                                                MB-1470
+    Oct 2017: COPPRPF added. (Sheila Needham).                                                                                         MB-1607
+    Oct 2017: New entry for COPPFTE. (Sheila Needham)                                                                                  MB-1604
+    Nov 2017: New entry for COPTSDB. (Sheila Needham)                                                                                  MB-1618
+    Jan 2018: New entry for COPPRGL. (Sheila Needham)                                                                                  MB-1663
+    Feb 2018: New entry for OSSEAICN. (Andy Moorhouse)                                                                                 MB-1643
+    Feb 2018: New entry for COPPRCT. (Sheila Needham)                                                                                  MB-1691
+    Mar 2018: Added COPTSFB,COPPRRE, COPTSTS as aliases to OCEANFB, OCEANRE and OCEANTS                                                MB-1586
+    Apr 2018: Extended blksize of COPTSDB. (Sheila Needham)                                                                            MB-1734
+    Jun 2018: Amend characteristics of MODE-S d/s for Hermes data source.  (Sheila Needham)                                            MB-1688
+    Aug 2018: New data type AMV (Sheila Needham)                                                                                       MB-1787
+    Aug 2018: New data type OLCI (Mark Stewart)                                                                                        MB-1233
+    Jan 2019: New data type SIGMET (Mark Stewart)                                                                                      MB-1845
+    Jan 2019: New data type OCEANCOL (Mark Stewart)                                                                                    MB-1720
+    Apr 2019: Extend OCEANCOL back to 2016 (Sheila Needham)                                                                            MB-1930
+    May 2019: New data type SENTALT (Sheila Needham)                                                                                   MB-1234
+    May 2019: OMPS/TC no longer received; completed archive series and removed on-line reference (Sheila Needham)                      MB-1964
+    Aug 2019: OZONESAT no longer received; completed archive series and removed on-line reference (Sheila Needham)                     MB-1544
