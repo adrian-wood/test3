@@ -48,6 +48,19 @@ class Test_localseq(unittest.TestCase):
         # Check the length of one of them
         self.assertEqual(len(s['312231']), 23)
 
+    def test_tropcycl(self):
+        '''' Input with descriptors in comments       '''
+
+        with patch('sys.stdout', new=StringIO()) as out:
+            s = localseq.read_localseq('test_data/tropcycl')
+
+        # File contains 4 sequences
+        self.assertEqual(len(s), 4)
+
+        # Check the length of one containing descriptors in 
+        # comments
+        self.assertEqual(len(s['316200']), 41)
+
 
 if __name__ == '__main__':
     unittest.main()

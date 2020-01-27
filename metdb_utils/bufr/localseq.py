@@ -89,7 +89,9 @@ def read_localseq(filename):
         # sequence.
         else:
             # e.g. 001007, 002019  SATELLITE IDENTIFIER, SATELLITE INSTRUMENTS
-            items = re.findall(pattern, line)
+            # descriptor string delimited by two or more spaces before text
+            delimit = line.find('  ')
+            items = re.findall(pattern, line[:delimit+1])
             for i in items:
                 if bufr.is_a_descriptor(i):
                     seq.append(i)

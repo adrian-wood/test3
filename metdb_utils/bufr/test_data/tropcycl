@@ -1,0 +1,95 @@
+316200  Tropical cyclone message from FMEE
+
+001033, 001025, 001027       CCCC, ident, name
+301011                       year, month, day
+301012                       hour, minute
+301023                       lat, long
+008012, 002041, 019001       land/sea, estimating method, feature
+202129, 201131, 019005       direction (in tenths of a degree)
+201000, 202000, 019006       & speed
+019008                       vertical extent
+008005, 010051               pressure at centre
+008005, 010051               pressure at edge
+019007                       effective radius
+008005, 008021               max wind speed (analysed) follows:
+202129, 201129, 011042       max wind (hundredths of m/s)
+201000, 202000, 019007       effective radius
+008005, 109000, 031001       cancel 008005, replicate over thresholds
+202129, 201129, 019003       wind speed threshold (hundredths of m/s)
+201000, 202000, 103004       replicate over quadrants (45-135 etc)
+005021, 005021, 019009       range of degrees, effective radius
+
+316201  Tropical cyclone message from ADRM (until December 2005)
+
+001031, 001025, 001026       CCCC, ident, name
+301011                       year, month, day
+301012                       hour, minute
+301023                       lat, long
+002041, 019001               estimating method, type of feature
+201130, 019002, 201000       radius (scale changed to metres)
+019005, 019006               direction & speed
+008005, 010004               storm centre pressure
+104004                       replicate over quadrants
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+
+316202  Tropical cyclone message from KWNO
+
+001033, 001025, 001026       CCCC, ident, name
+301011                       year, month, day
+301012                       hour, minute
+301023                       lat, long
+019001                       type of feature
+019005, 019006               direction & speed
+019008                       vertical extent of circulation
+008005, 010004               storm centre pressure
+008005, 010004               storm edge pressure
+019007                       effective radius
+008005, 011002               max wind speed
+019007                       effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+005021, 005021               range of degrees (0-90 etc)
+019003, 019009               wind speed threshold & effective radius
+
+316203  Tropical cyclone message from ADRM (from January 2006)
+
+001033, 001025, 001027       CCCC, ident, name
+301011                       year, month, day
+301012                       hour, minute
+301023                       lat, long
+002041, 019001               analysis method, type of feature
+019007                       effective radius
+019005, 019006               direction & speed
+019008                       vertical extent of circulation
+008005, 010004               storm centre pressure
+008005, 010004               storm edge pressure
+019007                       effective radius
+008005                       attribute significance (max wind)
+008021, 004075               time significance (time mean) and period
+011040                       max wind speed (mean wind)
+019007                       effective radius (max wind)
+105004                       replicate over quadrants
+005021, 005021               range of degrees (0-90 etc)
+102002                       replicate over wind thresholds
+019003, 019009               wind speed threshold & effective radius
