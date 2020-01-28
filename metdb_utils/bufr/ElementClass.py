@@ -125,12 +125,12 @@ class SeqObj:
     def __str__(self):
         """Print in the format required for part 1 of an elements index"""
 
-        line = '\n {:4d}{:4d}  '.format(self.index_ref, self.nseq)
+        line = '\n {:4d}{:4d}   '.format(self.index_ref, self.nseq)
         for pos, item in enumerate(self.desc):
             if pos % 8 == 0 and pos > 0:
                 line += '\n{:12s}{:7s}'.format(' ', item)
             else:
-                line += ' {:7s}'.format(item)
+                line += '{:7s}'.format(item)
         line += self.text.strip()
         return line
 
