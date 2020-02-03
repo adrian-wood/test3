@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #------------------------------------------------------------------------------        
 # PURPOSE : Script to create previous month's webpage analysis of datatypes
 #           retrieved by reading data_access.log files.

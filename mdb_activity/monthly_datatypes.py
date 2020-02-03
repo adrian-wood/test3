@@ -65,7 +65,7 @@ def main():
         # Formats match directory structure of stored data_access.log files.
         if len(sys.argv) == 3:
             year = int(sys.argv[1])
-            if not 2015 < year < dt.date.today().year:
+            if not 2015 < year <= dt.date.today().year:
                 raise ValueError('Invalid year (must be 2016 - now): %s'
                                  % year)
             month = int(sys.argv[2])
@@ -92,8 +92,7 @@ def main():
     now = dt.datetime.now()
     datestr = now.strftime("%H:%M %d-%m-%Y")
     procDate = dt.datetime(year=year, month=month, day=1)
-    lastMonth = procDate - dt.timedelta(days=1)
-    lastMonthsPage = lastMonth.strftime("/%Y/%b.html")
+    lastMonthsPage = procDate.strftime("%Y/%b.html")
     warning = False
 
     # master dictionary with server as key, and values of a further
@@ -187,7 +186,7 @@ def main():
     templateVars = {"year": year,
                     "month": calendar.month_name[month],
                     "servers": servers,
-                    "by_datatype": by_datatype,
+                    "by_datatype": dict(sorted(by_datatype.items(), key = lambda x:x[0])),
                     "overall_totals": overall_totals,
                     "not_requested": not_requested,
                     "invalid_count": invalid_count,
