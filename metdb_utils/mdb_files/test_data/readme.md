@@ -63,6 +63,25 @@ awk -F"," '{print $3}' data_access.log | sort | uniq -c | sort -h
 ```
 We can see that user `jroberts` has performed 1 retrieval, `ahorsema` has done 2, and so on. User `uktrials` has done the most retrievals with 556.
 
+### Counts by Contact
+A similar command can be used to determine the counts of retrievals by `contact`:
+
+```
+awk -F"," '{print $5}' data_access.log | sort | uniq -c | sort -h
+      1 contact[mi-ba076]
+      1 contact[mi-ba077]
+      1 contact[mi-ba329]
+      1 contact[mi-ba340]
+      1 contact[standalone.apps@metoffice.gov.uk]
+...
+      8 contact[srbest]
+     12 contact[mi-ba291_mi-ba186]
+     12 contact[mi-ba291_mi-ba187]
+     24 contact[adam.maycock@metoffice.gov.uk]
+    870 contact[OPS]
+```
+We can see that contact `mi-ba076` has performed 1 retrieval, `srbest` has done 8, and so on. Contact `OPS` has done the most retrievals with 870.
+
 ## The `retrieval_table` File
 This is a cut-down MetDB `retrieval_table` file. It has 10 actual datatypes in it, together with the "pseudo" datatypes (ASSOC, ELEMENTS, ELEMIDX, OFFLINE, STNABRV, STNICAO, STNIND and STNMAS).
 

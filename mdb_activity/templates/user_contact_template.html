@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MetDB Retrieval Statistics by UserID and Contact for {{server}} on {{logDate}}</title>
+  <!--Bootstrap core CSS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+  <!--Sorttable library from http://www.kryogenix.org/code/browser/sorttable/sorttable.js -->
+  <script type="text/javascript" src="/common/sorttable.js"></script>
+  <style type="text/css">
+    table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+    content: " \25B4\25BE" 
+    }
+  </style>	
+</head>
+
+<body>
+  <div class="container">
+    <h2>MetDB Retrieval Statistics by UserID and Contact for {{server}} on {{logDate}}</h2>
+    <div class="row">
+      <div class="col-xs-3">
+        <div><a class="btn btn-danger btn-lg btn-block" href=/mdb_activity/data_access_logs role="button">Log browser</a></div>
+      </div>
+      <div class="col-xs-3">
+      </div>
+      <div class="col-xs-3">
+        <div><a class="btn btn-success btn-lg btn-block" href=/mdb_activity/monthly_datatype_retrievals_archive/{{last_months_page}} role="button">This page yesterday</a></div>
+      </div>
+      <div class="col-xs-3">
+        <div><a class="btn btn-info btn-lg btn-block" href=/mdb_activity/monthly_datatype_retrievals_archive role="button">Archive of this page</a></div>
+      </div>
+    </div> <!-- /.row -->
+    
+    <h3>Notes</h3>
+    <p>This page shows the total number of MetDB retrievals issued <a href="#byuser">by userID</a> and <a href="#bycontact">by contact</a> for a single day.</p>
+    <p><strong>UserID</strong> is automatically obtained by the MetDB RPC client and is the ID of the user running the program making the MetDB retrieval request.</p>
+    <p><strong>Contact</strong> is obtained from the <code>METDB_CLIENT_CONTACT</code> environment variable. It is often set to the Suite identifier, or the email address of the user, but can be set to anything.</p>
+    
+
+    <a id="byuser"></a><h3>MetDB Retrieval Request counts by UserID</h3>
+    <table class="table table-bordered sortable">
+      <thead>
+        <tr>
+          <th>Userid</th>
+          <th>Requests</th>
+          <th>Contacts (suites)</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for row in byUseridRows %}
+        <tr>
+          <td><a id="{{row.userid}}"></a>{{row.userid}}</td>
+          <td style="text-align:center">{{row.count}}</td>
+          <td>
+            {% for key, value in row.contacts.items() %}
+            <a href="#{{key}}">{{key}}</a> ({{value}}){{", " if not loop.last }}
+            {% endfor %}
+          </td>
+        {% endfor %}
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><b>Total</b></td>
+          <td style="text-align:center"><b>{{byUserTotal}}</b></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <a id="bycontact"></a><h3>MetDB Retrieval Request counts by Contact</h3>
+    <table class="table table-bordered sortable">
+      <thead>
+        <tr>
+          <th>Contact (suite)</th>
+          <th>Requests</th>
+          <th>Userids</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for row in byContactRows %}
+        <tr>
+          <td><a id="{{row.contact}}"></a>{{row.contact}}</td>
+          <td style="text-align:center">{{row.count}}</td>
+          <td>
+            {% for key, value in row.userids.items() %}
+            <a href="#{{key}}">{{key}}</a> ({{value}}){{", " if not loop.last }}
+            {% endfor %}
+          </td>
+        {% endfor %}
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td><b>Total</b></td>
+      <td style="text-align:center"><b>{{byContactTotal}}</b></td>
+    </tr>
+  </tfoot>
+</table>
+<hr>
+
+    <p  class="text-center">Created by script {{creator}} running as user {{runner}} on {{where}} at {{runDate}}.</p>
+  </div> <!-- /.container -->
+</body>
+</html>
