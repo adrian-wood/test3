@@ -20,6 +20,10 @@ replication counts, and elements with segment and position.
 Once you have the output from this program you should work out which elements
 you want to be retrievable and create MetDB element names in the usual way.
 
+**N.B. Once you have edited the element names, the names field must be less than
+36 characters, as delimited by the <--- ---> line. The names output by 
+this program will be longer by default.**
+
 Limitations:
   * It generates a working elements_index apart from the element names which
     you have to update by hand (See Technote 9).
@@ -86,7 +90,8 @@ def hasvalue(desc):
         return False
 
     # short and long replication counts (but not bitmaps!)
-    if F == '0' and X == '31' and (Y == '001' or
+    if F == '0' and X == '31' and (Y == '000' or
+                                   Y == '001' or
                                    Y == '002'):
         return False
 
