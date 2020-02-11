@@ -16,8 +16,21 @@ class DataAccessLog:
         * retrieval_count (int): the total number of retrievals.
         * count_by_datatype (dict): the number of times that a retrieval for a
                                     specific datatype occurs in the collection
-        * count_by_user (dict): the number of times that a retrieval for a
-                                    specific user occurs in the collection.
+        * count_by_userid (dict): the number of times that a retrieval for a
+                                  specific user occurs in the collection.
+        * count_by_contact (dict): the number of times that a retrieval for a
+                                   specific contact occurs in the collection.
+        * userid_contact (dict): a dictionary whose keys are userids appearing
+                                 in the collection, with values of a further
+                                 dictionary whose keys are contacts and values
+                                 of the number of times that a retrieval for
+                                 that particular userid/contact appears.
+        * contact_userid (dict): the opposite of userid_contact, i.e.
+                                 a dictionary whose keys are contacts appearing
+                                 in the collection, with values of a further
+                                 dictionary whose keys are userids and values
+                                 of the number of times that a retrieval for
+                                 that particular contact/userid appears.
     '''
     def __init__(self, da_log_file=None):
         '''Initialize an empty DataAccessLog object and populate it with the

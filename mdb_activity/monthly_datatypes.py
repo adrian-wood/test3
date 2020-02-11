@@ -30,6 +30,9 @@ def main():
     A MetDB retrieval_table file is read to determine what are "valid"
     datatypes; this must be specified by the $RETRIEVAL_TABLE environment
     variable.
+    A target for the resulting web page can be specified by the $HTML_PAGE
+    environment variable; if not specified then it will be created
+    in the default webpage archive location, and a symlink re-created to it.
 
     Args:
         year: the year (2016 onwards).
@@ -186,7 +189,7 @@ def main():
     templateVars = {"year": year,
                     "month": calendar.month_name[month],
                     "servers": servers,
-                    "by_datatype": dict(sorted(by_datatype.items(), key = lambda x:x[0])),
+                    "by_datatype": dict(sorted(by_datatype.items(), key=lambda x: x[0])),
                     "overall_totals": overall_totals,
                     "not_requested": not_requested,
                     "invalid_count": invalid_count,
@@ -200,10 +203,14 @@ def main():
 
     # Render the HTML from template, create a page and archive it
     htmlout = jinja_render(template_dir, template_name, **templateVars)
-    # with open(html_file, "w") as outp:
-    #     outp.write(htmlout)
-    monthly_archive("/var/www/html/mdb_activity/monthly_datatype_retrievals.html",
-                    archive_base, htmlout)
+
+    htmlPage = os.environ.get('HTML_PAGE')
+    if htmlPage is None:
+        monthly_archive('/var/www/html/mdb_activity/monthly_datatype_retrievals.html',
+                        archive_base, htmlout)
+    else:
+        with open(htmlPage, "w") as outp:
+            outp.write(htmlout)
 
     print('... finished', sys.argv[0])
 

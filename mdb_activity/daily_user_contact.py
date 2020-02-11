@@ -133,8 +133,14 @@ def main():
 
     # Render the HTML from template, create a page and archive it
     htmlout = jinja_render(template_dir, template_name, **templateVars)
-    page = "/var/www/html/mdb_activity/daily_user_contact.html"
-    daily_archive(page, archive_base, htmlout)
+
+    htmlPage = os.environ.get('HTML_PAGE')
+    if htmlPage is None:
+        daily_archive('/var/www/html/mdb_activity/daily_user_contact.html',
+                      archive_base, htmlout)
+    else:
+        with open(htmlPage, "w") as outp:
+            outp.write(htmlout)
 
     print('... finished', sys.argv[0])
 
