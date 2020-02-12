@@ -82,6 +82,48 @@ awk -F"," '{print $5}' data_access.log | sort | uniq -c | sort -h
 ```
 We can see that contact `mi-ba076` has performed 1 retrieval, `srbest` has done 8, and so on. Contact `OPS` has done the most retrievals with 870.
 
+### Counts by userid, subtotalled by contact
+
+It is useful to obtain for each `userid`, the numbers of retrievals that have been done for each `contact`. It is intended that the "contact" field contains the Suite Identifier. So for example, the `uktrials` userid runs thousands of retrievals, and we want subtotals by Suite (`contact`). We can do this with the following command:
+
+```
+grep 'userid\[uktrials\]' data_access.log | awk -F"," '{print $5}'| sort | uniq -c | sort -h
+      1 contact[mi-ba076]
+      1 contact[mi-ba077]
+      1 contact[mi-ba329]
+      1 contact[mi-ba340]
+      3 contact[mi-az998]
+      3 contact[mi-ba002]
+      3 contact[mi-ba003]
+    543 contact[OPS]
+```
+First we `grep` for all the retrievals for the `uktrials` userid, `awk` for the `contact` field and do the usual sorting etc.
+We can see that for retrievals done by `uktrials`, the `contact` field has been set to `OPS` 543 times, `mi-ba003` 3 times etc. 
+
+### Counts by contact, subtotalled by userid
+
+Similarly to above, we may want to do the opposite, i.e. for each `contact`, obtain the subtotals of retrievals that have been done for each `userid`:
+
+```
+grep 'contact\[OPS\]' data_access.log | awk -F"," '{print $3}'| sort | uniq -c | sort -h
+      1 userid[jroberts]
+      2 userid[chthomas]
+      2 userid[frdv]
+      2 userid[frnb]
+      3 userid[cmao]
+      3 userid[gltrials]
+      4 userid[frbg]
+      4 userid[ppdev]
+      5 userid[mjardak]
+     11 userid[frlh]
+     14 userid[hadci]
+     56 userid[jwaller]
+     77 userid[frwm]
+    143 userid[freb]
+    543 userid[uktrials]
+```
+We can see that for retrievals with `OPS` as the contact, 543 have been done by `uktrials`, 143 by `freb` etc. 
+
 ## The `retrieval_table` File
 This is a cut-down MetDB `retrieval_table` file. It has 10 actual datatypes in it, together with the "pseudo" datatypes (ASSOC, ELEMENTS, ELEMIDX, OFFLINE, STNABRV, STNICAO, STNIND and STNMAS).
 

@@ -32,3 +32,19 @@ This Python program (with a wrapper shell) analyses a number of Data Access logf
 ```# Create monthly datatype analysis webpage...
 00 05 01 * * /var/moods/mdb_activity/monthly_datatypes.sh >> /tmp/monthly_datatypes.log 2>&1
 ```
+
+## Daily UserID/Contact Retrieval Analysis
+
+### Purpose
+
+This Python program (with a wrapper shell) analyses a number of Data Access logfiles and creates a web page from the results. It shows the retrieval counts by userid with subtotals by "contact", and the same data displayed the opposite
+way, i.e. by contact with userid subtotals. It does this for the two servers mdbapus-prod and mdbapop-prod.
+
+### Running the Program
+1. The script runs on the Linux Server `mdb-apps-test` as the `moodsf` account via `cron` on the 1st of every month.
+1. The wrapper script is `daily_user_contact.sh` which calls `daily_user_contact.py`.
+1. The python script creates the web page from the Jinja template `daily_user_contact_template.html`.
+1. `cron` job is set up to run every day at on the 1st of every month at 7am as follows:
+```# Create daily userid and contact analysis webpage...
+00 07 * * * /var/moods/mdb_activity/daily_user_contact.sh >> /tmp/daily_user_contact_`date "+\%Y\%m\%d_\%H\%M\%S"`.log 2>&1
+```

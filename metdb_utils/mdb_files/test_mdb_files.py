@@ -1,6 +1,5 @@
 import unittest
-# import sys
-# sys.path.append('../..')
+from collections import defaultdict
 import RetrievalTable as RT
 import DataAccessLog as DA
 
@@ -77,6 +76,37 @@ class Test_Data_Access_Log(unittest.TestCase):
         self.assertEqual(self.da.count_by_contact['mi-au425'], 2)
         self.assertEqual(self.da.count_by_contact['mi-aw600'], 2)
         self.assertEqual(self.da.count_by_contact['mode-s-realtime'], 4)
+
+    def test_userid_contact(self):
+        uktrials = defaultdict(int)
+        uktrials['OPS'] = 543
+        uktrials['mi-ba003'] = 3
+        uktrials['mi-ba002'] = 3
+        uktrials['mi-az998'] = 3
+        uktrials['mi-ba340'] = 1
+        uktrials['mi-ba329'] = 1
+        uktrials['mi-ba077'] = 1
+        uktrials['mi-ba076'] = 1
+        self.assertEqual(self.da.userid_contact['uktrials'], uktrials)
+
+    def test_contact_userid(self):
+        ops = defaultdict(int)
+        ops['uktrials'] = 543
+        ops['freb'] = 143
+        ops['frwm'] = 77
+        ops['jwaller'] = 56
+        ops['hadci'] = 14
+        ops['frlh'] = 11
+        ops['mjardak'] = 5
+        ops['ppdev'] = 4
+        ops['frbg'] = 4
+        ops['gltrials'] = 3
+        ops['cmao'] = 3
+        ops['frnb'] = 2
+        ops['frdv'] = 2
+        ops['chthomas'] = 2
+        ops['jroberts'] = 1
+        self.assertEqual(self.da.contact_userid['OPS'], ops)
 
 if __name__ == '__main__':
     unittest.main()
