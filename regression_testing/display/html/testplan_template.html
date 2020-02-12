@@ -23,7 +23,7 @@
 	</head>
 	<body>
 		<div class="container">
-		        <h2>MetDB Regression Tests {{sys1}} vs. {{sys2}} </h2>
+		        <h2>MetDB Regression Tests {{sys1}}/{{ver1}} vs. {{sys2}}/{{ver2}} </h2>
 			<div class="row">
 			  <div class="col-md-3">
 			    <div class="alert alert-info">Tests - {{count}}</div>
@@ -42,12 +42,6 @@
 			  <div class="col-md-12">
  		            <div class="well well-sm">Run started: {{t1}}         Run ended: {{t2}}</div>
 			  </div>  
-			</div>  
-			<div class="row">
-			  <div class="col-md-12">
-			    <div class="well well-sm"><a href="http://mdb-apps/new_compare_stats.html">Daily storage stats comparison</a>
-			    </div>
-			  </div>
 			</div>  
 			<div class="row">
 			  <div class="col-md-12">
@@ -74,7 +68,7 @@
 					       data-html="true" 
 					       data-content="<pre>{{r[3]}}</pre>"> {{ r[2] }}</a> </td>
 					<td> {{ r[4] }} </td>
-					<td><a href="http://mdb-apps-test/cgi-bin/regression/OutputDisplay.py?infile={{r[2]}}&dateDir={{dateDir}}"> {{ r[5] }} </a></td>
+					<td><a href="http://mdb-apps-test/cgi-bin/regression/OutputDisplay.py?infile={{r[6]}}&dateDir={{dateDir}}&WEBROOT={{webRoot}}&OUTDIR={{outdir}}&SYS1={{sys1}}&SYS2={{sys2}}&VER1={{ver1}}&VER2={{ver2}}"> {{ r[5] }} </a></td>
 				</tr>
 
 				{% endfor %}
@@ -87,6 +81,7 @@
 			  </div>
 			</div>  
 
+<p  class="text-center">Ran at {{datestr}}</p>
 		</div>
 		<!-- Bootstrap core JavaScript
 		================================================== -->
