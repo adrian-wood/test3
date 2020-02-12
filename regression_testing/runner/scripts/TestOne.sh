@@ -7,11 +7,12 @@ module display scitools
 #
 # Python script has one option: -t [testno]
 #
-
+set -x
 setenv=/home/moodsf/cylc-run/regression/set_env.rc
 source $setenv
 export $(cut -d= -f1 $setenv)
 
+set +x
 python $SCRIPTS/TestOne.py $*
 
 echo "Clean up /tmp/TestOne when you're finished"

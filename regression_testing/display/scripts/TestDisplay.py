@@ -38,9 +38,10 @@ def parseData(plan):
             result = 'fail'
         cmd = t.command
         inp = t.docref.strip()
+        infile = os.path.expandvars(t.docref)
         detail = readInp(inp)
         description = t.description
-        rows.append((testnum, cmd, inp, detail, description, result))
+        rows.append((testnum, cmd, inp, detail, description, result, infile))
     return rows
 
 def readInp(infile):
@@ -65,6 +66,7 @@ def testDisplay():
     webLink = os.environ.get('WEBLINK')
     testPlan = os.environ.get('TESTPLAN')
     testResults = os.environ.get('TESTRESULTS')
+    outdir = os.environ.get('OUTDIR')
     # Read the test plan
     plan = ta.TestPlan()
     plan.readPlan(testPlan)
@@ -78,6 +80,9 @@ def testDisplay():
     ver1 = os.environ.get('VER1')
     ver2 = os.environ.get('VER2')
 
+    now = datetime.now()
+    datestr = now.strftime("%H:%M %d-%m-%Y")
+
     templateVars = {"row": rows,
                     "count": plan.count,
                     "pass": plan.success,
@@ -90,7 +95,10 @@ def testDisplay():
                     "ver1": ver1,
                     "ver2": ver2,
                     "dateDir": dateDir,
-                    "webLink": webLink}
+                    "webLink": webLink,
+                    "webRoot": webRoot,
+                    "outdir" : outdir,
+                    "datestr" : datestr}
     htmlout = jinja_render(webRoot, viewer, **templateVars)
     
     daily_archive(webRoot + "/latest_regression_tests.html",

@@ -174,7 +174,6 @@ class TestPlan:
 
     def startRun(self, filename):
         """Open dataset for writing"""
-
         try:
             filepath = os.path.dirname(os.path.abspath(filename))
             if not os.path.exists(filepath):
