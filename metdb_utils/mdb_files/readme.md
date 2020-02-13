@@ -16,7 +16,7 @@ See [http://mdb-apps-test/mdb_files/html/](http://mdb-apps-test/mdb_files/html/)
 To re-create documentation:
 
 ```
-$ cd <metdb-misc-repo>/metdb_utils/docs
+$ cd <metdb-misc-repo>/metdb_utils/mdb_files/docs
 $ module load scitools
 $ make html
 Running Sphinx v1.8.4
