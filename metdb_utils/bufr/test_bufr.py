@@ -18,7 +18,7 @@ class Test_bufrD(unittest.TestCase):
         os.environ.update({'BUFR_LIBRARY': '/home/moodsf/MetDB_BUFR24.0.00/tables/'})
 
     def test_bufrD(self):
-        with patch('sys.stdout', new=MockDevice()) as fake_out:
+        with patch('sys.stdout', new=MockDevice()) as _:
             tableD = bufr.TableD()
 
         self.assertEqual(tableD.lookup('300002'),['000002', '000003'])
@@ -26,21 +26,23 @@ class Test_bufrD(unittest.TestCase):
         self.assertEqual(len(tableD.lookup('301058')), 37)
 
     def test_bufrB(self):
-        with patch('sys.stdout', new=MockDevice()) as fake_out:
+        with patch('sys.stdout', new=MockDevice()) as _:
             tableB = bufr.TableB()
 
         self.assertEqual(tableB.lookup('001007').name,'SATELLITE IDENTIFIER')
         self.assertEqual(tableB.lookup('001088'), None)
+        self.assertEqual(tableB.lookup('000001').name,'TABLE A:  ENTRY') # first
+        self.assertEqual(int(tableB.lookup('055030').width), 22) # last
 
     def test_long_bufrD(self):
-        with patch('sys.stdout', new=MockDevice()) as fake_out:
+        with patch('sys.stdout', new=MockDevice()) as _:
             tableD = bufr.TableD()
 
         seq = tableD.lookup('310077')
         self.assertEqual(len(seq), 127)
 
     def test_expansion(self):
-        with patch('sys.stdout', new=MockDevice()) as fake_out:
+        with patch('sys.stdout', new=MockDevice()) as _:
             tableD = bufr.TableD()
 
             self.assertEqual(tableD.expander(['001001']),['001001'])

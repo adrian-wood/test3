@@ -1,0 +1,63 @@
+                             AATSR DATA
+                             ----------
+BUFR SEQUENCES
+
+    1  23   001007 002019 001096 025061 005040 301011 301013 301021
+            007002 012180 012181 012182 012183 012184 012185 201129
+            002174 201000 021086 012186 021087 012187 033043 (=312231)
+    1   1   312231   (Extra bit for pixel number, 22 May 2007)
+    1   1   312045   (Nos. of pixels added, February 2003)
+    2   1   312230   (Used before 11 october 2002)
+
+INDEX  1            AATSR data from ENVISAT (from February 2003)
+                    --------------------------------------------
+    1   0   0        1 segment, no replications
+
+    1  26   0        1. General information and AATSR data
+
+INDEX  2            AATSR data from ENVISAT (to October 2002)
+                    -----------------------------------------
+    1   0   0        1 segment, no replications
+
+    1  24   0        1. General information and AATSR data
+
+ELEMENT NAMES AND LOCATIONS
+
+       ELEMENT NAME       T ID  S1  P1  S2  P2  S3  P3  S4  P4  S5  P5
+ <----------------------> - --  --  --  --  --  --  --  --  --  --  --
+ STLT_IDNY                  I4   1   1   1   1
+ STLT_INSTS                      1   2   1   2
+ STTN_ACQSTN              C      1   3   1   3
+ SFTWR_ID                 C      1   4   1   4
+ ORBT_NMBR                       1   5   1   5
+ YEAR                       T1   1   6   1   6
+ MNTH                       T2   1   7   1   7
+ DAY                        T3   1   8   1   8
+ HOUR                       T4   1   9   1   9
+ MINT                       T5   1  10   1  10
+ SCND                       T6   1  11   1  11
+ LTTD                       LY   1  12   1  12
+ LNGD                       LX   1  13   1  13
+ SRFC_HGHT                       1  14   1  14
+ AVG_MU12_NADIR                  1  15   1  15
+ AVG_MU11_NADIR                  1  16   1  16
+ AVG_MU3.7_NADIR                 1  17   1  17
+ AVG_MU12_FWD                    1  18   1  18
+ AVG_MU11_FWD                    1  19   1  19
+ AVG_MU3.7_FWD                   1  20   1  20
+ PIXL_NMBR                       1  21   1  21
+ AVRG_PIXL_NMBR_NADR             1  22
+ MEAN_NADR_SST                   1  23   1  22
+ AVRG_PIXL_NMBR_DUAL             1  24
+ DUAL_VIEW_SST                   1  25   1  23
+ AVG_SST_CNFD                    1  26   1  24
+ RCPT_YEAR                      -1   1  -1   1
+ RCPT_MNTH                      -1   2  -1   2
+ RCPT_DAY                       -1   3  -1   3
+ RCPT_HOUR                      -1   4  -1   4
+ RCPT_MINT                      -1   5  -1   5
+
+ (Blank line indicates end of list of element names)
+
+$Workfile: aatsr$ $Folder: elements_index$
+$Revision: 1$ $Date: 14/08/2012 14:02:06$

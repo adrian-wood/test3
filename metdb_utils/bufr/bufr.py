@@ -9,6 +9,7 @@ current working directory.
     ... {'BUFR_LIBRARY':'/home/moodsf/MetDB_BUFR25.0.00/tables/'})
 
 Access BUFR tables as follows:
+
     >>> tabled = bufr.TableD()
     >>> seq = tabled.lookup('300002')
     >>> print(seq)
@@ -19,9 +20,11 @@ Access BUFR tables as follows:
     'SATELLITE IDENTIFIER'
 
 Help will give you a list of the entry attributes:
+
     >>> help(entry)
 
 Expand a nested BUFR sequence as follows:
+
     >>> seq = tabled.expander(['300010'])
     >>> print(seq)
     ['000010','000011','000012','101000','031001','000030'])
@@ -80,22 +83,19 @@ def is_a_descriptor(text):
 
 
 class TableD:
-    """ The TableD class represents a complete table D as a dictionary.
+    ''' The TableD class represents a complete table D as a dictionary.
 
         Exceptions:
-
-        * sys.exit(8) : file not found.
+          * sys.exit(8) : file not found.
 
         Attributes:
-
-        * tabled (dict) : {'descriptor': {'seq': ['d1','d2',...,],
-                                          'title': text} }
+          * tabled (dict) : {'descriptor': {'seq': ['d1','d2',...,],
+            'title': text} }
             Key is an F3 descriptor as a string and the value is a sequence of
             descriptors (also as strings).
+          * header (str) : first line of bufr_tabled file
 
-        * header (str) : first line of bufr_tabled file
-
-    """
+    '''
     # ---------------------------------------------------------------------
 
     tabled = {}
@@ -239,7 +239,7 @@ class TableD:
                 outp.write(f"  {newline}")
 
         except IOError as err:
-            print("Failed to write new TableD {err}")
+            print(f"Failed to write new TableD {err}")
         finally:
             if outp:
                 outp.close()
@@ -366,24 +366,24 @@ class TableB:
         try:
             inp = open(tablebFile, 'r')
             # skip header
-            for line in range(0, 1):
+            for _ in range(0, 1):
                 inp.readline()
-                while True:
-                    line1 = inp.readline()
-                    if not line1:
-                        break
-                    desc = line1[0:6]
-                    name = line1[7:73].strip()
-                    line2 = inp.readline()
-                    if not line2:
-                        break
-                    unit = line2[1:25]
-                    scale = line2[27:29]
-                    ref = line2[29:41]
-                    width = line2[40:44]
-                    entry = TableBEntry(desc, name, unit, scale, ref, width)
-                    if desc not in TableB.tableb:
-                        TableB.tableb[desc] = entry
+            while True:
+                line1 = inp.readline()
+                if not line1:
+                    break
+                desc = line1[0:6]
+                name = line1[7:73].strip()
+                line2 = inp.readline()
+                if not line2:
+                    break
+                unit = line2[1:25]
+                scale = line2[26:29]
+                ref = line2[29:40]
+                width = line2[40:43]
+                entry = TableBEntry(desc, name, unit, scale, ref, width)
+                if desc not in TableB.tableb:
+                    TableB.tableb[desc] = entry
 
         except IOError:
             print('Cannot find file:', tablebFile)
