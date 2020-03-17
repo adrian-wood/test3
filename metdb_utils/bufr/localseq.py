@@ -1,4 +1,4 @@
-"""
+'''
 `localseq.py` parses a MetDB local sequence file to extract definitions.
 
 Code is currently installed on `mdb-apps-test:/var/moods/metdb_utils/bufr`
@@ -17,7 +17,7 @@ Usage:
     >>> seq = localseq.read_localseq('bufr_localseq/aatsr')
 
 
-"""
+'''
 
 import bufr
 import sys
@@ -25,16 +25,17 @@ import re
 
 
 def read_localseq(filename):
-    """Read a MetDB format local_seq file to get one or more sequences.
+    '''Read a MetDB format local_seq file to get one or more sequences.
 
-    Argument:
-    filename - string - name of file containing sequences.
+    args:
+      * filename (str) - name of file containing sequences.
 
-    Returns:
-    Dictionary - (local sequence number as str: list of strings comprising the
-    sequence)
-    e.g. {'312231': ['001007', '002019', '001096', ...],
-          '312045': ['001007', '002019', '001096', ...] }
+    returns:
+      * local_seqs (Dictionary)  - key is local sequence number as str:
+        value is list of strings comprising the sequence
+
+        e.g. {'312231': ['001007', '002019', '001096', ...],
+        '312045': ['001007', '002019', '001096', ...] }
 
     Example input file - bufr_localseq/aatsr
 
@@ -45,7 +46,7 @@ def read_localseq(filename):
       one or more descriptors delimited by commas or spaces. Text can follow.
       A blank line ends the sequence.  There may be more than one sequence in
       a file.
-    """
+    '''
 
     local_seqs = {}
 

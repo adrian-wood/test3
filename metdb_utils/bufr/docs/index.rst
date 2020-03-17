@@ -19,6 +19,19 @@ a BUFR sequence and to help create SSOT config files.
 The package is currently installed on mdb-apps-test:/var/moods/metdb_utils/bufr and
 should be used within a scitools environment.
 
+Run unit tests from /var/moods/metdb_utils/bufr with::
+
+   $ module load scitools
+   $ python -m unittest
+
+Re-create this documentation from metdb-misc repo::
+
+   $ module load scitools
+   $ cd metdb_utils/bufr/docs
+   $ make clean
+   $ make html
+   $ cp -R _build/* /var/www/html/bufr/.
+
 You can access the modules in a number of ways:
 
 1. Interactively::
@@ -26,6 +39,7 @@ You can access the modules in a number of ways:
    $ module load scitools
    $ export PYTHONPATH=/var/moods/metdb_utils/bufr
    $ python
+
    >>> import bufr
 
 2. On the command line::
@@ -42,9 +56,9 @@ You can access the modules in a number of ways:
    import sys
    import os
    sys.path.append('/var/moods/metdb_utils/bufr')
-   import elements
+   import elementIndex as ec
    os.environ['BUFR_LIBRARY'] = '/home/moodsf/MetDB_BUFR25.0.00/tables/'
-   table = elements.read_elements('aatsr')
+   table = ec.read_elements('aatsr')
 
 
 BUFR Tables
@@ -68,7 +82,7 @@ Elements Index Generator
 Elements Index Classes
 ======================
 
-.. automodule:: ElementClass
+.. automodule:: elementIndex
    :members:
 
 Single Source Of Truth

@@ -29,25 +29,36 @@ variable and other modules in the metdb_utils/bufr package.
 
 Run from the command line as follows:
 ::
-    $ module load scitools
-    $ export BUFR_LIBRARY=/home/moodsf/MetDB_BUFR25.0.00/tables/
-    $ export PYTHONPATH=/var/moods/metdb_utils/bufr:$PYTHONPATH 
-    $ python /var/moods/metdb_utils/bufr/lookup.py aatsr
+
+  $ module load scitools
+  $ export BUFR_LIBRARY=/home/moodsf/MetDB_BUFR25.0.00/tables/
+  $ export PYTHONPATH=/var/moods/metdb_utils/bufr:$PYTHONPATH 
+  $ python /var/moods/metdb_utils/bufr/lookup.py aatsr
 
 
 """
 
 import elements
 import bufr
-import ElementClass as ec
+import elementIndex as ec
 import sys
 import argparse
 
-tableb = bufr.TableB()
+
 ints = ['YEAR', 'MNTH', 'DAY', 'HOUR', 'MINT', 'SCND']
 
 def find_in_table(tab, serial_number, seg, pos):
-    '''Finds element name for a given index, segment and position'''
+    '''Finds element name for a given index, segment and position.
+    
+    args:
+    * tab (TableObj)
+    * serial_number (str) - index number (from 1)
+    * seg (int) - segment number
+    * pos (int) - position in segment
+    
+    returns:
+    * e (ElementObj) - matching element or None if not found
+    '''
 
     for e in tab.elements:
         (s1, p1) = e.location[serial_number]
@@ -58,8 +69,13 @@ def find_in_table(tab, serial_number, seg, pos):
 def lookup(filename, serial_number, offset):
     '''Print [ELEMENTS] sections for the given filename'''
 
+    tableb = bufr.TableB()
+
     #  Read the file into an ElementObj structure
-    table = elements.read_elements(filename)
+    table = ec.read_elements(filename)
+    if table is None:
+        print(f"ERROR: failed to read {filename}")
+        return
 
     #  Create a new elements table from just the given
     # sequence (this will have descriptors in the element
