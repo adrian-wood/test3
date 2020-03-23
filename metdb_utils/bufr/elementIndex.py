@@ -416,7 +416,7 @@ def read_elements(filename):
     offset = namelen
     while lines[ptr] != '':
         element_dict = {}
-        name = lines[ptr][0:offset]
+        name = lines[ptr][0:offset+1]
         col = offset + 2
         T = lines[ptr][col:col+1]
         col += 2
