@@ -82,3 +82,6 @@
 82  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test8_webapi.py  : $SCRIPTS/test8_webapi.py : Web API Test valid LIDAR request with REQUEST string
 83  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test9_webapi.py  : $SCRIPTS/test9_webapi.py : Web API Test LIDAR keyword order
 84  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test10_webapi.py  : $SCRIPTS/test10_webapi.py : Web API Test LIDAR platform with underscore
+85  : $SCRIPTS/diff_runs.sh -m $INDIR/TROPCYCB : $INDIR/TROPCYCB : BUFR Tropcycl in Apr 2020 release                      
+86  : $SCRIPTS/diff_runs.sh -m $INDIR/TAMDAR : $INDIR/TAMDAR : TAMDAR FLYHT data Apr 2020 release to preprod          
+87  : $SCRIPTS/diff_runs.sh -m $INDIR/ALADIN : $INDIR/ALADIN : ALADIN Aeolus in Apr 2020 release
