@@ -1,0 +1,43 @@
+  WMO      LAT      LONG   SENSOR   STN   STN            STATION
+ INDEX   DEG/THS  DEG/THS  HT (M)  HT (M) TYPE           NAME
+ 01001   70.933   -8.667        9      10 SURF & U/AIR   JAN MAYEN
+ 01002   80.067   16.250        7       8                VERLEGENHUKEN
+ 01003   77.000   15.500       11      10 SURF           HORNSUND
+ 01006   78.250   22.817       12      14                EDGEOYA
+ 01007   78.917   11.933        8       8 SURF           NY-ALESUND
+ 01008   78.250   15.467       29      29 SURF           SVALBARD LUFTHAVN
+ 01009   80.650   25.000                5                KARL XII OYA
+ 01010   69.317   16.133               10                ANDOYA
+ 01010   69.300   16.133       13      10 SURF           ANDOYA
+ 01011   80.067   31.500               10                KVITOYA
+ 01013   78.067   13.617        9       7                ISFJORD RADIO
+ 01015   69.600   17.831               33 SURF           HEKKINGEN LH 
+ 01016   78.933   28.900               20                KONGSOYA
+ 01017   77.683   14.783        6       6                AKSELOYA
+ 01018   69.233   16.000              436                ANDOYA-TROLLTINDEN
+ 01020   76.483   16.550               10                SORKAPPOYA
+ 94588  -29.683  151.683     1045    1046 SURF           GLEN INNES AIRPORT
+ 94589  -29.433  153.350       30      29                YAMBA
+ 94592  -28.167  153.500        6       6 SURF           COOLANGATTA AIRPORT AWS
+ 94663  -34.983  137.400       54      53                WAROOKA
+ 94665  -34.367  137.667      186     186 SURF           MAITLAND
+ 94666  -34.000  137.533                1                WARBURTO POINT
+ 94735  -34.400  149.817              845                TARALGA (P.O.)
+ 94736  -33.817  150.917               61 SURF           PROSPECT DAM
+ 94738  -32.067  150.933              216 SURF           SCONE SCS
+ 94739  -32.483  150.900               90                JERRYS PLAINS
+ 99684   51.733   -1.117               67                WHEATLEY
+ 99685   51.833    0.050               48                WIDFORD
+ 99686   52.233   -3.200              320                BREAK ITS NECK FALLS
+ 99689   52.650   -3.600              265                LLANBRYNMAIR
+ 99691   51.583   -3.617               83                LLETY BRONGU
+ 99705   52.417   15.150              140                WEDRZYN TRAINING AREA
+ 99707   54.550   16.617                5                USTKA TRAINING AREA
+ 99817  -45.033  169.683              370                LAUDER UPPER AIR
+ 99850   31.833   36.783              522                MWAFFAQ SALTI AB AL AZRAQ
+ 99881   17.667   54.017              479                THUMRAIT AIRFIELD
+ 99888   36.700   67.200              378                MAZAR-I-SHARIF
+ 99940   59.267   24.217               21                AEMARI AB
+ 99941   51.483   14.900              135                OBERLAUSITZ TRAINING AREA, WERDECK
+ 99980   16.717   -2.983              261                CAMP NOBEL TIMBUKTU
+ 99999  

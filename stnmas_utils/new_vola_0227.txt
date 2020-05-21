@@ -1,0 +1,17 @@
+RegionId	RegionName	CountryArea	CountryCode	StationId	IndexNbr	IndexSubNbr	StationName	Latitude	Longitude	Hp	HpFlag	Hha	HhaFlag	PressureDefId	SO-1	SO-2	SO-3	SO-4	SO-5	SO-6	SO-7	SO-8	ObsHs	UA-1	UA-2	UA-3	UA-4	ObsRems
+5	South-West Pacific	Philippines	PHL	0-20000-0-98836	98836	0	ZAMBOANGA	06 55 02N	122 03 59E	6.00		6.90		mean sea level														Climatological station, Surface land meteorological station (SYNOP), GOS, RBSN(S), CLIMAT(C), GSN, RBCN
+5	South-West Pacific	Philippines	PHL	0-20000-0-98851	98851	0	GENERAL SANTOS	06 03 26N	125 06 11E	133.00		132.20		mean sea level														Climatological station, Surface land meteorological station (SYNOP), GSN, RBCN, GOS, CLIMAT(C)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98753	98753	0	DAVAO AIRPORT	07 07 39N	125 39 18E	18.00		18.00		mean sea level														Surface land meteorological station (SYNOP), GOS, RBSN(S), CLIMAT(C)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98712	98712	0	BUGSUK	08 11 00N	117 18 00E			2.00																Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98741	98741	0	DIPOLOG	08 35 58N	123 20 37E	5.00		3.70		mean sea level														Surface land meteorological station (SYNOP), GOS, CLIMAT(C), RBSN(S)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98746	98746	0	COTOBATO	07 09 42N	124 12 53E	62.00		44.90		mean sea level														Surface land meteorological station (SYNOP), CLIMAT(C), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98747	98747	0	LUMBIA AIRPORT	08 24 32N	124 36 43E	188.00		186.00		mean sea level														Surface land meteorological station (SYNOP), RBSN(S), GOS, CLIMAT(C)
+6	Europe	Norway	NOR	0-20000-0-01001	01001	0	JAN MAYEN (1001-0)	70 55 59N	008 40 00W	9.40		10.00		mean sea level														Climatological station, Surface land meteorological station (SYNOP), RBCN, RBSN(S), GOS, GSN, CLIMAT(C)
+6	Europe	Norway	NOR	0-20001-0-01001	01001	1	JAN MAYEN (1001-1)	70 56 23N	008 40 04W			9.00																Upper-air / Radiosonde station, RBSN(T), GOS, GUAN
+6	Europe	Belgium	BEL	0-20000-0-06431	06431	0	GENT/INDUSTRIE-ZONE	51 10 50N	003 48 15E	8.00		6.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Germany	DEU	0-20000-0-10852	10852	0	AUGSBURG	48 25 31N	010 56 31E			461.40																Agricultural meteorological station, Automatic weather station (AWS), Climatological station, Cryosphere station, Precipitation station, Radiation station, Surface land meteorological station (SYNOP), GOS, GCW, CLIMAT(C), RBCN, RBSN(S)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98334	98334	0	BALER RADAR	15 04 06N	121 07 06E	178.00		178.20		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98336	98336	0	CASIGURAN	16 15 54N	122 07 44E	4.00		7.00		mean sea level														Surface land meteorological station (SYNOP), RBSN(S), GOS, CLIMAT(C)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98426	98426	0	SUBIC BAY WEATHER STATION	14 47 16N	120 16 00E	19.00		19.07		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98427	98427	0	TAYABAS	14 01 06N	121 35 48E	158.00		137.70		mean sea level														Surface land meteorological station (SYNOP), CLIMAT(C), GOS
+

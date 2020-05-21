@@ -1,0 +1,14 @@
+RegionId	RegionName	CountryArea	CountryCode	StationId	IndexNbr	IndexSubNbr	StationName	Latitude	Longitude	Hp	HpFlag	Hha	HhaFlag	PressureDefId	SO-1	SO-2	SO-3	SO-4	SO-5	SO-6	SO-7	SO-8	ObsHs	UA-1	UA-2	UA-3	UA-4	ObsRems
+5	South-West Pacific	Philippines	PHL	0-20000-0-98836	98836	0	ZAMBOANGA	06 54 00N	122 04 00E			6.90																Climatological station, Surface land meteorological station (SYNOP), GOS, RBSN(S), CLIMAT(C), GSN, RBCN
+5	South-West Pacific	Philippines	PHL	0-20000-0-98851	98851	0	GENERAL SANTOS	06 03 00N	125 06 00E			132.00																Climatological station, Precipitation station, Surface land meteorological station (SYNOP), GSN, RBCN, GOS, CLIMAT(C)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98753	98753	0	DAVAO AIRPORT	07 07 00N	124 39 00E			18.00																Surface land meteorological station (SYNOP), GOS, RBSN(S), CLIMAT(C)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98712	98712	0	BUGSUK	08 11 00N	117 18 00E			2.00																Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98741	98741	0	DIPOLOG	08 36 00N	123 21 00E	5.00		3.70		mean sea level														Surface land meteorological station (SYNOP), GOS, CLIMAT(C), RBSN(S)
+5	South-West Pacific	Philippines	PHL	0-20000-0-98746	98746	0	COTOBATO	07 09 42N	124 12 53E	62.00		44.90		mean sea level														Surface land meteorological station (SYNOP), CLIMAT(C), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98747	98747	0	LUMBIA AIRPORT	08 24 32N	124 36 43E	188.00		186.00		mean sea level														Surface land meteorological station (SYNOP), RBSN(S), GOS, CLIMAT(C)
+6	Europe	Norway	NOR	0-20000-0-01001	01001	0	JAN MAYEN (1001-0)	70 55 59N	008 40 00W	9.40		10.00		mean sea level														Climatological station, Surface land meteorological station (SYNOP), RBCN, RBSN(S), GOS, GSN, CLIMAT(C)
+6	Europe	Norway	NOR	0-20001-0-01001	01001	1	JAN MAYEN (1001-1)	70 56 23N	008 40 04W			9.00																Upper-air / Radiosonde station, RBSN(T), GOS, GUAN
+1	Africa	Algeria	DZA	0-20000-0-60511	60511	0	TIARET	35 21 00N	001 28 00E	978.00		989.00		850 HPA														Climatological station, Surface land meteorological station (SYNOP), RBCN, GOS, RBSN(S), CLIMAT(C)
+4	North America, Central America and the Caribbean	Nicaragua	NIC	0-20000-0-78731	78731	0	NANDAIME	11 43 00N	086 03 00W	95.00				mean sea level														Surface land meteorological station (SYNOP), GOS
+4	North America, Central America and the Caribbean	Nicaragua	NIC	0-20000-0-78732	78732	0	MASATEPE	11 54 00N	086 09 00W	450.00				mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Philippines	PHL	0-20000-0-98333	98333	0	BALER	15 45 36N	121 33 50E			4.00																Precipitation station, Surface land meteorological station (SYNOP), Weather radar, WRO, GOS, CLIMAT(C)

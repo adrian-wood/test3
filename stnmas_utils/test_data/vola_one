@@ -1,0 +1,30 @@
+RegionId	RegionName	CountryArea	CountryCode	StationId	IndexNbr	IndexSubNbr	StationName	Latitude	Longitude	Hp	HpFlag	Hha	HhaFlag	PressureDefId	SO-1	SO-2	SO-3	SO-4	SO-5	SO-6	SO-7	SO-8	ObsHs	UA-1	UA-2	UA-3	UA-4	ObsRems
+6	Europe	Norway	NOR	0-20000-0-01001	01001	0	JAN MAYEN (1001-0)	70 55 59N	008 40 00W	9.40		10.00		mean sea level														Climatological station, Surface land meteorological station (SYNOP), RBCN, RBSN(S), GOS, GSN, CLIMAT(C)
+6	Europe	Norway	NOR	0-20001-0-01001	01001	1	JAN MAYEN (1001-1)	70 56 23N	008 40 04W			9.00																Upper-air / Radiosonde station, RBSN(T), GOS, GUAN
+6	Europe	Norway	NOR	0-20000-0-01002	01002	0	VERLEGENHUKEN	80 03 33N	016 15 00E	6.50		8.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01003	01003	0	HORNSUND	77 00 00N	015 30 00E	10.07		10.00		mean sea level														Surface land meteorological station (SYNOP), GOS, RBSN(S)
+6	Europe	Norway	NOR	0-20000-0-01006	01006	0	EDGEOYA	78 15 02N	022 49 21E	12.50		14.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01008	01008	0	SVALBARD AP	78 15 00N	015 28 00E	26.82		28.00		mean sea level														Climatological station, Surface land meteorological station (SYNOP), CLIMAT(C), RBCN, RBSN(S), GSN, GOS
+6	Europe	Norway	NOR	0-20000-0-01009	01009	0	KARL XII OYA	80 39 10N	025 00 28E	5.00		5.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01010	01010	0	ANDOYA (1010-0)	69 18 26N	016 07 51E	13.10		10.00		mean sea level														Surface land meteorological station (SYNOP), GOS, RBSN(S)
+6	Europe	Norway	NOR	0-20001-0-01010	01010	1	ANDOYA (1010-1)	69 18 55N	016 07 51E			10.00																Upper-air / Radiosonde station, GOS, RBSN(T)
+6	Europe	Norway	NOR	0-20000-0-01011	01011	0	KVITOYA	80 04 20N	031 30 00E	10.00		10.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01013	01013	0	ISFJORD RADIO	78 03 45N	013 37 09E	9.00		7.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01015	01015	0	HEKKINGEN LH	69 36 01N	017 49 52E			33.00																GOS
+6	Europe	Norway	NOR	0-20000-0-01016	01016	0	KONGSOYA	78 55 39N	028 53 31E	20.00		20.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01017	01017	0	AKSELOYA	77 41 19N	014 47 02E	6.50		6.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01018	01018	0	ANDOYA-TROLLTINDEN	69 14 29N	016 00 11E			436.00																Precipitation station, Weather radar, GOS, WRO
+6	Europe	Norway	NOR	0-20000-0-01020	01020	0	SORKAPPOYA	76 28 39N	016 32 55E	10.00		10.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+6	Europe	Norway	NOR	0-20000-0-01036	01036	0	NORDNESFJELLET	69 34 26N	020 25 31E			700.00																GOS
+6	Europe	Norway	NOR	0-20000-0-01046	01046	0	SORKJOSEN	69 47 19N	020 57 19E	4.87		6.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94588	94588	0	GLEN INNES AIRPORT AWS	29 40 41S	151 41 38E	1044.90		1046.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94589	94589	0	YAMBA PILOT STATION	29 26 00S	153 21 48E	27.90		27.40		mean sea level														Climatological station, Surface land meteorological station (SYNOP), GSN, CLIMAT(C), RBCN, GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94592	94592	0	COOLANGATTA	28 10 05S	153 30 19E	4.70		6.40		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94663	94663	0	WAROOKA	34 59 26S	137 23 58E	53.70		53.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94665	94665	0	MAITLAND	34 22 28S	137 40 24E	186.00		185.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94666	94666	0	WARBURTO POINT	34 00 15S	137 31 41E	1.00		1.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94735	94735	0	TARALGA POST OFFICE	34 24 17S	149 49 11E	845.00		845.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94736	94736	0	PROSPECT RESERVOIR	33 49 09S	150 54 46E	61.00		61.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94738	94738	0	SCONE SCS	32 03 48S	150 55 38E	216.00		216.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+5	South-West Pacific	Australia	AUS	0-20000-0-94739	94739	0	JERRYS PLAINS POST OFFICE	32 29 50S	150 54 33E	90.00		87.00		mean sea level														Surface land meteorological station (SYNOP), GOS
+
