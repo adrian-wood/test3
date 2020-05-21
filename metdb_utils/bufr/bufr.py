@@ -207,6 +207,22 @@ class TableD:
         else:
             cls.tabled[descriptor] = {'seq': sequence, 'title': text}
             print(f"sequence {descriptor} added")
+    
+    @classmethod
+    def remove(cls, descriptor):
+        """Remove a sequence from Table D.
+
+            Args:
+
+            * descriptor (str) : F=3 descriptor
+            
+         """
+        if descriptor in cls.tabled:
+            print(f"Removing {descriptor} from Table D")
+            del cls.tabled[descriptor]
+        else:
+            print(f"{descriptor} not found in Table D")
+
 
     @classmethod
     def writeTabled(cls, filename):
@@ -222,7 +238,7 @@ class TableD:
         try:
             outp = open(filename, "w+")
             outp.write(cls.header)
-            outp.write(newline)
+            outp.write(' ' + newline)
 
             for k, v in sorted(cls.tabled.items()):
                 desc = k
@@ -232,10 +248,16 @@ class TableD:
                 if text:
                     outp.write(f"{' ':10s}{text:60s}{newline}")
                 outp.write(f"{desc:6s}{ndes:3d} ")
+                count = 0
                 for i in range(0, ndes, 10):
                     for p in seq[i:i + 10]:
                         outp.write(f"{p:7s}")
-                    outp.write(f"  {newline}")
+                        count += 1
+                    outp.write(f" ")
+                    if count == ndes:
+                        outp.write(f" {newline}")
+                    else:
+                        outp.write(f"{newline}")
                 outp.write(f"  {newline}")
 
         except IOError as err:

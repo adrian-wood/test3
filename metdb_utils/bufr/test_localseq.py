@@ -61,6 +61,29 @@ class Test_localseq(unittest.TestCase):
         # comments
         self.assertEqual(len(s['316200']), 41)
 
+    def test_merge_ascat(self):
+        '''' Input with no comments after single descriptors    '''
+
+        with patch('sys.stdout', new=StringIO()) as out:
+            s = localseq.read_localseq('test_data/ascat_merge')
+
+        # File contains 1 sequence
+        self.assertEqual(len(s), 1)
+
+        # Check the length 
+        self.assertEqual(len(s['312210']), 120)
+
+    def test_merge_atovs(self):
+        '''' Complicated input!    '''
+
+        with patch('sys.stdout', new=StringIO()) as out:
+            s = localseq.read_localseq('test_data/atovs_merge')
+
+        # File contains 3 sequences
+        self.assertEqual(len(s), 3)
+
+        # Check the length of the last one
+        self.assertEqual(len(s['310224']), 232)
 
 if __name__ == '__main__':
     unittest.main()

@@ -62,7 +62,7 @@ def read_localseq(filename):
     found = False  # set true when we find the start of a sequence
 
     # regex to find groups of digits delimited by commas or spaces
-    pattern = re.compile(r'(\d+)[, ]')
+    pattern = re.compile(r'(\d+)[, \n]')
 
     # loop over lines
     for line in lines:
@@ -90,9 +90,14 @@ def read_localseq(filename):
         # sequence.
         else:
             # e.g. 001007, 002019  SATELLITE IDENTIFIER, SATELLITE INSTRUMENTS
-            # descriptor string delimited by two or more spaces before text
-            delimit = line.find('  ')
-            items = re.findall(pattern, line[:delimit+1])
+            # descriptor string delimited by a space before text
+            
+            delimit = re.search(r'[a-zA-Z]', line)
+            if delimit:
+                delimit = delimit.start()
+            else:
+                delimit = len(line)
+            items = re.findall(pattern, line[:delimit])
             for i in items:
                 if bufr.is_a_descriptor(i):
                     seq.append(i)

@@ -2,6 +2,10 @@ import bufr
 import os
 import unittest
 from unittest.mock import patch
+from io import StringIO
+import tempfile
+
+tables_location = '/home/moodsf/MetDB_BUFR24.0.00/tables/'
 
 class MockDevice():
     """A mock device to temporarily suppress output to stdout
@@ -15,7 +19,7 @@ class MockDevice():
 class Test_bufrD(unittest.TestCase):
 
     def setUp(self):
-        os.environ.update({'BUFR_LIBRARY': '/home/moodsf/MetDB_BUFR24.0.00/tables/'})
+        os.environ.update({'BUFR_LIBRARY': tables_location})
 
     def test_bufrD(self):
         with patch('sys.stdout', new=MockDevice()) as _:
@@ -60,6 +64,19 @@ class Test_bufrD(unittest.TestCase):
         self.assertEqual(bufr.fxy(16643), '101003')
         self.assertEqual(bufr.fxy(37888), '220000')
         self.assertEqual(bufr.fxy(49411), '301003')
+
+    def test_writeTabled(self):
+        with patch('sys.stdout', new=MockDevice()) as _:
+            tableD = bufr.TableD()
+        # write Table D out to a temporary file
+        outfile = tempfile.NamedTemporaryFile()
+        tableD.writeTabled(outfile.name)
+        outfile.seek(0)
+        # and read it back in again
+        content = outfile.read().decode() 
+        with open(tables_location + '/bufr_tabled') as base:
+            basefile = base.read()
+        self.assertEqual(content, basefile)
 
 class Test_is_a_descriptor(unittest.TestCase):
 
