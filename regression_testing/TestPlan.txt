@@ -85,3 +85,4 @@
 85  : $SCRIPTS/diff_runs.sh -m $INDIR/TROPCYCB : $INDIR/TROPCYCB : BUFR Tropcycl in Apr 2020 release                      
 86  : $SCRIPTS/diff_runs.sh -m $INDIR/TAMDAR : $INDIR/TAMDAR : TAMDAR FLYHT data Apr 2020 release to preprod          
 87  : $SCRIPTS/diff_runs.sh -m $INDIR/ALADIN : $INDIR/ALADIN : ALADIN Aeolus in Apr 2020 release
+88  : $SCRIPTS/diff_runs.sh -m $INDIR/CLIMATB : $INDIR/CLIMATB : BUFR CLIMAT data block 03 for May 2020 in Jun 2020 release
