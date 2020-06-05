@@ -33,6 +33,23 @@ class Test_lookup(unittest.TestCase):
         lnames = table.list_element_names()
         self.assertEqual(len(lnames), 31)
 
+    def test_long_elements(self):
+        '''synopt elements index                 '''
+
+        filename = 'test_data/synopt_elements'
+
+        table = ec.read_elements(filename)
+        
+        self.assertIsNotNone(table)
+        lseq = table.list_sequences()
+        self.assertEqual(len(lseq), 24)
+        lnames = table.list_element_names()
+        self.assertEqual(len(lnames), 203)
+        # check an index with replication counts that span more
+        # than one line
+        nreps = table.indexes[2].nrep
+        self.assertEqual(nreps, 27)
+
 
 if __name__ == '__main__':
     unittest.main()

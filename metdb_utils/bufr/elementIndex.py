@@ -388,7 +388,10 @@ def read_elements(filename):
             ptr += 1
             col = 1
             replications = []
-            for _ in range(nrep):
+            for i in range(nrep):
+                if i > 0 and i % 17 == 0:
+                    ptr += 1
+                    col = 1
                 replications.append(int(lines[ptr][col:col+4]))
                 col += 4
             ptr += 1

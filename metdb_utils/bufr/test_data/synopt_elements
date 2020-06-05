@@ -1,0 +1,558 @@
+1                 SEQUENCE FOR SURFACE SYNOP DATA
+                  -------------------------------
+BUFR SEQUENCES
+
+    1   1   307080
+    1   3   208022 307080 208000
+    1   3   208025 307080 208000
+    1   3   208035 307080 208000
+    1  13   301090 302031 302035 302036 302047 008002 302048 302037
+            302043 302044 101002 302045 302046  (=307080)
+    2   1   307096
+    2   2   307096 020058
+    2   3   307096 022061 020058
+    2   4   307096 004024 013012 004024
+    2   6   307096 022061 020058 004024 013012 004024
+    3   1   308009
+    3   3   308009 004025 011042
+    3   7   301093 302001 302054 008002 302055 302057 302060 (=308009)
+    4   3   307079 004025 011042
+    5   1   307086
+    5  76   307086 001023 004025 002177 101000 031001 020003 103000
+            031001 005021 020001 005021 101000 031000 302056 103000
+            031000 033041 020058 022061 101000 031000 302022 101000
+            031001 302023 103000 031001 020054 020012 020090 004025
+            013012 004025 011042 104000 031001 008021 004025 011042
+            008021 115000 031001 008021 004015 008021 004025 011001
+            011002 008021 004015 008021 004025 011001 011002 008021
+            004025 004015 103000 031001 004025 004025 020003 111000
+            031001 004025 004025 005021 005021 020054 020024 020025
+            020026 020027 020063 008021
+    6   1   307084
+    7   1   307081
+    8   1   308004
+    9   5   001001 001002 308009 004025 011042
+   10   9   301090 302031 302035 302047 302037 302038 302040 302041
+            302042
+   11   1   307090
+   12   6   301090 302031 302035 302048 302043 305006
+   13   1   307091
+
+INDEX  1         Template for fixed land surface observations
+                 --------------------------------------------
+   13   7   1        13 segments, 7 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4   2   1   3        4. Direction of cloud movement
+    5  13   0            5. Other cloud data, ground data, weather
+    6   2   1   4        6. Sunshine data
+    7   1   0            7. Precipitation sensor height
+    8   2   1   5        8. Precipitation amounts
+    9  14   0            9. Max & min temperatures, basic wind data
+   10   3   1   6       10. Gust data
+   11   4   0           11. Evaporation data
+   12   7   1   7       12. Radiation data
+   13   3   0           13. Temperature change data
+
+   -1  -1   3   2   2   2   2      <--- Replication counts
+
+INDEX  2         Template for SYNOP with supplementary information
+                 -------------------------------------------------
+   32  27   2        32 segments, 27 replications, nesting level 2
+
+    1  38   0            1. Station, instrumentation, metadata
+    2   2   2   1   2    2. Soil temperatures
+    3   1   1   1        3. (Cancel 007061)
+    4   4   1   3        4. Visibility data
+    5   2   0            5. (Cancel sensor heights)
+    6   7   1   4        6. Icing, sea temperature and wave data
+    7   4   1   5        7. Ground state and snow cover
+    8   1   0            8. Ground minimum temperature
+    9   7   1   6        9. Total cloud data
+   10   5   1   7       10. Cloud layers
+   11   5   1   8       11. Clouds below station level
+   12   2   2   9  10   12. Direction of cloud drift
+   13   1   0           13. (Cancel 008002)
+   14   5   1  11       14. Direction and elevation of cloud
+   15   1   1  12       15. Present weather
+   16   3   2  12  13   16. Past weather
+   17   5   1  14       17. Precipitation intensity and element size
+   18   8   1  15       18. Precipitation duration & 'other phenomena'
+   19   2   1  16       19. Number of lightning flashes
+   20   7   0           20. Wind data
+   21   3   1  17       21. Gust data
+   22  19   0           22. Extreme temperature data
+   23   3   1  18       23. Precipitation measurement details
+   24   2   2  18  19   24. Total precipitation
+   25   1   0           25. (Cancel sensor height)
+   26   1   1  20       26. Evaporation measurement method
+   27   3   2  20  21   27. Evaporation data
+   28   2   2  22  23   28. Sunshine data
+   29   7   2  24  25   29. Radiation data
+   30   3   1  26       30. Temperature change data
+   31   8   1  27       31. First order statistics
+   32   2   0           32. AWS quality data
+
+   -2   5  -2  -2  -2  -2  -1  -1  -2   3  -2  -2   2  -2  -2  -2   3
+   -2   5  -2   2  -2   2  -2   2  -2  -2    <--- Replication counts
+
+INDEX  3         Template for surface marine observations
+                 ----------------------------------------
+    8   4   1        8 segments, 4 replications, no nesting
+
+    1  38   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3  19   0            3. Icing, sea temperature and some wave data
+    4   3   1   2        4. Swell wave information
+    5   5   0            5. Present and past weather
+    6   2   1   3        6. Precipitation data
+    7  16   0            7. Extreme temperatures and wind data
+    8   3   1   4        8. Maximum gust data
+
+   -1   2   2   2       <--- Replication counts
+
+INDEX  4         Template for maritime or coastal surface observations
+                 -----------------------------------------------------
+   20  13   2        19 segments, 13 replications, nesting level 2
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4   2   2   3   4    4. Direction of cloud movement
+    5   1   0            5. (Cancel vertical significance)
+    6   5   1   5        6. Cloud elevation and direction
+    7   3   0            7. Ground state data
+    8   2   1   6        8. State of sea and seawards visibility
+    9   4   1   7        9. Sea temperature data
+   10   8   1   8       10. Ice data
+   11   4   0           11. Present and past weather
+   12   2   1   9       12. Sunshine data
+   13   1   0           13. Precipitation sensor height
+   14   2   1  10       14. Precipitation amounts
+   15  14   0           15. Max & min temperatures, basic wind data
+   16   3   1  11       16. Gust data
+   17   4   0           17. Evaporation data
+   18   7   1  12       18. Radiation data
+   19   3   1  13       19. Temperature change data
+   20   2   0           20. Maximum 10-minute mean wind speed
+                            Replication counts on next line
+   -1  -1  -2   3  -2  -2  -2  -2   2   2   2  -1  -2
+
+INDEX  5         Template for fixed land SYNOPs for use in WMO RA VI
+                 ---------------------------------------------------
+   11   6   1        11 segments, 6 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4  24   0            4. Ground data, dangerous weather, past weather
+    5   2   1   3        5. Sunshine data
+    6   1   0            6. Precipitation sensor height
+    7   2   1   4        7. Precipitation amounts
+    8  14   0            8. Max & min temperatures, basic wind data
+    9   3   1   5        9. Gust data
+   10   4   0           10. Evaporation data
+   11   7   1   6       11. Radiation data
+
+   -1  -1   2   2   2   2      <--- Replication counts
+
+INDEX  6         Template for fixed land SYNOPs for use in WMO RA IV
+                 ---------------------------------------------------
+   15   8   1        15 segments, 8 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4   2   1   3        4. Direction of cloud movement
+    5  10   0            5. Other cloud data, ground data
+    6   0   1   4        6. Signify characters (not returned to user)
+    7   4   0            7. Present and past weather
+    8   2   1   5        8. Sunshine data
+    9   1   0            9. Precipitation sensor height
+   10   2   1   6       10. Precipitation amounts
+   11  14   0           11. Max & min temperatures, basic wind data
+   12   3   1   7       12. Gust data
+   13   4   0           13. Evaporation data
+   14   7   1   8       14. Radiation data
+   15   3   0           15. Temperature change data
+
+   -1  -1   3  -1   2   2   2   2      <--- Replication counts
+
+INDEX  7         Template for fixed land SYNOPs for use in WMO RA I
+                 --------------------------------------------------
+   13   7   1        12 segments, 7 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4   2   1   3        4. Direction of cloud movement
+    5  24   0            5. Other cloud & ground data, weather, locusts
+    6   2   1   4        6. Sunshine data
+    7   1   0            7. Precipitation sensor height
+    8   2   1   5        8. Precipitation amounts
+    9  14   0            9. Max & min temperatures, basic wind data
+   10   3   1   6       10. Gust data
+   11   4   0           11. Evaporation data
+   12   7   1   7       12. Radiation data
+   13   3   0           13. Temperature change data
+
+   -1  -1   3   2   2   2   2      <--- Replication counts
+
+INDEX  8         Basic template for ship SYNOPs
+                 ------------------------------
+    1   0   0       1 segment, no replications, no nesting
+
+    1  32   0            1. Station, co-ordinate and observed data
+
+INDEX  9         Surface marine observations with WMO block and station
+                 ------------------------------------------------------
+    9   4   1        9 segments, 4 replications, no nesting
+
+    1  40   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3  19   0            3. Icing, sea temperature and some wave data
+    4   3   1   2        4. Swell wave information
+    5   5   0            5. Present and past weather
+    6   2   1   3        6. Precipitation data
+    7  16   0            7. Extreme temperatures and wind data
+    8   3   1   4        8. Maximum gust data
+    9   2   0            9. Maximum 10-minute mean wind speed
+
+   -1   2   2   2       <--- Replication counts
+
+INDEX 10         Shorter template for fixed land surface observations
+                 ----------------------------------------------------
+    7   4   1         7 segments, 4 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   2   1   2        3. Direction of cloud movement
+    4   8   0            4. Ground data, past and present weather
+    5   2   1   3        5. Precipitation amounts
+    6  14   0            6. Max & min temperatures, basic wind data
+    7   3   1   4        7. Gust data
+
+   -1  -1   2   2       <--- Replication counts
+
+INDEX 11         Template for SYNOPs from a mobile land station
+                 ----------------------------------------------
+   13   7   1        13 segments, 7 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   5   1   2        3. Clouds with bases below station level
+    4   2   1   3        4. Direction of cloud movement
+    5  13   0            5. Other cloud & ground data, weather
+    6   2   1   4        6. Sunshine data
+    7   1   0            7. (Cancel sensor height)
+    8   2   1   5        8. Precipitation data
+    9  14   0            9. Max & min temperatures, basic wind data
+   10   3   1   6       10. Gust data
+   11   4   0           11. Evaporation data
+   12   7   1   7       12. Radiation data
+   13   3   0           13. Temperature change data
+
+   -1  -1   3   2   2   2   2     <--- Replication counts
+
+INDEX 12         Template for automatic surface observations
+                 --------------------------------------------
+    9   4   1        9 segments, 4 replications, no nesting
+
+    1  36   0            1. Station, temperature, humidity, cloud
+    2   4   1   1        2. Details of cloud layers
+    3   9   0            3. Other cloud data, present and past weather
+    4   2   1   2        4. Sunshine data
+    5   1   0            5. Precipitation sensor height
+    6   2   1   3        6. Precipitation amounts
+    7  14   0            7. Max & min temperatures, basic wind data
+    8   3   1   4        8. Gust data
+    9   7   0            9. Air & water temperatures, precipitation
+
+   -1   2   2   2           <--- Replication counts
+
+INDEX 13         Template for surface observations from 1-hour period
+                 ----------------------------------------------------
+   23  17   2        23 segments, 17 replications, nesting level 2
+
+    1  37   0            1. Station data, pressures, temperatures
+    2   2   2   1   2    2. Soil temperatures
+    3   1   1   1        3. (Cancel 007061)
+    4   4   1   3        4. Visibility data
+    5   2   0            5. (Cancel sensor heights)
+    6   7   1   4        6. Icing, sea temperature and wave data
+    7   4   1   5        7. Ground state and snow cover
+    8   1   1   6        8. Total cloud amount
+    9   5   2   6   7    9. Cloud layers
+   10   4   1   8       10. Present and past weather
+   11   5   1   9       11. Precipitation intensity and element size
+   12   8   1  10       12. Precipitation duration & 'other phenomena'
+   13   7   0           13. Wind data
+   14   3   1  11       14. Gust data
+   15  12   0           15. Extreme temperature data
+   16   5   1  12       16. Precipitation
+   17   1   0           17. (Cancel sensor height)
+   18   3   1  13       18. Evaporation
+   19   2   1  14       19. Sunshine data
+   20   7   1  15       20. Radiation data
+   21   2   1  16       21. Number of lightning flashes
+   22   8   1  17       22. First order statistics
+   23   2   0           23. AWS quality data
+                            Replication counts on next line
+   -2   5  -2  -2  -2  -2   4  -1  -2  -2   2  -1  -1  -1  -1  -2  -2
+
+ELEMENT NAMES AND LOCATIONS
+
+            ELEMENT NAME           T ID  S1  P1  S2  P2  S3  P3  S4  P4  S5  P5  S6  P6  S7  P7  S8  P8  S9  P9  10  10  11  11  12  12  13  13
+ <-------------------------------> - --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  -- 
+ WMO_BLCK_NMBR                       I2   1   1   1   1   0   0   1   1   1   1   1   1   1   1   0   0   1   1   1   1   0   0   1   1   1   3    WMO_BLCK_NMBR                       
+ WMO_STTN_NMBR                       I3   1   2   1   2   0   0   1   2   1   2   1   2   1   2   0   0   1   2   1   2   0   0   1   2   1   4    WMO_STTN_NMBR                       
+ WMO_REGN_NMBR                            0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   2   0   0   0   0    WMO_REGN_NMBR                       
+ WMO_STTN_NAME                     C      1   3   1   3   0   0   1   3   1   3   1   3   1   3   0   0   0   0   1   3   0   0   1   3   1   5    WMO_STTN_NAME                       
+ CALL_SIGN                         C C1   0   0   0   0   1   1   0   0   0   0   0   0   0   0   1   1   1   3   0   0   1   1   0   0   0   0    CALL_SIGN                           
+ SHIP_DRCTN                               0   0   0   0   1   2   0   0   0   0   0   0   0   0   1   2   1   4   0   0   0   0   0   0   0   0    SHIP_DRCTN                          
+ SHIP_SPED                                0   0   0   0   1   3   0   0   0   0   0   0   0   0   1   3   1   5   0   0   0   0   0   0   0   0    SHIP_SPED                           
+ STTN_RPRT_TYPE                           1   4   1   4   1   4   1   4   1   4   1   4   1   4   1   4   1   6   1   4   1   3   1   4   1   6    STTN_RPRT_TYPE                      
+ YEAR                                T1   1   5   1   5   1   5   1   5   1   5   1   5   1   5   1   5   1   7   1   5   1   4   1   5   1   7    YEAR                                
+ MNTH                                T2   1   6   1   6   1   6   1   6   1   6   1   6   1   6   1   6   1   8   1   6   1   5   1   6   1   8    MNTH                                
+ DAY                                 T3   1   7   1   7   1   7   1   7   1   7   1   7   1   7   1   7   1   9   1   7   1   6   1   7   1   9    DAY                                 
+ HOUR                                T4   1   8   1   8   1   8   1   8   1   8   1   8   1   8   1   8   1  10   1   8   1   7   1   8   1  10    HOUR                                
+ MINT                                T5   1   9   1   9   1   9   1   9   1   9   1   9   1   9   1   9   1  11   1   9   1   8   1   9   1  11    MINT                                
+ LTTD                                LY   1  10   1  10   1  10   1  10   1  10   1  10   1  10   1  10   1  12   1  10   1   9   1  10   1  12    LTTD                                
+ LNGD                                LX   1  11   1  11   1  11   1  11   1  11   1  11   1  11   1  11   1  13   1  11   1  10   1  11   1  13    LNGD                                
+ STTN_HGHT                                1  12   1  12   1  12   1  12   1  12   1  12   1  12   0   0   1  14   1  12   1  11   1  12   1  14    STTN_HGHT                           
+ PESR_SNSR_HGHT                           1  13   1  13   1  13   1  13   1  13   1  13   1  13   0   0   1  15   1  13   1  12   1  13   1  15    PESR_SNSR_HGHT                      
+ STTN_ELVN_QLTY                           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  13   0   0   0   0    STTN_ELVN_QLTY                      
+ STTE_IDNY                                0   0   1  14   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   1    STTE_IDNY                           
+ NTNL_STTN_NMBR                           0   0   1  15   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   2    NTNL_STTN_NMBR                      
+ SRFC_TYPE                                0   0   1  16   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  16    SRFC_TYPE                           
+ PRST_WTHR_DTCG_SYTM                      0   0   1  17   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  17    PRST_WTHR_DTCG_SYTM                 
+ SPLTY_PRST_WTHR_SNSR                     0   0   1  18   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  18    SPLTY_PRST_WTHR_SNSR                
+ VSBLY_MESRT_SYTM                         0   0   1  19   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  19    VSBLY_MESRT_SYTM                    
+ CLOD_DTCN_SYTM                           0   0   1  20   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  20    CLOD_DTCN_SYTM                      
+ LGTNG_SNSR_TYPE                          0   0   1  21   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  21    LGTNG_SNSR_TYPE                     
+ SKY_CNDN_ALGM                            0   0   1  22   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  22    SKY_CNDN_ALGM                       
+ PRCTN_DTCN_CPBLY                         0   0   1  23   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  23    PRCTN_DTCN_CPBLY                    
+ WTHR_DTCN_CPBLY                          0   0   1  24   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  24    WTHR_DTCN_CPBLY                     
+ OBSRN_DTCN_CPBLY                         0   0   1  25   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  25    OBSRN_DTCN_CPBLY                    
+ LGTNG_DSCTN_CPBLY                        0   0   1  26   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1  26    LGTNG_DSCTN_CPBLY                   
+ STTN_PESR                                1  14   1  27   1  14   1  14   1  14   1  14   1  14   1  12   1  16   1  14   1  14   1  14   1  27    STTN_PESR                           
+ MSL_PESR                                 1  15   1  28   1  15   1  15   1  15   1  15   1  15   1  13   1  17   1  15   1  15   1  15   1  28    MSL_PESR                            
+ Q3HOUR_STTN_LEVL_PESR_DFFRC              1  16   1  29   1  16   1  16   1  16   1  16   1  16   1  14   1  18   1  16   1  16   1  16   1  29    Q3HOUR_STTN_LEVL_PESR_DFFRC         
+ Q3HOUR_PESR_TNDY                         1  17   1  30   1  17   1  17   1  17   1  17   1  17   1  15   1  19   1  17   1  17   1  17   1  30    Q3HOUR_PESR_TNDY                    
+ Q24HOUR_SRFC_PESR_DFFRC                  1  18   1  31   0   0   1  18   1  18   1  18   1  18   0   0   0   0   1  18   1  18   1  18   0   0    Q24HOUR_SRFC_PESR_DFFRC             
+ STND_PESR_LEVL                           1  19   1  32   0   0   1  19   1  19   1  19   1  19   0   0   0   0   1  19   1  19   1  19   1  31    STND_PESR_LEVL                      
+ GPTL_HGHT                                1  20   1  33   0   0   1  20   1  20   1  20   1  20   0   0   0   0   1  20   1  20   1  20   1  32    GPTL_HGHT                           
+ TMPR_SNSR_HGHT                           1  21   1  34   1  18   1  21   1  21   1  21   1  21  -2   2   1  20   1  21   1  21   1  21   1  33    TMPR_SNSR_HGHT                      
+ TMPR_SNSR_HGHT_WATR                      0   0   1  35   1  19   0   0   0   0   0   0   0   0   0   0   1  21   0   0   0   0   0   0   1  34    TMPR_SNSR_HGHT_WATR                 
+ SRFC_AIR_TMPR                            1  22   1  36   1  20   1  22   1  22   1  22   1  22   1  18   1  22   1  22   1  22   1  22   1  35    SRFC_AIR_TMPR                       
+ WET_BULB_RCRDG_IDNY                      0   0   0   0   1  21   0   0   0   0   0   0   0   0   0   0   1  23   0   0   0   0   0   0   0   0    WET_BULB_RCRDG_IDNY                 
+ WET_BULB_TMPR                            0   0   0   0   1  22   0   0   0   0   0   0   0   0   0   0   1  24   0   0   0   0   0   0   0   0    WET_BULB_TMPR                       
+ SRFC_DEW_PONT_TMPR                       1  23   1  37   1  23   1  23   1  23   1  23   1  23   1  19   1  25   1  23   1  23   1  23   1  36    SRFC_DEW_PONT_TMPR                  
+ SRFC_RLTV_HUMDY                          1  24   1  38   1  24   1  24   1  24   1  24   1  24   1  20   1  26   1  24   1  24   1  24   1  37    SRFC_RLTV_HUMDY                     
+ SOIL_TMPR_FLAG                          -2   0   0   1  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0   0   1    SOIL_TMPR_FLAG                      
+ DPTH_BELW_SRFC                           0   0   2   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   2   1    DPTH_BELW_SRFC                      
+ SOIL_TMPR                                0   0   2   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   2   2    SOIL_TMPR                           
+ VSBLY_FLAG                               0   0   0   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   3    VSBLY_FLAG                          
+ VSBLY_SNSR_HGHT                          1  25   4   1   1  25   1  25   1  25   1  25   1  25   0   0   1  27   1  25   1  25   1  25   4   1    VSBLY_SNSR_HGHT                     
+ VSBLY_SNSR_HGHT_WATR                     0   0   4   2   1  26   0   0   0   0   0   0   0   0   0   0   1  28   0   0   0   0   0   0   4   2    VSBLY_SNSR_HGHT_WATR                
+ VSBLY_ATRT                               0   0   4   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   4   3    VSBLY_ATRT                          
+ HRZL_VSBLY                               1  26   4   4   1  27   1  26   1  26   1  26   1  26   1  21   1  29   1  26   1  26   1  26   4   4    HRZL_VSBLY                          
+ ICE_FLAG                                -2   0   0   4  -2   1  -2   1  -2   0  -2   0  -2   0  -2   0  -2   1  -2   0  -2   0  -2   0   0   4    ICE_FLAG                            
+ ICE_THKNS                                0   0   6   1   3   2  10   1   0   0   0   0   0   0   0   0   3   2   0   0   0   0   0   0   6   1    ICE_THKNS                           
+ ICE_ACRTN_RATE                           0   0   6   2   3   3  10   2   0   0   0   0   0   0   0   0   3   3   0   0   0   0   0   0   6   2    ICE_ACRTN_RATE                      
+ ORGN_SHIP_ICE_ACRN                       0   0   0   0   3   4  10   3   0   0   0   0   0   0   0   0   3   4   0   0   0   0   0   0   0   0    ORGN_SHIP_ICE_ACRN                  
+ CNTRN_SEA_ICE                            0   0   0   0   3   5  10   4   0   0   0   0   0   0   0   0   3   5   0   0   0   0   0   0   0   0    CNTRN_SEA_ICE                       
+ LAND_ORGN_ICE_AMNT                       0   0   0   0   3   6  10   5   0   0   0   0   0   0   0   0   3   6   0   0   0   0   0   0   0   0    LAND_ORGN_ICE_AMNT                  
+ SEA_ICE_STTN                             0   0   0   0   3   7  10   6   0   0   0   0   0   0   0   0   3   7   0   0   0   0   0   0   0   0    SEA_ICE_STTN                        
+ SEA_ICE_AGE                              0   0   0   0   3   8  10   7   0   0   0   0   0   0   0   0   3   8   0   0   0   0   0   0   0   0    SEA_ICE_AGE                         
+ SEA_ICE_EDGE_DRCTN                       0   0   0   0   3   9  10   8   0   0   0   0   0   0   0   0   3   9   0   0   0   0   0   0   0   0    SEA_ICE_EDGE_DRCTN                  
+ TMPR_SALNY_RCRDG_IDNY                    0   0   6   3   3  10   9   1   0   0   0   0   0   0   0   0   3  10   0   0   0   0   0   0   6   3    TMPR_SALNY_RCRDG_IDNY               
+ DPTH_SEA_TMPR_MESRT                      0   0   0   0   3  11   9   2   0   0   0   0   0   0   0   0   3  11   0   0   0   0   0   0   0   0    DPTH_SEA_TMPR_MESRT                 
+ SEA_SRFC_TMPR                            0   0   6   4   3  12   9   3   0   0   0   0   0   0   1  32   3  12   0   0   0   0   0   0   6   4    SEA_SRFC_TMPR                       
+ WAVE_DRCTN                               0   0   6   5   3  14   0   0   0   0   0   0   0   0   0   0   3  14   0   0   0   0   0   0   6   5    WAVE_DRCTN                          
+ WAVE_PERD                                0   0   6   6   3  15   0   0   0   0   0   0   0   0   0   0   3  15   0   0   0   0   0   0   6   6    WAVE_PERD                           
+ WAVE_HGHT                                0   0   6   7   3  16   0   0   0   0   0   0   0   0   0   0   3  16   0   0   0   0   0   0   6   7    WAVE_HGHT                           
+ WIND_WAVE_DRCTN                          0   0   0   0   3  17   0   0   0   0   0   0   0   0   0   0   3  17   0   0   0   0   0   0   0   0    WIND_WAVE_DRCTN                     
+ WIND_WAVE_PERD                           0   0   0   0   3  18   0   0   0   0   0   0   0   0   0   0   3  18   0   0   0   0   0   0   0   0    WIND_WAVE_PERD                      
+ WIND_WAVE_HGHT                           0   0   0   0   3  19   0   0   0   0   0   0   0   0   0   0   3  19   0   0   0   0   0   0   0   0    WIND_WAVE_HGHT                      
+ SWEL_WAVE_DRCTN                          0   0   0   0   4   1   0   0   0   0   0   0   0   0   0   0   4   1   0   0   0   0   0   0   0   0    SWEL_WAVE_DRCTN                     
+ SWEL_WAVE_PERD                           0   0   0   0   4   2   0   0   0   0   0   0   0   0   0   0   4   2   0   0   0   0   0   0   0   0    SWEL_WAVE_PERD                      
+ SWEL_WAVE_HGHT                           0   0   0   0   4   3   0   0   0   0   0   0   0   0   0   0   4   3   0   0   0   0   0   0   0   0    SWEL_WAVE_HGHT                      
+ GRND_STTE_FLAG                           0   0   0   5  -2   0   0   0   0   0   0   0   0   0  -2   0  -2   0   0   0   0   0  -2   0   0   5    GRND_STTE_FLAG                      
+ GRND_STTE_MESRT_MTHD                     0   0   7   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   7   1    GRND_STTE_MESRT_MTHD                
+ GRND_STTE_IDNY                           5   7   7   2   0   0   7   1   4   2   5   7   5   7   0   0   0   0   4   1   5   7   0   0   7   2    GRND_STTE_IDNY                      
+ SNOW_DPTH_MESRT_MTHD                     0   0   7   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   7   3    SNOW_DPTH_MESRT_MTHD                
+ SNOW_DPTH                                5   8   7   4   0   0   7   2   4   3   5   8   5   8   0   0   0   0   4   2   5   8   0   0   7   4    SNOW_DPTH                           
+ Q12HOUR_MNMM_GRND_TMPR                   5   9   8   1   0   0   7   3   4   4   5   9   5   9   0   0   0   0   4   3   5   9   0   0   0   0    Q12HOUR_MNMM_GRND_TMPR              
+ SEA_STTE_IDNY                            0   0   0   0   0   0   8   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0    SEA_STTE_IDNY                       
+ SEA_VSBLY                                0   0   0   0   0   0   8   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0    SEA_VSBLY                           
+ Q24HOUR_PRCTN_AMNT                       1  28   0   0   1  30   1  28   1  28   1  28   1  28   0   0   1  32   1  28   1  28   1  28   0   0    Q24HOUR_PRCTN_AMNT                  
+ CLOD_FLAG                               -2   1   0   6  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1   0   6    CLOD_FLAG                           
+ TOTL_CLOD_AMNT                           1  30   9   1   1  32   1  30   1  30   1  30   1  30   1  25   1  34   1  30   1  30   1  30   8   1    TOTL_CLOD_AMNT                      
+ TOTL_CLOD_VRTL_SGNC                      1  31   9   2   1  33   1  31   1  31   1  31   1  31   1  26   1  35   1  31   1  31   1  31   0   0    TOTL_CLOD_VRTL_SGNC                 
+ LWST_CLOD_AMNT                           1  32   9   3   1  34   1  32   1  32   1  32   1  32   1  27   1  36   1  32   1  32   1  32   0   0    LWST_CLOD_AMNT                      
+ LWST_CLOD_BASE_HGHT                      1  33   9   4   1  35   1  33   1  33   1  33   1  33   1  28   1  37   1  33   1  33   1  33   0   0    LWST_CLOD_BASE_HGHT                 
+ LOW_CLOD_TYPE                            1  34   9   5   1  36   1  34   1  34   1  34   1  34   1  29   1  38   1  34   1  34   1  34   0   0    LOW_CLOD_TYPE                       
+ MEDM_CLOD_TYPE                           1  35   9   6   1  37   1  35   1  35   1  35   1  35   1  30   1  39   1  35   1  35   1  35   0   0    MEDM_CLOD_TYPE                      
+ HIGH_CLOD_TYPE                           1  36   9   7   1  38   1  36   1  36   1  36   1  36   1  31   1  40   1  36   1  36   1  36   0   0    HIGH_CLOD_TYPE                      
+ CLOD_RPLTN_CONT                          0   1   0   7   0   1   0   1   0   1   0   1   0   1  -2   0   0   1   0   1   0   1   0   1  -2   4    CLOD_RPLTN_CONT                     
+ CLOD_VRTL_SGNC                           2   1  10   1   2   1   2   1   2   1   2   1   2   1   0   0   2   1   2   1   2   1   2   1   9   1    CLOD_VRTL_SGNC                      
+ CLOD_AMNT                                2   2  10   2   2   2   2   2   2   2   2   2   2   2   0   0   2   2   2   2   2   2   2   2   9   2    CLOD_AMNT                           
+ CLOD_TYPE                                2   3  10   3   2   3   2   3   2   3   2   3   2   3   0   0   2   3   2   3   2   3   2   3   9   3    CLOD_TYPE                           
+ CLOD_BASE_ATRT                           0   0  10   4   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   9   4    CLOD_BASE_ATRT                      
+ CLOD_BASE_HGHT                           2   4  10   5   2   4   2   4   2   4   2   4   2   4   0   0   2   4   2   4   2   4   2   4   9   5    CLOD_BASE_HGHT                      
+ BELW_STTN_CLOD_RPLTN_CONT                0   2   0   8  -2   0   0   2   0   2   0   2   0   2  -2   0  -2   0  -2   0   0   2  -2   0  -2   0    BELW_STTN_CLOD_RPLTN_CONT           
+ BELW_STTN_CLOD_VRTL_SGNC                 3   1  11   1   0   0   3   1   3   1   3   1   3   1   0   0   0   0   0   0   3   1   0   0   0   0    BELW_STTN_CLOD_VRTL_SGNC            
+ BELW_STTN_CLOD_AMNT                      3   2  11   2   0   0   3   2   3   2   3   2   3   2   0   0   0   0   0   0   3   2   0   0   0   0    BELW_STTN_CLOD_AMNT                 
+ BELW_STTN_CLOD_TYPE                      3   3  11   3   0   0   3   3   3   3   3   3   3   3   0   0   0   0   0   0   3   3   0   0   0   0    BELW_STTN_CLOD_TYPE                 
+ BELW_STTN_CLOD_TOP_HGHT                  3   4  11   4   0   0   3   4   3   4   3   4   3   4   0   0   0   0   0   0   3   4   0   0   0   0    BELW_STTN_CLOD_TOP_HGHT             
+ BELW_STTN_CLOD_TOP_TYPE                  3   5  11   5   0   0   3   5   3   5   3   5   3   5   0   0   0   0   0   0   3   5   0   0   0   0    BELW_STTN_CLOD_TOP_TYPE             
+ CLOD_DRFT_FLAG                          -2   1   0   9  -2   0  -2   1  -2   0  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   0  -2   0    CLOD_DRFT_FLAG                      
+ CLOD_DRFT_SGNC                           4   1  12   1   0   0   4   1   0   0   4   1   4   1   0   0   3   1   0   0   4   1   0   0   0   0    CLOD_DRFT_SGNC                      
+ CLOD_DRCTN                               4   2  12   2   0   0   4   2   0   0   4   2   4   2   0   0   3   2   0   0   4   2   0   0   0   0    CLOD_DRCTN                          
+ CLOD_LCTN_FLAG                          -2   1   0  11  -2   0  -2   1  -2   0  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   1  -2   0    CLOD_LCTN_FLAG                      
+ CLOD_AZMH                                5   2  14   1   0   0   6   1   0   0   5   2   5   2   0   0   0   0   0   0   5   2   3   1   0   0    CLOD_AZMH                           
+ CLOD_ELVTN                               5   3  14   2   0   0   6   2   0   0   5   3   5   3   0   0   0   0   0   0   5   3   3   2   0   0    CLOD_ELVTN                          
+ CLOD_LAYR_TYPE                           5   4  14   3   0   0   6   3   0   0   5   4   5   4   0   0   0   0   0   0   5   4   3   3   0   0    CLOD_LAYR_TYPE                      
+ WTHR_FLAG                               -2   1   0  12  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1   0   8    WTHR_FLAG                           
+ CRNT_WTHR_TYPE                           5  10  15   1   5   1  11   1   4  21   7   1   5  21   1  22   5   1   4   4   5  10   3   6  10   1    CRNT_WTHR_TYPE                      
+ TIME_UNIT                               -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   1  -2   2    TIME_UNIT                           
+ PAST_WTHR_PERD                           5  11  16   1   5   2  11   2   4  22   7   2   5  22   0   0   5   2   4   5   5  11   3   7  10   2    PAST_WTHR_PERD                      
+ PRMY_PAST_WTHR_TYPE                      5  12  16   2   5   3  11   3   4  23   7   3   5  23   1  23   5   3   4   6   5  12   3   8  10   3    PRMY_PAST_WTHR_TYPE                 
+ SCNY_PAST_WTHR_TYPE                      5  13  16   3   5   4  11   4   4  24   7   4   5  24   1  24   5   4   4   7   5  13   3   9  10   4    SCNY_PAST_WTHR_TYPE                 
+ PRCTN_RATE_FLAG                         -2   0   0  14  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0   0   9    PRCTN_RATE_FLAG                     
+ PRCTN_RATE_PERD                          0   0  17   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  11   2    PRCTN_RATE_PERD                     
+ PRCTN_RATE                               0   0  17   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  11   3    PRCTN_RATE                          
+ PRCTN_ELMT_SIZE                          0   0  17   4   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  11   4    PRCTN_ELMT_SIZE                     
+ PRCTN_DRTN_FLAG                         -2   0   0  15  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0   0  10    PRCTN_DRTN_FLAG                     
+ PRCTN_TYPE                               0   0  18   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   2    PRCTN_TYPE                          
+ PRCTN_CHRTR                              0   0  18   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   3    PRCTN_CHRTR                         
+ PRCTN_DRTN                               0   0  18   4   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   4    PRCTN_DRTN                          
+ OTHR_WTHR                                0   0  18   5   0   0   0   0   4   5   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   5    OTHR_WTHR                           
+ WTHR_INTSY                               0   0  18   6   0   0   0   0   4   6   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   6    WTHR_INTSY                          
+ OBSCN                                    0   0  18   7   0   0   0   0   4  12   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   7    OBSCN                               
+ OBSCN_CHRTR                              0   0  18   8   0   0   0   0   4  13   0   0   0   0   0   0   0   0   0   0   0   0   0   0  12   8    OBSCN_CHRTR                         
+ NMBR_FLSHS                               0   0  19   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  21   2    NMBR_FLSHS                          
+ WIND_SNSR_HGHT                           9   8  20   1   7   9  15   8   8   8  11   8   9   8   0   0   7   9   6   8   9   8   7   8  13   1    WIND_SNSR_HGHT                      
+ WIND_SNSR_HGHT_WATR                      0   0  20   2   7  10   0   0   0   0   0   0   0   0   0   0   7  10   0   0   0   0   0   0  13   2    WIND_SNSR_HGHT_WATR                 
+ SRFC_WIND_SPED_RCRDG_IDNY                9   9   0   0   7  11  15   9   8   9  11   8   9   9   0   0   7  11   6   9   9   9   7   9   0   0    SRFC_WIND_SPED_RCRDG_IDNY           
+ SRFC_WIND_PERD                           9  11  20   4   7  13  15  11   8  11  11  11   9  11   0   0   7  13   6  11   9  11   7  11  13   4    SRFC_WIND_PERD                      
+ SRFC_WIND_DRCTN                          9  12  20   5   7  14  15  12   8  12  11  12   9  12   1  16   7  14   6  12   9  12   7  12  13   5    SRFC_WIND_DRCTN                     
+ SRFC_WIND_SPED                           9  13  20   6   7  15  15  13   8  13  11  13   9  13   1  17   7  15   6  13   9  13   7  13  13   6    SRFC_WIND_SPED                      
+ SRFC_GUST_PERD                          10   1  21   1   8   1  16   1   9   1  12   1  10   1   0   0   8   1   7   1  10   1   8   1  14   1    SRFC_GUST_PERD                      
+ MXMM_SRFC_GUST_DRCTN                    10   2  21   2   8   2  16   2   9   2  12   2  10   2   0   0   8   2   7   2  10   2   8   2  14   2    MXMM_SRFC_GUST_DRCTN                
+ MXMM_SRFC_GUST_SPED                     10   3  21   3   8   3  16   3   9   3  12   3  10   3   0   0   8   3   7   3  10   3   8   3  14   3    MXMM_SRFC_GUST_SPED                 
+ MXMM_MEAN_WIND_PERD                      0   0   0   0   0   0  20   1   0   0   0   0   0   0   0   0   9   1   0   0   0   0   0   0   0   0    MXMM_MEAN_WIND_PERD                 
+ MXMM_MEAN_WIND_SPED                      0   0   0   0   0   0  20   2   0   0   0   0   0   0   0   0   9   2   0   0   0   0   0   0   0   0    MXMM_MEAN_WIND_SPED                 
+ VRBL_WIND_DRCTN_ANTI                     0   0  22   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   2    VRBL_WIND_DRCTN_ANTI                
+ VRBL_WIND_DRCTN_CLKW                     0   0  22   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   3    VRBL_WIND_DRCTN_CLKW                
+ EXTM_TMPR_SNSR_HGHT                      0   0  22   4   7   1   0   0   0   0   0   0   0   0   0   0   7   1   0   0   0   0   0   0  15   4    EXTM_TMPR_SNSR_HGHT                 
+ EXTM_TMPR_SNSR_HGHT_WATR                 0   0  22   5   7   2   0   0   0   0   0   0   0   0   0   0   7   2   0   0   0   0   0   0  15   5    EXTM_TMPR_SNSR_HGHT_WATR            
+ EXTM_SRFC_AIR_TMPR_PERD                  0   0  22   6   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   6    EXTM_SRFC_AIR_TMPR_PERD             
+ MXMM_SRFC_AIR_TMPR                       0   0  22   7   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   7    MXMM_SRFC_AIR_TMPR                  
+ MNMM_SRFC_AIR_TMPR                       0   0  22   8   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   8    MNMM_SRFC_AIR_TMPR                  
+ GRND_TMPR_SNSR_HGHT                      0   0  22   9   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15   9    GRND_TMPR_SNSR_HGHT                 
+ EXTM_GRND_TMPR_PERD                      0   0  22  10   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15  10    EXTM_GRND_TMPR_PERD                 
+ MNMM_GRND_TMPR                           0   0  22  11   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  15  11    MNMM_GRND_TMPR                      
+ EXTM_PERD_TMPR_SNSR_HGHT                 9   1  22  13   7   1  15   1   8   1  11   1   9   1   0   0   7   1   6   1   9   1   7   1   0   0    EXTM_PERD_TMPR_SNSR_HGHT            
+ MXMM_SRFC_AIR_TMPR_STRT                  9   2  22  14   7   3  15   2   8   2  11   2   9   2   0   0   7   3   6   2   9   2   7   2   0   0    MXMM_SRFC_AIR_TMPR_STRT             
+ MXMM_SRFC_AIR_TMPR_END                   9   3  22  15   7   4  15   3   8   3  11   3   9   3   0   0   7   4   6   3   9   3   7   3   0   0    MXMM_SRFC_AIR_TMPR_END              
+ MXMM_PERD_SRFC_AIR_TMPR                  9   4  22  19   7   5  15   4   8   4  11   4   9   4   0   0   7   5   6   4   9   4   7   4   0   0    MXMM_PERD_SRFC_AIR_TMPR             
+ MNMM_SRFC_AIR_TMPR_STRT                  9   5  22  17   7   6  15   5   8   5  11   5   9   5   0   0   7   6   6   5   9   5   7   5   0   0    MNMM_SRFC_AIR_TMPR_STRT             
+ MNMM_SRFC_AIR_TMPR_END                   9   6  22  18   7   7  15   6   8   6  11   6   9   6   0   0   7   7   6   6   9   6   7   6   0   0    MNMM_SRFC_AIR_TMPR_END              
+ MNMM_PERD_SRFC_AIR_TMPR                  9   7  22  19   7   8  15   7   8   7  11   7   9   7   0   0   7   8   6   7   9   7   7   7   0   0    MNMM_PERD_SRFC_AIR_TMPR             
+ PRCTN_FLAG                               0   0   0  18   0   0   0   0   0   0   0   0   0   0  -2   0   0   0   0   0   0   0   0   0   0  12    PRCTN_FLAG                          
+ PRCTN_SNSR_HGHT                          1  27  23   1   1  28  13   1   1  27   1  27   1  27   0   0   1  30   1  27   1  27   1  27  16   1    PRCTN_SNSR_HGHT                     
+ PRCTN_SNSR_HGHT_WATR                     0   0   0   0   1  29   0   0   0   0   0   0   0   0   0   0   1  31   0   0   0   0   0   0   0   0    PRCTN_SNSR_HGHT_WATR                
+ PRCTN_MESRT_MTHD                         0   0  23   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  16   2    PRCTN_MESRT_MTHD                    
+ LQID_WATR_MESRT_MTHD                     0   0  23   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  16   3    LQID_WATR_MESRT_MTHD                
+ PRCTN_PERD                               8   1  24   1   6   1  14   1   7   1  10   1   8   1   0   0   6   1   5   1   8   1   6   1  16   4    PRCTN_PERD                          
+ PRCTN_AMNT                               8   2  24   2   6   2  14   2   7   2  10   2   8   2   0   0   6   2   5   2   8   2   6   2  16   5    PRCTN_AMNT                          
+ EVPTN_FLAG                              -2   1   0  20  -2   0  -2   1  -2   1  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   0   0  13    EVPTN_FLAG                          
+ EVPTN_MESRT_MTHD                         0   0  26   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  18   1    EVPTN_MESRT_MTHD                    
+ EVPTN_PERD                              11   2  27   1   0   0  17   2  10   2  13   2  11   2   0   0   0   0   0   0  11   2   0   0  18   2    EVPTN_PERD                          
+ EVPTN_INST_TYPE                         11   3  27   2   0   0  17   3  10   3  13   3  11   3   0   0   0   0   0   0  11   3   0   0   0   0    EVPTN_INST_TYPE                     
+ EVPTN_AMNT                              11   4  27   3   0   0  17   4  10   4  13   4  11   4   0   0   0   0   0   0  11   4   0   0  18   3    EVPTN_AMNT                          
+ SUN_FLAG                                -2   1   0  22  -2   0  -2   1  -2   1  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   1   0  14    SUN_FLAG                            
+ SUN_PERD                                 6   1  28   1   0   0  12   1   5   1   8   1   6   1   0   0   0   0   0   0   6   1   4   1  19   1    SUN_PERD                            
+ SUN_AMNT                                 6   2  28   2   0   0  12   2   5   2   8   2   6   2   0   0   0   0   0   0   6   2   4   2  19   2    SUN_AMNT                            
+ RADTN_FLAG                              -2   1   0  24  -2   0  -2   1  -2   1  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   0   0  15    RADTN_FLAG                          
+ RADTN_PERD                              12   1  29   1   0   0  18   1  11   1  14   1  12   1   0   0   0   0   0   0  12   1   0   0  20   1    RADTN_PERD                          
+ LONG_WAVE_RADTN                         12   2  29   2   0   0  18   2  11   2  14   2  12   2   0   0   0   0   0   0  12   2   0   0  20   2    LONG_WAVE_RADTN                     
+ SHRT_WAVE_RADTN                         12   3  29   3   0   0  18   3  11   3  14   3  12   3   0   0   0   0   0   0  12   3   0   0  20   3    SHRT_WAVE_RADTN                     
+ NET_RADTN                               12   4  29   4   0   0  18   4  11   4  14   4  12   4   0   0   0   0   0   0  12   4   0   0  20   4    NET_RADTN                           
+ GLOBL_SOLR_RADTN                        12   5  29   5   0   0  18   5  11   5  14   5  12   5   0   0   0   0   0   0  12   5   0   0  20   5    GLOBL_SOLR_RADTN                    
+ DIFS_SOLR_RADTN                         12   6  29   6   0   0  18   6  11   6  14   6  12   6   0   0   0   0   0   0  12   6   0   0  20   6    DIFS_SOLR_RADTN                     
+ DRCT_SOLR_RADTN                         12   7  29   7   0   0  18   7  11   7  14   7  12   7   0   0   0   0   0   0  12   7   0   0  20   7    DRCT_SOLR_RADTN                     
+ TMPR_CHNG_FLAG                          -2   1   0  26  -2   0  -2   1  -2   0  -2   1  -2   1  -2   0  -2   0  -2   0  -2   1  -2   0  -2   0    TMPR_CHNG_FLAG                      
+ SRFC_AIR_TMPR_CHNG_STRT                 13   1  30   1   0   0  19   1   0   0  15   1  13   1   0   0   0   0   0   0  13   1   0   0   0   0    SRFC_AIR_TMPR_CHNG_STRT             
+ SRFC_AIR_TMPR_CHNG_END                  13   2  30   2   0   0  19   2   0   0  15   2  13   2   0   0   0   0   0   0  13   2   0   0   0   0    SRFC_AIR_TMPR_CHNG_END              
+ SRFC_AIR_TMPR_CHNG                      13   3  30   3   0   0  19   3   0   0  15   3  13   3   0   0   0   0   0   0  13   3   0   0   0   0    SRFC_AIR_TMPR_CHNG                  
+ STATS_FLAG                              -2   0   0  27  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0  -2   0   0  17    STATS_FLAG                          
+ STND_DVTN_PERD                           0   0  31   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   1    STND_DVTN_PERD                      
+ PESR_STND_DVTN                           0   0  31   3   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   3    PESR_STND_DVTN                      
+ WIND_DRCTN_STND_DVTN                     0   0  31   4   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   4    WIND_DRCTN_STND_DVTN                
+ WIND_SPED_STND_DVTN                      0   0  31   5   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   5    WIND_SPED_STND_DVTN                 
+ TMPR_STND_DVTN                           0   0  31   6   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   6    TMPR_STND_DVTN                      
+ RLTV_HUMDY_STND_DVTN                     0   0  31   7   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  22   7    RLTV_HUMDY_STND_DVTN                
+ AWS_QLTY                                 0   0  32   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  23   1    AWS_QLTY                            
+ AWS_STTS                                 0   0  32   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  23   2    AWS_STTS                            
+ DOWN_STRM_WATR_LEVL                      0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   9   2   0   0    DOWN_STRM_WATR_LEVL                 
+ WATR_TMPR                                0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   9   3   0   0    WATR_TMPR                           
+ Q1HOUR_PRCTN_AMNT                        0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   9   4   0   0    Q1HOUR_PRCTN_AMNT                   
+ MXMM_WATR_LEVL                           0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   9   6   0   0    MXMM_WATR_LEVL                      
+ RCPT_YEAR                               -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1  -1   1    RCPT_YEAR                           
+ RCPT_MNTH                               -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2  -1   2    RCPT_MNTH                           
+ RCPT_DAY                                -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3  -1   3    RCPT_DAY                            
+ RCPT_HOUR                               -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4  -1   4    RCPT_HOUR                           
+ RCPT_MINT                               -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5  -1   5    RCPT_MINT                           
+ DATA_SLCTN                              -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6  -1   6    DATA_SLCTN                          
+
+ (Blank line indicates end of list of element names)
+
+Notes
+-----
+    In some sequences, some data items have not been made retrievable,
+  because they are considered of insufficient interest to go to the
+  trouble of creating a new index for them or because the items have
+  been coded as missing data in all bulletins examined. Descriptors
+  affected are:-
+
+   - In the four descriptor sequences starting with 307096, the extra
+     descriptors are unretrievable. These are 022061 (sea state),
+     022058 (seawards visibility), and 004024 013012 004024 (depth of
+     fresh snow and the period it applies to).
+
+   - In the 3-descriptor sequences starting 307079 and 308009, and the
+     5-descriptor sequence starting 001001, the last two dsecriptors
+     are not retrievable. These are 004025 and 011042, the maximum
+     10-minute wind and its period.
+
+   - Sequences 307081, 307084 and 307086 (land SYNOP sequences for WMO
+     regions I, IV and VI) are versions of 307080 with additional
+     descriptors. The added descriptors are not retrievable.
+       In 307081 they are items 10 to 19 in segment 5 which contain
+     information related to locusts.
+       In 307084 they comprise the last item of segment 5 (020055 -
+     state of sky in tropics) and segment 6 ('signify characters').
+       In 307086 they are items 6-11 and 14-20 of segment 4 which occur
+     in the 'dangerous weather' section (sequence 302066) and are all
+     coded as missing data in the bulletins looked at.
+
+   - In the 76-descriptor sequence starting with 307086, none of the
+     subsequent 75 descriptors are retrievable. In bulletins examined
+     all replication counts in this section were zero leaving only 7
+     data values actually coded and only the maximum 10-minute wind
+     and its period (004025 011042) with valid data.
+
+   - In the 6-descriptor sequence which uses index 12, two of the items
+     in segment 9 are not retrievable. These are the air temperature
+     (which is covered by data earlier in the report) and the total
+     precipitation which is for an unspecified period.
+
+Revision
+--------
+MB-1319 Nov 2016  Format updated for readability.  Sheila Needham
+
