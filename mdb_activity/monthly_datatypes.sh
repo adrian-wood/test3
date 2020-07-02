@@ -26,7 +26,7 @@ module load scitools
 module display scitools
 
 tmp_dir=$(mktemp -d -t md-XXXXX)
-wget -q https://bitbucket:8443/projects/MOOD/repos/metdb/raw/TABLES/retrieval_table?at=refs%2Fheads%2Fmaster -O $tmp_dir/retrieval_table
+wget --no-check-certificate -q https://bitbucket:8443/projects/MOOD/repos/metdb/raw/TABLES/retrieval_table?at=refs%2Fheads%2Fmaster -O $tmp_dir/retrieval_table
 export RETRIEVAL_TABLE=$tmp_dir/retrieval_table
 
 python /var/moods/mdb_activity/monthly_datatypes.py `date '+%Y %m' -d 'last month'`
