@@ -65,6 +65,7 @@ def main():
     ver1 = form.getvalue('VER1')
     ver2 = form.getvalue('VER2')
     outdir = form.getvalue('OUTDIR')
+    weblink = form.getvalue('WEBLINK')
     # only need last part of infile location
     infile = os.path.basename(infile)
     out1 = readData(outdir + '/' + 
@@ -74,10 +75,12 @@ def main():
                     dateDir + '/' + 
                     infile + '_1.out')
 
+    # create link for the back button
+    back = weblink.replace('archive', 'latest_regression_tests.html')
     # compare files using diff
     d = difflib.HtmlDiff()
     hdr1 = sys1 + '/' + ver1   
-    hdr2 = sys1 + '/' + ver2    
+    hdr2 = sys2 + '/' + ver2    
     out3 = d.make_file(out1, out2, fromdesc=hdr1, todesc=hdr2)
 
     # get log files
@@ -89,7 +92,8 @@ def main():
                     "log1": log1,
                     "log2": log2,
                     "sys1": sys1,
-                    "sys2": sys2}
+                    "sys2": sys2,
+                    "back": back}
     hdr = "Content-Type: text/html;charset=utf-8\n\n"
     print(jinja_render(webRoot, viewer, hdr, **templateVars))
 

@@ -32,5 +32,8 @@ def monthly_archive(symLink, baseDir, page):
     with open(outFile, "w") as outp:
         outp.write(page)
         # Recreate the symlink to the latest file
-        os.unlink(symLink)
+        try:
+            os.unlink(symLink)
+        except FileNotFoundError:
+            pass
         os.symlink(outFile, symLink)
