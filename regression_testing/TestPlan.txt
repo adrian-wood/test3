@@ -88,3 +88,4 @@
 88  : $SCRIPTS/diff_runs.sh -m $INDIR/CLIMATB : $INDIR/CLIMATB : BUFR CLIMAT data block 03 for May 2020 in Jun 2020 release
 89  : $SCRIPTS/diff_runs.sh -m $INDIR/LNDSYBW : $INDIR/LNDSYBW : BUFR SYNOPS with WIGOS identifiers Jun 2020 release
 90  : $SCRIPTS/diff_runs.sh -m $INDIR/EMADDC : $INDIR/EMADDC : European MODE-S Jul 2020 release                     
+91  : $SCRIPTS/diff_runs.sh -m $INDIR/SHPSYB : $INDIR/SHPSYB : BUFR SHIP synops Sep 2020 release                    
