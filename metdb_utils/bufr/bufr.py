@@ -1,7 +1,7 @@
 """
 The `bufr.py` module provides access to MetDB BUFR tables in Python.
 
-Specify a location for the tables with BUFR_LIBRARY or use the 
+Specify a location for the tables with BUFR_LIBRARY or use the
 current working directory.
 
     >>> import os
@@ -37,6 +37,7 @@ Expand a nested BUFR sequence as follows:
 import os
 import sys
 import re
+
 # =========================================================================
 
 
@@ -68,7 +69,7 @@ def is_a_descriptor(text):
     This is a utility function useful when parsing a text file.
 
     Args:
-    
+
     * text (string) : input string
 
     Returns:
@@ -76,14 +77,16 @@ def is_a_descriptor(text):
     * (Boolean) : True if string is FXXYYY format, otherwise False
     """
 
-    return isinstance(text, str) and \
-        text.isdigit() and \
-        len(text) == 6 and \
-        text[0] in {'0', '1', '2', '3'}
+    return (
+        isinstance(text, str)
+        and text.isdigit()
+        and len(text) == 6
+        and text[0] in {"0", "1", "2", "3"}
+    )
 
 
 class TableD:
-    ''' The TableD class represents a complete table D as a dictionary.
+    """ The TableD class represents a complete table D as a dictionary.
 
         Exceptions:
           * sys.exit(8) : file not found.
@@ -95,7 +98,8 @@ class TableD:
             descriptors (also as strings).
           * header (str) : first line of bufr_tabled file
 
-    '''
+    """
+
     # ---------------------------------------------------------------------
 
     tabled = {}
@@ -113,19 +117,19 @@ class TableD:
             * sys.exit(8): file not found
         """
 
-        bufrPath = os.environ.get('BUFR_LIBRARY')
+        bufrPath = os.environ.get("BUFR_LIBRARY")
         if bufrPath is None:
-            print('WARNING: BUFR_LIBRARY not set - using cwd')
-            bufrPath = '.'
+            print("WARNING: BUFR_LIBRARY not set - using cwd")
+            bufrPath = "."
 
-        tabledFile = bufrPath + '/' + 'bufr_tabled'
+        tabledFile = bufrPath + "/" + "bufr_tabled"
 
         inp = None
         try:
-            inp = open(tabledFile, 'r')
+            inp = open(tabledFile, "r")
             (TableD.header, TableD.tabled) = self.__parseTabled(inp)
         except IOError:
-            print('Cannot find file:', tabledFile)
+            print("Cannot find file:", tabledFile)
             sys.exit(8)
         finally:
             if inp:
@@ -146,9 +150,10 @@ class TableD:
             * list (str): list of expansion or None
         """
         if descr in cls.tabled:
-            return cls.tabled[descr]['seq']
+            return cls.tabled[descr]["seq"]
         else:
             return None
+
     # ---------------------------------------------------------------------
 
     @classmethod
@@ -164,9 +169,10 @@ class TableD:
             * text (str): Up to 80 bytes of text
         """
         if descr in cls.tabled:
-            return cls.tabled[descr]['title']
+            return cls.tabled[descr]["title"]
         else:
             return None
+
     # ---------------------------------------------------------------------
 
     @classmethod
@@ -183,12 +189,13 @@ class TableD:
         """
         final = []
         for d in seq:
-            if d[0] != '3':
+            if d[0] != "3":
                 final.extend([d])
             else:
                 newseq = cls.lookup(d)
                 final.extend(cls.expander(newseq))
         return final
+
     # ---------------------------------------------------------------------
 
     @classmethod
@@ -205,9 +212,9 @@ class TableD:
         if descriptor in cls.tabled:
             print(f"{descriptor} already in Table D")
         else:
-            cls.tabled[descriptor] = {'seq': sequence, 'title': text}
+            cls.tabled[descriptor] = {"seq": sequence, "title": text}
             print(f"sequence {descriptor} added")
-    
+
     @classmethod
     def remove(cls, descriptor):
         """Remove a sequence from Table D.
@@ -215,14 +222,13 @@ class TableD:
             Args:
 
             * descriptor (str) : F=3 descriptor
-            
+
          """
         if descriptor in cls.tabled:
             print(f"Removing {descriptor} from Table D")
             del cls.tabled[descriptor]
         else:
             print(f"{descriptor} not found in Table D")
-
 
     @classmethod
     def writeTabled(cls, filename):
@@ -238,19 +244,19 @@ class TableD:
         try:
             outp = open(filename, "w+")
             outp.write(cls.header)
-            outp.write(' ' + newline)
+            outp.write(" " + newline)
 
             for k, v in sorted(cls.tabled.items()):
                 desc = k
-                seq = v['seq']
-                text = v['title']
+                seq = v["seq"]
+                text = v["title"]
                 ndes = len(seq)
                 if text:
                     outp.write(f"{' ':10s}{text:60s}{newline}")
                 outp.write(f"{desc:6s}{ndes:3d} ")
                 count = 0
                 for i in range(0, ndes, 10):
-                    for p in seq[i:i + 10]:
+                    for p in seq[i : i + 10]:
                         outp.write(f"{p:7s}")
                         count += 1
                     outp.write(f" ")
@@ -270,8 +276,9 @@ class TableD:
         # Parse MetDB Format Table D
         ndes = 0
         tabled = {}
-        text = ''
-        pattern = re.compile(r'[a-zA-Z]')  # chars in titles but not in descr
+        text = ""
+        seq = []
+        pattern = re.compile(r"[a-zA-Z]")  # chars in titles but not in descr
 
         for count, line in enumerate(inp):
             if count == 0:
@@ -287,7 +294,7 @@ class TableD:
             if f[0].isdigit() and ndes > 10:
                 temp = line.split()
                 seq.extend(temp)
-            elif f[0] == '3':
+            elif f[0] == "3":
                 if line.find("?") > 0:
                     temp = line.split("?")
                     ndes = int(temp[0].split()[1])
@@ -307,13 +314,14 @@ class TableD:
 
                 if ndes > 0:
                     if descr in tabled:
-                        print(descr, ' already in table D')
+                        print(descr, " already in table D")
                     else:
-                        tabled[descr] = {'seq': seq, 'title': text}
-                        text = ''
+                        tabled[descr] = {"seq": seq, "title": text}
+                        text = ""
                     ndes = 0
         # print('...', len(tabled), ' D sequences read')
         return (header, tabled)
+
 
 # =========================================================================
 
@@ -330,6 +338,7 @@ class TableBEntry:
         * ref (str) : reference value.
         * width (str) : bit-width.
     """
+
     def __init__(self, descr, name, unit, scale, ref, width):
         self.descr = descr
         self.name = name
@@ -339,14 +348,23 @@ class TableBEntry:
         self.width = width
 
     def __str__(self):
-        return self.descr + ":" + self.name + \
-            ' unit =' + self.unit + \
-            ' scale=' + self.scale + \
-            ' ref  =' + self.ref + \
-            ' width=' + self.width
+        return (
+            self.descr
+            + ":"
+            + self.name
+            + " unit ="
+            + self.unit
+            + " scale="
+            + self.scale
+            + " ref  ="
+            + self.ref
+            + " width="
+            + self.width
+        )
 
 
 # =========================================================================
+
 
 class TableB:
     """ The TableB class represents a complete table B as a dictionary.
@@ -377,16 +395,16 @@ class TableB:
             * sys.exit(8): file not found
         """
 
-        bufrPath = os.environ.get('BUFR_LIBRARY')
+        bufrPath = os.environ.get("BUFR_LIBRARY")
         if bufrPath is None:
-            print('WARNING: BUFR_LIBRARY not set - using cwd')
-            bufrPath = '.'
+            print("WARNING: BUFR_LIBRARY not set - using cwd")
+            bufrPath = "."
 
-        tablebFile = bufrPath + '/' + 'bufr_tableb'
+        tablebFile = bufrPath + "/" + "bufr_tableb"
 
         inp = None
         try:
-            inp = open(tablebFile, 'r')
+            inp = open(tablebFile, "r")
             # skip header
             for _ in range(0, 1):
                 inp.readline()
@@ -408,12 +426,13 @@ class TableB:
                     TableB.tableb[desc] = entry
 
         except IOError:
-            print('Cannot find file:', tablebFile)
+            print("Cannot find file:", tablebFile)
             sys.exit(8)
 
         finally:
             if inp:
                 inp.close()
+
     # ---------------------------------------------------------------------
 
     @classmethod

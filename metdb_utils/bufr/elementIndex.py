@@ -1,4 +1,4 @@
-'''
+"""
 The elementIndex module contains classes/functions for handling an elements_index.
 
 Elements_indexes are used by the MetDB to map decoded BUFR messages to 
@@ -17,10 +17,11 @@ Usage:
     >>> # print the element names
     >>> print(table.list_element_names())
 
-'''
+"""
+
 
 class TableObj:
-    '''
+    """
     Class represents a complete elements_index file.
 
 
@@ -34,15 +35,16 @@ class TableObj:
         value is and indexObj
       * elements (list) : list of elementObjs
 
-'''
+"""
+
     def __init__(self, version, title):
-        '''Initialise an empty elements_index
+        """Initialise an empty elements_index
         
         args:
           * version (int) - 1 for new index format
           * title (str) - first line information
           
-        '''
+        """
 
         self.version = version
         self.title = title
@@ -52,7 +54,7 @@ class TableObj:
         self.elements = []
 
     def add_index(self, indexObj):
-        '''Add an IndexObj to the elements_index
+        """Add an IndexObj to the elements_index
 
         args:
           * indexObj : complete index object with unique ID
@@ -60,7 +62,7 @@ class TableObj:
         errors:
           * duplicate index - index ignored          
 
-        '''
+        """
         serial_number = indexObj.serial
         if serial_number in self.indexes:
             print("Error: duplicate index", serial_number)
@@ -68,23 +70,23 @@ class TableObj:
             self.indexes[serial_number] = indexObj
 
     def add_elements(self, elements):
-        '''Add an ElementObj to the elements_index'''
+        """Add an ElementObj to the elements_index"""
 
         self.elements = elements
-    
+
     def list_element_names(self):
-        '''List all element names used by elements_index
+        """List all element names used by elements_index
 
         returns:
           * lnames (list) - list of strings
-        '''
+        """
         lnames = []
         for eObj in self.elements:
             lnames.append(eObj.name)
         return lnames
 
     def add_sequence(self, seq):
-        '''Add a SeqObj to the list for its index'''
+        """Add a SeqObj to the list for its index"""
 
         serial_number = seq.index_ref
         if serial_number not in self.sequences:
@@ -93,12 +95,12 @@ class TableObj:
         self.numindex = max(self.numindex, int(serial_number))
 
     def list_sequences(self):
-        '''List all BUFR sequences used in elements_index.
+        """List all BUFR sequences used in elements_index.
 
         returns:
           * lseq (list) - list of sequences, each of which is
             a list of descriptors as strings
-        '''
+        """
         lseq = []
         for seqObj in list(self.sequences.values()):
             for s in seqObj:
@@ -106,10 +108,10 @@ class TableObj:
         return lseq
 
     def __str__(self):
-        '''Return a string which when printed will form an elements_index.'''
+        """Return a string which when printed will form an elements_index."""
 
-        line = '{:1d}   {:s}\n\n'.format(self.version, self.title)
-        line += 'BUFR SEQUENCES\n'
+        line = "{:1d}   {:s}\n\n".format(self.version, self.title)
+        line += "BUFR SEQUENCES\n"
         for i, seqlist in self.sequences.items():
             for seq in seqlist:
                 line += str(seq)
@@ -117,25 +119,26 @@ class TableObj:
         for i, s in self.indexes.items():
             line += str(s)
 
-        line += '\n\nELEMENT NAMES AND LOCATIONS '\
-                ' (SEGMENT THEN POSITION IN EACH PAIR OF COLS)\n'
-        line += '\n{:{width}s}'.format('ELEMENT NAME',
-                                       width=ElementObj.namelen)
-        line += '   T ID'
+        line += (
+            "\n\nELEMENT NAMES AND LOCATIONS "
+            " (SEGMENT THEN POSITION IN EACH PAIR OF COLS)\n"
+        )
+        line += "\n{:{width}s}".format("ELEMENT NAME", width=ElementObj.namelen)
+        line += "   T ID"
         for i in range(self.numindex):
-            line += '{:4d}{:4d}'.format(i+1, i+1)
-        line += '\n <' + '-' * (ElementObj.namelen - 1) + '>'
-        line += ' - --'
+            line += "{:4d}{:4d}".format(i + 1, i + 1)
+        line += "\n <" + "-" * (ElementObj.namelen - 1) + ">"
+        line += " - --"
         for i in range(self.numindex):
-            line += '  --  --'
+            line += "  --  --"
         for e in self.elements:
             line += str(e)
-        line += '\n\n(Blank line indicates end)'
+        line += "\n\n(Blank line indicates end)"
         return line
 
 
 class SeqObj:
-    '''
+    """
     Class represents a BUFR sequence from an elements_index
 
     Attributes:
@@ -143,7 +146,7 @@ class SeqObj:
       * nseq (int) : length of sequence
       * index_ref (int) : index number associated with the sequence
       * text (string): short description of the sequence or its source
-    '''
+    """
 
     def __init__(self, desc, nseq, index_ref, text):
         self.desc = desc
@@ -152,20 +155,20 @@ class SeqObj:
         self.text = text
 
     def __str__(self):
-        '''Return string in the format required for part 1 of an elements index'''
+        """Return string in the format required for part 1 of an elements index"""
 
-        line = '\n {:4d}{:4d}   '.format(self.index_ref, self.nseq)
+        line = "\n {:4d}{:4d}   ".format(self.index_ref, self.nseq)
         for pos, item in enumerate(self.desc):
             if pos % 8 == 0 and pos > 0:
-                line += '\n{:12s}{:7s}'.format(' ', item)
+                line += "\n{:12s}{:7s}".format(" ", item)
             else:
-                line += '{:7s}'.format(item)
+                line += "{:7s}".format(item)
         line += self.text.strip()
         return line
 
 
 class SegmentObj:
-    '''
+    """
     Class represents one segment of an decoded sequence (as in TN28)
 
     Attributes:
@@ -174,7 +177,7 @@ class SegmentObj:
       * repcount (int): number of replications this segment is in
       * reps (list of int): replication numbers applied to this segment
       * text (string): short description of segment
-    '''
+    """
 
     def __init__(self, segnum, posnum, repcount, reps, text):
         self.segnum = segnum
@@ -184,16 +187,17 @@ class SegmentObj:
         self.text = text
 
     def __str__(self):
-        '''Return string in the format required for part 2 of and elements index'''
+        """Return string in the format required for part 2 of and elements index"""
 
-        prlev = ''.join(["%4d" % _ for _ in self.reps])
-        line = '\n {:4d}{:4d}{:4d}{:}         {:}'.format(
-               self.segnum, self.posnum, self.repcount, prlev, self.text)
+        prlev = "".join(["%4d" % _ for _ in self.reps])
+        line = "\n {:4d}{:4d}{:4d}{:}         {:}".format(
+            self.segnum, self.posnum, self.repcount, prlev, self.text
+        )
         return line
 
 
 class IndexObj:
-    '''
+    """
     Class representing a complete index map of segments.
 
     Attributes:
@@ -205,7 +209,7 @@ class IndexObj:
       * segments(list of SegmentObj) : segment objects in order
       * replications (list or int): replication values
 
-    '''
+    """
 
     def __init__(self, serial, text, nseg, nrep, ndep, segments, replications):
         self.serial = serial
@@ -217,22 +221,22 @@ class IndexObj:
         self.replications = replications
 
     def __str__(self):
-        section = '\n\nINDEX{:3d} {:s}'.format(self.serial, self.text)
-        section += ('\n\n {:4d}{:4d}{:4d}  segments, replications,'
-                    ' nesting level\n').format(self.nseg, self.nrep,
-                                               self.ndep)
+        section = "\n\nINDEX{:3d} {:s}".format(self.serial, self.text)
+        section += (
+            "\n\n {:4d}{:4d}{:4d}  segments, replications," " nesting level\n"
+        ).format(self.nseg, self.nrep, self.ndep)
         for s in self.segments:
             section += str(s)
 
         if len(self.replications) > 0:
-            prrep = ''.join("%4d" % _ for _ in self.replications)
-            section += '\n\n ' + prrep
+            prrep = "".join("%4d" % _ for _ in self.replications)
+            section += "\n\n " + prrep
 
         return section
 
 
 class ElementObj:
-    '''
+    """
     Class represents one row of the name section of an elements_index
 
     Attributes:
@@ -245,7 +249,7 @@ class ElementObj:
     Class Attribute:
       * namelen (int): maximum length of any name so far
 
-    '''
+    """
 
     namelen = 0
 
@@ -258,15 +262,16 @@ class ElementObj:
 
     def __str__(self):
         width = ElementObj.namelen
-        line = '\n {:{width}s}{:>2s}{:>3s} '.format(self.name, self.T,
-                                                  self.id, width=width)
+        line = "\n {:{width}s}{:>2s}{:>3s} ".format(
+            self.name, self.T, self.id, width=width
+        )
         for v in self.location.values():
-            line += '{:4d}{:4d}'.format(v[0], v[1])
+            line += "{:4d}{:4d}".format(v[0], v[1])
         return line
 
 
 def read_elements(filename):
-    '''Read an element_index file and return a TableObj.
+    """Read an element_index file and return a TableObj.
 
     args:
       * filename (str) - full path to elements_index file
@@ -278,7 +283,7 @@ def read_elements(filename):
     errors:
       * FileNotFoundError - if filename does not exist
 
-    '''
+    """
 
     try:
         f = open(filename)
@@ -304,7 +309,7 @@ def read_elements(filename):
     title = lines[ptr][1:].strip()
     table = TableObj(version, title)
 
-    while lines[ptr].find('BUFR SEQUENCES') == -1:
+    while lines[ptr].find("BUFR SEQUENCES") == -1:
         ptr += 1
 
     ptr += 2
@@ -315,24 +320,24 @@ def read_elements(filename):
     # for as many lines as necessary. Any spare space on the last line can be used for
     # comment.
 
-    while lines[ptr].strip() != '':
+    while lines[ptr].strip() != "":
         serial_number = int(lines[ptr][0:5])
         ndesc = int(lines[ptr][5:9])
 
-    # work out how many lines we need to get the whole sequence
+        # work out how many lines we need to get the whole sequence
         nlines = (ndesc - 1) // 8 + 1
         seq = []
         for i in range(nlines):
             text = lines[ptr][10:].strip()
-            items = text.split(' ')
+            items = text.split(" ")
             seq.extend(items)
             ptr += 1
 
-    # remove any extra text following the sequence
-        text = ' '.join(_ for _ in seq[ndesc:])
+        # remove any extra text following the sequence
+        text = " ".join(_ for _ in seq[ndesc:])
         seq = seq[0:ndesc]
 
-    # store the sequence in a dictionary keyed on the serial number
+        # store the sequence in a dictionary keyed on the serial number
         sequence = SeqObj(seq, ndesc, serial_number, text)
         table.add_sequence(sequence)
 
@@ -346,28 +351,28 @@ def read_elements(filename):
     # (A5,I3) after which the rest of the line can be used for comments as
     # can the following line.
 
-    while lines[ptr].strip() != '':
-        if lines[ptr].find('ELEMENT NAMES AND LOCATIONS') > -1:
-            break   # to get the element names
+    while lines[ptr].strip() != "":
+        if lines[ptr].find("ELEMENT NAMES AND LOCATIONS") > -1:
+            break  # to get the element names
         serial_number = int(lines[ptr][5:8])
         index_text = lines[ptr][9:]
-    # skip a line
+        # skip a line
         ptr += 2
 
-    # The next line contains three numbers in the format (T2,3I4),
-    # the numbers being the total number of segments, the number of
-    # replications and the maximum depth of nesting of replications
+        # The next line contains three numbers in the format (T2,3I4),
+        # the numbers being the total number of segments, the number of
+        # replications and the maximum depth of nesting of replications
 
         nseg = int(lines[ptr][0:5])
         nrep = int(lines[ptr][5:9])
         ndep = int(lines[ptr][9:13])
 
-    # After a blank line there follows details of the structure of each segment
-    # listed one to a line with the data listed in format (I6,16I4).
-    # The first number is the segment number, the second is the number of data
-    # values in that segment and the third is the number of replications that segment
-    # is in. If this last number is greater than zero, it is followed by the replication
-    # numbers concerned starting with the outermost one.
+        # After a blank line there follows details of the structure of each segment
+        # listed one to a line with the data listed in format (I6,16I4).
+        # The first number is the segment number, the second is the number of data
+        # values in that segment and the third is the number of replications that segment
+        # is in. If this last number is greater than zero, it is followed by the replication
+        # numbers concerned starting with the outermost one.
         ptr += 2
         segments = []
         for i in range(nseg):
@@ -377,28 +382,30 @@ def read_elements(filename):
             col = 13
             rep = []
             for _ in range(repcount):
-                rep.append(int(lines[ptr][col:col+4]))
+                rep.append(int(lines[ptr][col : col + 4]))
                 col += 4
             text = lines[ptr][col:].strip()
             segments.append(SegmentObj(segnum, posnum, repcount, rep, text))
             ptr += 1
-    # The last segment is followed by a blank line and then the replication
-    # counts for all replications in order in format (T2,17I4).
+        # The last segment is followed by a blank line and then the replication
+        # counts for all replications in order in format (T2,17I4).
         if nrep > 0:
             ptr += 1
             col = 1
             replications = []
             for _ in range(nrep):
-                replications.append(int(lines[ptr][col:col+4]))
+                replications.append(int(lines[ptr][col : col + 4]))
                 col += 4
             ptr += 1
         else:
             replications = []
 
-        indexObj = IndexObj(serial_number, index_text, nseg, nrep, ndep, segments, replications)
+        indexObj = IndexObj(
+            serial_number, index_text, nseg, nrep, ndep, segments, replications
+        )
         table.add_index(indexObj)
 
-    # skip blank line at end of this index
+        # skip blank line at end of this index
         ptr += 1
 
     numindexes = table.numindex
@@ -411,28 +418,28 @@ def read_elements(filename):
 
     element_list = []
     ptr += 3
-    namelen = lines[ptr].find('>')
+    namelen = lines[ptr].find(">")
     ptr += 1
     offset = namelen
-    while lines[ptr] != '':
+    while lines[ptr] != "":
         element_dict = {}
-        name = lines[ptr][0:offset+1]
+        name = lines[ptr][0 : offset + 1]
         col = offset + 2
-        T = lines[ptr][col:col+1]
+        T = lines[ptr][col : col + 1]
         col += 2
-        id = lines[ptr][col:col+2]
+        id = lines[ptr][col : col + 2]
         col += 2
         for i in range(numindexes):
             try:
-                seg = int(lines[ptr][col:col+4])
-                pos = int(lines[ptr][col+4:col+8])
+                seg = int(lines[ptr][col : col + 4])
+                pos = int(lines[ptr][col + 4 : col + 8])
             except ValueError:
                 seg = 0
                 pos = 0
             col += 8
             serial_number = i + 1
             if serial_number in element_dict:
-                print('Error: duplicate INDEX ID', serial_number)
+                print("Error: duplicate INDEX ID", serial_number)
             else:
                 element_dict[serial_number] = (seg, pos)
 
@@ -441,4 +448,5 @@ def read_elements(filename):
 
     table.add_elements(element_list)
 
-    return(table)
+    return table
+
