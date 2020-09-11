@@ -1,28 +1,32 @@
-'''
+from dataclasses import dataclass, field
+from typing import List, Dict
+
+"""
 The RetrievalTable module contains classes relating to the MetDB
 retrieval_table file. This file holds information for each MetDB "datatype"
 such as the location of the datafile, indexing period, MASS storage stream
 and so on.
 There can be several entries for a  single MetDB datatype, each entry
 represents a "dataset" - online or archived, for example.
-'''
+"""
 
 
 class RetrievalTable:
-    '''This class represents all the entries in a MetDB retrieval_table file.
+    """This class represents all the entries in a MetDB retrieval_table file.
 
     Attributes:
         * headers (list): The 1st 7 lines in the file.
         * datatypes (dict): A dictionary of Datatype objects in the file.
         * footers (list): The final lines after the "dataset" lines.
-    '''
+    """
+
     def __init__(self, rt_file=None):
-        '''Initialise a new RetrievalTable object  and populate it with the
+        """Initialise a new RetrievalTable object  and populate it with the
         content of the supplied retrieval_table file, if any.
 
         Args:
             rt_file: A file object (optional).
-        '''
+        """
         self.datatypes = {}
         if rt_file is None:
             self.headers = []
@@ -38,10 +42,10 @@ class RetrievalTable:
                     self.datatypes[datatype].add_dataset(dataset)
                 else:
                     break  # blank line so we're done with dataset lines
-            self.footers = _rtlines[(_count + 7):]
+            self.footers = _rtlines[(_count + 7) :]
 
     def _unpack_line(self, line):
-        '''Unpack a single line from a retrieval_table into components and
+        """Unpack a single line from a retrieval_table into components and
         create a Dataset object from them.
 
         Args:
@@ -50,7 +54,7 @@ class RetrievalTable:
         Returns:
             datatype (str): the name of the datatype
             dataset (Dataset): a Dataset object
-        '''
+        """
         _datatype = line[1:9].strip()
         _model = line[10:12].strip()
         _raw_merged_flag = line[13:14].strip()
@@ -68,38 +72,47 @@ class RetrievalTable:
         _mass_stream = line[98:101].strip()
         _dataset_name = line[102:].strip()
 
-        _dataset = Dataset(_model,
-                           _raw_merged_flag,
-                           _start_time,
-                           _end_time,
-                           _storage_medium,
-                           _list_code_number,
-                           _elements_list,
-                           _elements_index,
-                           _retention_period_days,
-                           _index_records_per_dataset,
-                           _index_period_minutes,
-                           _record_length,
-                           _skeleton_flag,
-                           _mass_stream,
-                           _dataset_name)
+        _dataset = Dataset(
+            _model,
+            _raw_merged_flag,
+            _start_time,
+            _end_time,
+            _storage_medium,
+            _list_code_number,
+            _elements_list,
+            _elements_index,
+            _retention_period_days,
+            _index_records_per_dataset,
+            _index_period_minutes,
+            _record_length,
+            _skeleton_flag,
+            _mass_stream,
+            _dataset_name,
+        )
 
         return _datatype, _dataset
 
     def list_datatypes(self):
-        '''Return a list of datatypes in this object.
+        """Return a list of datatypes in this object.
         Omit the "pseudo-datatypes" - lines that exist in the
         retrieval_table but are not actual datatypes.
-        '''
+        """
         datatypes = list(self.datatypes.keys())
         # remove the "pseudo-datatypes" that are in the retrieval_table
-        for pseud in ['ASSOC', 'ELEMENTS', 'ELEMIDX', 'OFFLINE', 'STNABRV',
-                      'STNICAO', 'STNIND']:
+        for pseud in [
+            "ASSOC",
+            "ELEMENTS",
+            "ELEMIDX",
+            "OFFLINE",
+            "STNABRV",
+            "STNICAO",
+            "STNIND",
+        ]:
             datatypes.remove(pseud)
         return datatypes
 
     def dataset_count(self, datatype):
-        '''Return count of Datasets for a given Datatype'''
+        """Return count of Datasets for a given Datatype"""
         return self.datatypes[datatype].number_of_datasets
 
     def write_file(self, filename):
@@ -107,23 +120,24 @@ class RetrievalTable:
 
 
 class Datatype:
-    '''This class is the collection of Dataset objects for a datatype.
+    """This class is the collection of Dataset objects for a datatype.
 
     Attributes:
         * datasets (list): a list of Dataset objects.
         * number_of_datasets (int): number of Dataset objects held.
-    '''
+    """
+
     def __init__(self):
-        '''Initialise a new Datatype object'''
+        """Initialise a new Datatype object"""
         self.datasets = []
         self.number_of_datasets = 0
 
     def add_dataset(self, dataset):
-        '''Add a Dataset object to the list for this Datatype.
+        """Add a Dataset object to the list for this Datatype.
 
         Args:
             dataset: a Dataset object
-        '''
+        """
         if isinstance(dataset, Dataset):
             self.number_of_datasets += 1
             self.datasets.append(dataset)
@@ -132,7 +146,7 @@ class Datatype:
 
 
 class Dataset:
-    '''This class represents a single Dataset entry line in a retrieval table.
+    """This class represents a single Dataset entry line in a retrieval table.
 
         Attributes:
             * model (int): Model or area of coverage.
@@ -150,24 +164,27 @@ class Dataset:
             * skeleton_flag (str): T if dataset name is a MASS skeleton, else F.
             * mass_stream (str): Archive MASS stream.
             * dataset_name (str): Name of dataset.
-    '''
-    def __init__(self,
-                 model,
-                 raw_merged_flag,
-                 start_time,
-                 end_time,
-                 storage_medium,
-                 list_code_number,
-                 elements_list,
-                 elements_index,
-                 retention_period_days,
-                 index_records_per_dataset,
-                 index_period_minutes,
-                 record_length,
-                 skeleton_flag,
-                 mass_stream,
-                 dataset_name):
-        '''Initialise a new Dataset object'''
+    """
+
+    def __init__(
+        self,
+        model,
+        raw_merged_flag,
+        start_time,
+        end_time,
+        storage_medium,
+        list_code_number,
+        elements_list,
+        elements_index,
+        retention_period_days,
+        index_records_per_dataset,
+        index_period_minutes,
+        record_length,
+        skeleton_flag,
+        mass_stream,
+        dataset_name,
+    ):
+        """Initialise a new Dataset object"""
         self.model = model
         self.raw_merged_flag = raw_merged_flag
         self.start_time = start_time
