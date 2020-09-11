@@ -1,4 +1,4 @@
-'''
+"""
 `localseq.py` parses a MetDB local sequence file to extract definitions.
 
 Code is currently installed on `mdb-apps-test:/var/moods/metdb_utils/bufr`
@@ -17,7 +17,7 @@ Usage:
     >>> seq = localseq.read_localseq('bufr_localseq/aatsr')
 
 
-'''
+"""
 
 import bufr
 import sys
@@ -25,7 +25,7 @@ import re
 
 
 def read_localseq(filename):
-    '''Read a MetDB format local_seq file to get one or more sequences.
+    """Read a MetDB format local_seq file to get one or more sequences.
 
     args:
       * filename (str) - name of file containing sequences.
@@ -46,7 +46,7 @@ def read_localseq(filename):
       one or more descriptors delimited by commas or spaces. Text can follow.
       A blank line ends the sequence.  There may be more than one sequence in
       a file.
-    '''
+    """
 
     local_seqs = {}
 
@@ -56,13 +56,13 @@ def read_localseq(filename):
         lines = inp.readlines()
         inp.close()
     except IOError as e:
-        print(f'Error reading {filename} - {e}')
+        print(f"Error reading {filename} - {e}")
         sys.exit(1)
 
     found = False  # set true when we find the start of a sequence
 
     # regex to find groups of digits delimited by commas or spaces
-    pattern = re.compile(r'(\d+)[, \n]')
+    pattern = re.compile(r"(\d+)[, \n]")
 
     # loop over lines
     for line in lines:
@@ -80,7 +80,7 @@ def read_localseq(filename):
         # else if the line is blank and we have built up a sequence, then this
         # is the end of a sequence so save it in the dictionary and reset the
         # indicator to show we are not working on a sequence now
-        elif line.strip() == '' and len(seq) > 0:
+        elif line.strip() == "" and len(seq) > 0:
             # print(f'End of sequence with length {len(seq)}')
             local_seqs[descr] = seq
             found = False
@@ -91,8 +91,8 @@ def read_localseq(filename):
         else:
             # e.g. 001007, 002019  SATELLITE IDENTIFIER, SATELLITE INSTRUMENTS
             # descriptor string delimited by a space before text
-            
-            delimit = re.search(r'[a-zA-Z]', line)
+
+            delimit = re.search(r"[a-zA-Z]", line)
             if delimit:
                 delimit = delimit.start()
             else:
