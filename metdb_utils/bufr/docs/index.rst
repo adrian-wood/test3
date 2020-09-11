@@ -77,7 +77,7 @@ Elements Index Generator
 ========================
 
 .. automodule:: elements
-   :members: process
+   :members:
 
 Elements Index Classes
 ======================
