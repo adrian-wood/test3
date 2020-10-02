@@ -21,7 +21,7 @@ cd /var/moods/housekeeping
 echo "> Tidying up retrieved data_access.log files..."
 AGE=32
 BASE=/var/www/html/mdb_activity/data_access_logs/
-SERVERS="mdbdb-prod mdbapop-prod mdbapus-prod"
+SERVERS="mdbdb-prod mdbapop-prod mdbapus-prod mdb-test"
 for SERVER in $SERVERS; do
 
     echo ">> tidying data_access.log files for $SERVER:"
