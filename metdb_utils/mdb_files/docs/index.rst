@@ -22,6 +22,11 @@ Interface to retrieval_table File
 .. automodule:: RetrievalTable
    :members:
 
+Interface to storage_datasets File
+==================================
+
+.. automodule:: StorageDatasets
+
 Indices and tables
 ==================
 
