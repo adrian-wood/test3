@@ -47,7 +47,7 @@ class StorageDataset:
     dataset_name: str  # the name of the dataset.
     comment: str  # optional comment
 
-    def __post__init(self):
+    def __post_init__(self):
         """
         Validation of the parameters passed at object creation. This function
         ensures that StorageDataset objects are only created if valid parameters have
