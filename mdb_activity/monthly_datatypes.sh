@@ -2,7 +2,7 @@
 #------------------------------------------------------------------------------        
 # PURPOSE : Script to create previous month's webpage analysis of datatypes
 #           retrieved by reading data_access.log files.
-#           Does a wget of the current retrieval_table from BitBucket to
+#           Obtains the current retrieval_table from BitBucket to
 #           determine what are "valid" datatypes, and which datatypes have not
 #           been retrieved.
 # ENV VARS: The following environment variables must/may be set:
@@ -26,8 +26,11 @@ module load scitools
 module display scitools
 
 tmp_dir=$(mktemp -d -t md-XXXXX)
-wget --no-check-certificate -q https://bitbucket:8443/projects/MOOD/repos/metdb/raw/TABLES/retrieval_table?at=refs%2Fheads%2Fmaster -O $tmp_dir/retrieval_table
-export RETRIEVAL_TABLE=$tmp_dir/retrieval_table
+source_repo=git@bitbucket.org:metoffice/metdb.git
+git clone $source_repo $tmp_dir
+git -C $tmp_dir checkout master
+git -C $tmp_dir status
+export RETRIEVAL_TABLE=$tmp_dir/TABLES/retrieval_table
 
 python /var/moods/mdb_activity/monthly_datatypes.py `date '+%Y %m' -d 'last month'`
 
