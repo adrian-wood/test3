@@ -14,13 +14,11 @@ Interface to data_access.log Files
 ==================================
 
 .. automodule:: DataAccessLog
-   :members:
 
 Interface to retrieval_table File
 =================================
 
 .. automodule:: RetrievalTable
-   :members:
 
 Interface to storage_datasets File
 ==================================
