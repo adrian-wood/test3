@@ -75,7 +75,7 @@ import elementIndex as ec
 
 
 def hasvalue(desc):
-    '''Decides if given descriptor will have a corresponding value.
+    """Decides if given descriptor will have a corresponding value.
 
     args:
       * desc (str) - FXXYYY descriptor
@@ -89,39 +89,36 @@ def hasvalue(desc):
          * Replication counts
          * Operators (F=2)...except
          * Bitmap placeholders
-    '''
+    """
 
     (F, X, Y) = (desc[0], desc[1:3], desc[3:6])
     # all replication operators
-    if F == '1':
+    if F == "1":
         return False
 
     # short and long replication counts (but not bitmaps!)
-    if F == '0' and X == '31' and (Y == '000' or
-                                   Y == '001' or
-                                   Y == '002'):
+    if F == "0" and X == "31" and (Y == "000" or Y == "001" or Y == "002"):
         return False
 
     # Specific operators (listed to avoid a catchall situation)
-    if F == '2' and (X == '01' or X == '02'):
+    if F == "2" and (X == "01" or X == "02"):
         return False
-    if F == '2' and X == '03':
+    if F == "2" and X == "03":
         return False
-    if F == '2' and X == '04':
+    if F == "2" and X == "04":
         return False
-    if F == '2' and (X == '05' or X == '06'):
+    if F == "2" and (X == "05" or X == "06"):
         return False
-    if F == '2' and (X == '07'):
+    if F == "2" and (X == "07"):
         return False
-    if F == '2' and (X == '08'):
+    if F == "2" and (X == "08"):
         return False
-    if F == '2' and (X == '22'):
+    if F == "2" and (X == "22"):
         return False
-    if F == '2' and (X == '36' or X == '37'):
+    if F == "2" and (X == "36" or X == "37"):
         return False
-    if F == '2' and (X == '23' or X == '24'
-                     or X == '25' or X == '32'):
-        if Y == '255':
+    if F == "2" and (X == "23" or X == "24" or X == "25" or X == "32"):
+        if Y == "255":
             return True
         else:
             return False
@@ -156,7 +153,7 @@ def process(input_seq):
     tableD = bufr.TableD()
     tableB = bufr.TableB()
 
-    table = ec.TableObj(1, 'NEW DATATYPE')
+    table = ec.TableObj(1, "NEW DATATYPE")
 
     ndes = len(seq)
     rep = [[0] for _ in range(ndes)]
@@ -168,7 +165,7 @@ def process(input_seq):
     assoc_start = []
     assoc_end = []
 
-    warning = ''  # for error messages at the end
+    warning = ""  # for error messages at the end
 
     # counts associated with each replication
     repcount = {}
@@ -176,7 +173,7 @@ def process(input_seq):
 
     # Start by creating a SeqObj representing the sequence
     orig_seq = seq.copy()
-    new_sequence = ec.SeqObj(orig_seq, len(seq), 1, 'New sequence')
+    new_sequence = ec.SeqObj(orig_seq, len(seq), 1, "New sequence")
     table.add_sequence(new_sequence)
 
     # variable i is the current position in seq; seq is updated
@@ -186,22 +183,22 @@ def process(input_seq):
     while i < len(seq):
 
         desc = seq[i]
-        if desc == '':
-            print('Error in sequence', seq)
+        if desc == "":
+            print("Error in sequence", seq)
             sys.exit(1)
 
         level = rep[i].copy()
 
         (F, X, Y) = (desc[0], desc[1:3], desc[3:6])
 
-        if F == '3':
+        if F == "3":
             # Look up expansion, insert it in the sequence
             # and delete the table D descriptor.
             # Extend the replication array so it stays
             # in sync.
             insert = tableD.lookup(desc)
             if not insert:
-                print('Error: Table D not found ', desc)
+                print("Error: Table D not found ", desc)
                 sys.exit(1)
             extras = len(insert)
             seq[i:i] = insert
@@ -210,7 +207,7 @@ def process(input_seq):
             del rep[i + extras]
             i -= 1  # descriptor has been replaced so need to look at it again
 
-        elif F == '1':
+        elif F == "1":
             # Increment the replication count and add it to the list for
             # this descriptor and all those covered by the replication count,
             # For delayed replication the class 31 descriptor
@@ -220,8 +217,8 @@ def process(input_seq):
             # dictionary.
             maxrep += 1
             level.append(maxrep)
-            if Y == '000':
-                if seq[i + 1] == '031001' or seq[i + 1] == '031002':
+            if Y == "000":
+                if seq[i + 1] == "031001" or seq[i + 1] == "031002":
                     counter = -1
                 else:
                     counter = -2
@@ -233,22 +230,22 @@ def process(input_seq):
                     rep[i + group] = level
             repcount[maxrep] = counter
 
-        elif F == '2':
+        elif F == "2":
             # Most operators do not have values in the data array but the
             # ones in this section require special handling.
 
             # 203 operators delimit a section that updates Table B so the
             # descriptors between the 203YYY and 203255 do not have values
             # in the output array.
-            if X == '03':
-                if Y != '255':
+            if X == "03":
+                if Y != "255":
                     # start of group redefining reference values
                     group_start.append(i)
                 else:
                     group_end.append(i)
 
             # Take out the descriptors to do with bitmaps
-            if X == '22' or X == '36' or X == '37':
+            if X == "22" or X == "36" or X == "37":
                 del seq[i]
                 del rep[i]
                 i -= 1
@@ -257,11 +254,12 @@ def process(input_seq):
             # value until terminated by 204000.  For every data value two
             # extras will be added (when we get to the segment/position
             # section)
-            if X == '04':
+            if X == "04":
                 if not warning:
-                    warning = (' *** WARNING *** Associated data'
-                               ' elements not included')
-                if Y != '000':
+                    warning = (
+                        " *** WARNING *** Associated data" " elements not included"
+                    )
+                if Y != "000":
                     assoc_start.append(i)
                 else:
                     assoc_end.append(i)
@@ -277,7 +275,7 @@ def process(input_seq):
     segcount = 1
     segment.append(segcount)
     for i in range(1, len(rep)):
-        if rep[i] != rep[i-1]:
+        if rep[i] != rep[i - 1]:
             segcount += 1
         segment.append(segcount)
 
@@ -285,8 +283,7 @@ def process(input_seq):
     # values (other than operators which are handled by a function).
 
     if len(group_start) != len(group_end):
-        print('Wrong number of start/end positions (group):',
-              group_start, group_end)
+        print("Wrong number of start/end positions (group):", group_start, group_end)
         sys.exit(2)
 
     skip = []  # list of indices to be skipped in the postion count
@@ -298,8 +295,7 @@ def process(input_seq):
     # associated data
 
     if len(assoc_start) != len(assoc_end):
-        print('Wrong number of start/end positions (assoc):',
-              assoc_start, assoc_end)
+        print("Wrong number of start/end positions (assoc):", assoc_start, assoc_end)
         sys.exit(2)
 
     extra = []
@@ -320,13 +316,13 @@ def process(input_seq):
     position.append(poscount)
 
     for i in range(1, len(segment)):
-        if segment[i] != segment[i-1]:
-            poscount = 0    # back to the start for a new segment
+        if segment[i] != segment[i - 1]:
+            poscount = 0  # back to the start for a new segment
         if i in skip:
             position.append(0)
         elif hasvalue(seq[i]):
             if i in extra:
-                if seq[i][0:3] == '031':  # class 31 not included
+                if seq[i][0:3] == "031":  # class 31 not included
                     position.append(0)
                 else:
                     poscount += 3  # sig., associated data & actual
@@ -347,18 +343,18 @@ def process(input_seq):
     r = np.array(rep)
     segList = []
 
-    for i in range(1, max(s)+1):
+    for i in range(1, max(s) + 1):
         npos = max(np.where(s == i, p, 0))
         ind = np.where(s == i)[0]
 
         thisRep = r[ind]
         nr = max([len(_) for _ in thisRep]) - 1
         levels = thisRep[0][1:]
-        segList.append(ec.SegmentObj(i, npos, nr, levels, ''))
+        segList.append(ec.SegmentObj(i, npos, nr, levels, ""))
 
     # convert repcount dict to list
-    replist = [ v for k, v in sorted(repcount.items())] 
-    indexObj = ec.IndexObj(1, ' ', nsegs, nreps, nlevels, segList, replist)
+    replist = [v for k, v in sorted(repcount.items())]
+    indexObj = ec.IndexObj(1, " ", nsegs, nreps, nlevels, segList, replist)
     table.add_index(indexObj)
 
     # The best we can do for element names is Table B descriptors.
@@ -367,20 +363,20 @@ def process(input_seq):
     for i in range(len(seq)):
         desc = seq[i]
         (F, X, Y) = (desc[0], desc[1:3], desc[3:6])
-        if F == '0':
+        if F == "0":
             name = tableB.lookup(desc).name
-        elif F == '1':
-            name = 'REPLICATION'
+        elif F == "1":
+            name = "REPLICATION"
             segment[i] = 0
             position[i] = max(rep[i])
-        elif F == '2' and Y == '255':
-            name = 'QUALITY PLACEHOLDER'
+        elif F == "2" and Y == "255":
+            name = "QUALITY PLACEHOLDER"
         else:
-            name = ''
+            name = ""
         if position[i] != 0:
-            fullname = desc + ' ' + name
+            fullname = desc + " " + name
             edict = {1: (segment[i], position[i])}
-            elem_list.append(ec.ElementObj(fullname,' ', ' ',edict))
+            elem_list.append(ec.ElementObj(fullname, " ", " ", edict))
 
     table.add_elements(elem_list)
 
@@ -393,8 +389,8 @@ def process(input_seq):
     return table
 
 
-if __name__ == '__main__':
-    '''Print an elements_index for a given sequence.
+if __name__ == "__main__":
+    """Print an elements_index for a given sequence.
     
     Usage:
 
@@ -403,8 +399,8 @@ if __name__ == '__main__':
     >>> table = process(seq)
     >>> print(table)
     
-    '''
+    """
 
-    seq = ['315009']
+    seq = ["315009"]
     table = process(seq)
     print(table)

@@ -67,7 +67,7 @@ printf "...Done.\n"
 # Find max number of lines allowed in abrv_stnmas by getting the
 # parameter from source code
 
-source_repo=ssh://git@exxgitrepo:7999/mood/metdb.git
+source_repo=git@bitbucket.org:metoffice/metdb.git
 branch=develop
 git clone "$source_repo" "$tmp_dir"
 if [[ "$?" -ne 0 ]]; then

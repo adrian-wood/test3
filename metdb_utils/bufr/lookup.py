@@ -45,10 +45,11 @@ import sys
 import argparse
 
 
-ints = ['YEAR', 'MNTH', 'DAY', 'HOUR', 'MINT', 'SCND']
+ints = ["YEAR", "MNTH", "DAY", "HOUR", "MINT", "SCND"]
+
 
 def find_in_table(tab, serial_number, seg, pos):
-    '''Finds element name for a given index, segment and position.
+    """Finds element name for a given index, segment and position.
     
     args:
     * tab (TableObj)
@@ -58,7 +59,7 @@ def find_in_table(tab, serial_number, seg, pos):
     
     returns:
     * e (ElementObj) - matching element or None if not found
-    '''
+    """
 
     for e in tab.elements:
         (s1, p1) = e.location[serial_number]
@@ -66,8 +67,9 @@ def find_in_table(tab, serial_number, seg, pos):
             return e
     return None
 
+
 def lookup(filename, serial_number, offset):
-    '''Print [ELEMENTS] sections for the given filename'''
+    """Print [ELEMENTS] sections for the given filename"""
 
     tableb = bufr.TableB()
 
@@ -91,44 +93,60 @@ def lookup(filename, serial_number, offset):
         (s1, p1) = e.location[1]
         element = find_in_table(table, serial_number, s1, p1)
         if element:
-            text = '\n  description = '
-            desc = e.name.split(' ')[0]
+            text = "\n  description = "
+            desc = e.name.split(" ")[0]
             name = element.name.strip()
-            if desc[0] == '0':
-                text += '\n  descriptor = ' + desc.strip()
+            if desc[0] == "0":
+                text += "\n  descriptor = " + desc.strip()
                 units = tableb.lookup(desc).unit
-                if 'CODE' in units or 'FLAG' in units:
-                    if 'CODE' in units:
-                        text += '\n  reported_units = code'
-                    if 'FLAG' in units:
-                        text += '\n  reported_units = flag'
-                    text += '\n  table_id = ' + desc.strip()
+                if "CODE" in units or "FLAG" in units:
+                    if "CODE" in units:
+                        text += "\n  reported_units = code"
+                    if "FLAG" in units:
+                        text += "\n  reported_units = flag"
+                    text += "\n  table_id = " + desc.strip()
                 else:
-                    text += '\n  reported_units = '
+                    text += "\n  reported_units = "
                     if any(x in name for x in ints):
-                        text += '\n  python_type = I'
+                        text += "\n  python_type = I"
                     else:
-                        text += '\n  python_type = R'
+                        text += "\n  python_type = R"
             else:
-                text += '\n  reported_units = numeric'
-                text += '\n  python_type = I'
-            print('  [[{:s}]]  {:s}\n'. format(name, text))
+                text += "\n  reported_units = numeric"
+                text += "\n  python_type = I"
+            print("  [[{:s}]]  {:s}\n".format(name, text))
 
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Prints an outline [ELEMENTS] section for SSOT')
+    parser = argparse.ArgumentParser(
+        description="Prints an outline [ELEMENTS] section for SSOT"
+    )
 
-    parser.add_argument('filename',
-                         action='store',
-                         help='New format elements_index filename')
+    parser.add_argument(
+        "filename", action="store", help="New format elements_index filename"
+    )
 
-    parser.add_argument('-i', action='store', dest='serial', default=1, type=int,
-                         help='elements file index reference')
+    parser.add_argument(
+        "-i",
+        action="store",
+        dest="serial",
+        default=1,
+        type=int,
+        help="elements file index reference",
+    )
 
-    parser.add_argument('-s', action='store', dest='seq', default=0, type=int,
-                         help=('number of BUFR sequence to use (starting at 0)'
-                               ' relative to the index reference'))
-                        
+    parser.add_argument(
+        "-s",
+        action="store",
+        dest="seq",
+        default=0,
+        type=int,
+        help=(
+            "number of BUFR sequence to use (starting at 0)"
+            " relative to the index reference"
+        ),
+    )
+
     cmdline = parser.parse_args()
     lookup(cmdline.filename, cmdline.serial, cmdline.seq)
