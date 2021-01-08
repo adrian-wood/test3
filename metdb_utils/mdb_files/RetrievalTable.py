@@ -58,9 +58,6 @@ class Dataset:
         """
         Provide a string representation of a ``Dataset``.
 
-        Args:
-            self (Dataset): this object.
-
         Returns:
             str: A string representation of a Dataset object in the format
             expected by MetDB in a retrieval_table file. Note that the datatype name
@@ -102,13 +99,13 @@ class Dataset:
 class DatatypeRT:
     """
     This class is the collection of ``Dataset`` objects for a single datatype.
+
+    Attributes:
+        datasets (list): list of ``Dataset`` objects.
+        number_of_datasets (int): the number of datasets for this datatype.
     """
 
     def __init__(self):
-        """
-        Initialise a new ``Datatype`` object with an empty ``datasets`` list and
-        ``number_of_datasets`` set to 0.
-        """
         self.datasets = []
         self.number_of_datasets = 0
 
@@ -131,9 +128,6 @@ class DatatypeRT:
         """
         Provide a string representation of a ``DatatypeRT`` object.
 
-        Args:
-            self (DatatypeRT): this object.
-
         Returns:
             str: A string representation of a DatatypeRT object in the format
             expected by MetDB in a retrieval_table file.
@@ -147,6 +141,11 @@ class RetrievalTable:
     Represents a complete ``retrieval_table`` file, including the header and footer
     sections, plus the details of each dataset for every datatype retrievable from
     MetDB, and the **"other"** datasets in the file.
+    
+    Attributes:
+        datatypes (dict): key: datatype name, value: Datatype object
+        headers (list): list of strings for the headers in a file.
+        footers (list): list of strings for the footer in a file.
     """
 
     def __init__(self, rt_file=None):
@@ -157,10 +156,9 @@ class RetrievalTable:
             rt_file: A file name (optional).
         """
         self.datatypes = {}
-        if rt_file is None:
-            self.headers = []
-            self.footers = []
-        else:
+        self.headers = []
+        self.footers = []
+        if rt_file:
             self.read_RT(rt_file)
 
     def read_RT(self, rt_file):
@@ -174,7 +172,6 @@ class RetrievalTable:
         #. call the ``add_dataset`` function with this datatype name and ``Dataset`` object.
 
         Args:
-            self (RetrievalTable): this object.
             rt_file (str): a file name.
 
         Raises:
@@ -206,9 +203,6 @@ class RetrievalTable:
 
         Args:
             line (str): the line of text to unpack
-
-        Raises:
-            ValueError: if unable to unpack the dataset line.
 
         Returns:
             tuple: tuple containing:
@@ -307,9 +301,6 @@ class RetrievalTable:
         Omit the "pseudo-datatypes" - lines that exist in the retrieval_table but are
         not actual datatypes.
 
-        Args:
-            self (RetrievalTable): this object.
-
         Returns:
             list: a sorted list of the dataypes currently held.
         """
@@ -327,11 +318,11 @@ class RetrievalTable:
 
     def dataset_count(self, datatype):
         """
-        Count of the ``Dataset`` objects for a suppied Datatype.
+        Count of the ``Dataset`` objects for a supplied Datatype name.
 
         Args:
-            self (RetrievalTable): this object.
-
+            datatype (str): the name of the Datatype to get the count for.
+            
         Returns:
             int: a count of Dataset objects for the supplied datatype.
         """
@@ -345,13 +336,13 @@ class RetrievalTable:
         **headers**, all the **datatypes** and the **footers**.
         The lines for each datatype should be obtained from the 
         ``DatatypeRT(__str__)`` function, each line being prefixed with the dataype name.
+        OSError exceptions when attempting to create the file will result in sys.exit(2).
 
         Args:
-            self (RetrievalTable): this object.
             rt_file (str): the file to be created.
 
         Raises:
-            OSError: if any OS errors writing the file.
+            ValueError: if no filename supplied.
         """
         if rt_file is None:
             raise ValueError("Filename must be supplied")
