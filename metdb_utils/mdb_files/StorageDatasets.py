@@ -80,7 +80,6 @@ class StorageDataset:
         pass
 
 
-@dataclass
 class StorageDatasets:
     """
     Represents a complete ``storage_datasets`` file, including the header and footer
@@ -88,9 +87,18 @@ class StorageDatasets:
     and the **"other"** datasets in the file.
     """
 
-    headers: str  # the header lines of the file.
-    datatypes: dict  # key: a datatype; value: a StorageDataset object.
-    footers: str  # the trailing lines of the file.
+    def __init__(self, sd_file=None):
+        """Initialise a new ``StorageDatasets`` object  and populate it with the
+        content of the ``storage_datasetes`` file, if supplied.
+
+        Args:
+            sd_file: A file name (optional).
+        """
+        self.datatypes = {}
+        self.headers = []
+        self.footers = []
+        if sd_file:
+            self.read_SD(sd_file)
 
     def read_SD(self, sd_file):
         """
