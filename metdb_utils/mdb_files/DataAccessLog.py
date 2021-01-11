@@ -4,6 +4,7 @@ files, which record every retrieval from MetDB.
 '''
 
 import re
+from collections import defaultdict
 
 
 class DataAccessLog:
@@ -12,10 +13,24 @@ class DataAccessLog:
 
     Attributes:
         * retrievals (list): a list of MetDBRetrieval objects.
+        * retrieval_count (int): the total number of retrievals.
         * count_by_datatype (dict): the number of times that a retrieval for a
                                     specific datatype occurs in the collection
-        * count_by_user (dict): the number of times that a retrieval for a
-                                    specific user occurs in the collection.
+        * count_by_userid (dict): the number of times that a retrieval for a
+                                  specific user occurs in the collection.
+        * count_by_contact (dict): the number of times that a retrieval for a
+                                   specific contact occurs in the collection.
+        * userid_contact (dict): a dictionary whose keys are userids appearing
+                                 in the collection, with values of a further
+                                 dictionary whose keys are contacts and values
+                                 of the number of times that a retrieval for
+                                 that particular userid/contact appears.
+        * contact_userid (dict): the opposite of userid_contact, i.e.
+                                 a dictionary whose keys are contacts appearing
+                                 in the collection, with values of a further
+                                 dictionary whose keys are userids and values
+                                 of the number of times that a retrieval for
+                                 that particular contact/userid appears.
     '''
     def __init__(self, da_log_file=None):
         '''Initialize an empty DataAccessLog object and populate it with the
@@ -25,8 +40,12 @@ class DataAccessLog:
             da_log_file: A file object (optional).
         '''
         self.retrievals = []
-        self.count_by_datatype = {}
-        self.count_by_userid = {}
+        self.retrieval_count = 0
+        self.count_by_datatype = defaultdict(int)
+        self.count_by_userid = defaultdict(int)
+        self.count_by_contact = defaultdict(int)
+        self.userid_contact = defaultdict(lambda: defaultdict(int))
+        self.contact_userid = defaultdict(lambda: defaultdict(int))
         if da_log_file is not None:
             self.read_da_log(da_log_file)
 
@@ -62,12 +81,12 @@ class DataAccessLog:
                                        _userid, _client, _contact,
                                        _datatype, _nobs, _nelem, _req)
             self.retrievals.append(retrieval)
-            if _datatype not in self.count_by_datatype:  # new dict entry
-                self.count_by_datatype[_datatype] = 0
+            self.retrieval_count += 1
             self.count_by_datatype[_datatype] += 1
-            if _userid not in self.count_by_userid:  # new dict entry
-                self.count_by_userid[_userid] = 0
             self.count_by_userid[_userid] += 1
+            self.count_by_contact[_contact] += 1
+            self.userid_contact[_userid][_contact] += 1
+            self.contact_userid[_contact][_userid] += 1
 
 
 class MetDBRetrieval:

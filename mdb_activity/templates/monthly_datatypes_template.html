@@ -24,6 +24,7 @@
         <div><a class="btn btn-danger btn-lg btn-block" href=/mdb_activity/data_access_logs role="button">Log browser</a></div>
       </div>
       <div class="col-xs-3">
+        <div><a class="btn btn-warning btn-lg btn-block" href=/mdb_activity/monthly_datatype_retrievals.html role="button">Current month</a></div>
       </div>
       <div class="col-xs-3">
         <div><a class="btn btn-success btn-lg btn-block" href=/mdb_activity/monthly_datatype_retrievals_archive/{{last_months_page}} role="button">This page last month</a></div>
@@ -62,7 +63,7 @@
           <td>{{key}}</td>
           <td style="text-align:center">{{values[0]}}</td>
           {% for count in values[1] %}
-          <td style="text-align:right">{{count}}</td>
+          <td style="text-align:right">{{'{:,}'.format(count)}}</td>
           {% endfor %}
         {% endfor %}
         </tr>
@@ -72,7 +73,7 @@
           <td><b>TOTALS</b></td>
           <td style="text-align:center"><b>{{invalid_count}}</b></td>
           {% for total in overall_totals %}
-          <td style="text-align:right"><b>{{total}}</b></td>
+          <td style="text-align:right"><b>{{'{:,}'.format(total)}}</b></td>
           {% endfor %}
         </tr>
       </tfoot>

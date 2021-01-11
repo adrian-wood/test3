@@ -1,69 +1,91 @@
-1   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0002 $SYS1 $SYS2   : $INDIR/mdb0002 :Collection of 32 simple satellite retrievals (totals only)
-2   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0003 $SYS1 $SYS2   : $INDIR/mdb0003 :Collection of 8 simple satellite retrievals
-3   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0001 $SYS1 $SYS2   : $INDIR/mdb0001 :ESAWS complete elements list                  
-4   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0004 $SYS1 $SYS2   : $INDIR/mdb0004 :GPSRO select 0 (data from centres apart from EUMETSAT)
-5   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0005 $SYS1 $SYS2   : $INDIR/mdb0005 :GPSRO select 1 (data from EUMETSAT)
-6   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0006 $SYS1 $SYS2   : $INDIR/mdb0006 :MSGWINDS select 5
-7   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0007 $SYS1 $SYS2   : $INDIR/mdb0007 :High vol satellite retrievals with large array
-8   : $SCRIPTS/diff_mdbrtvl.sh $INDIR/mdb0008 $SYS1 $SYS2   : $INDIR/mdb0008 :High vol satellite retrievals sampled with small array
-9   : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/04_TEST $SYS1 $SYS2   : $INDIR/04_TEST : AIREPS,AMDARS,OPENROAD,WOW (expect differences in totals)
-10  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/09_TEST $SYS1 $SYS2   : $INDIR/09_TEST : Archive data AIREPS,AMDARS,BOGUS,TROPADV
-11  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/10_TEST $SYS1 $SYS2   : $INDIR/10_TEST : 'Recent' data types    
-12  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/14a_TEST $SYS1 $SYS2   : $INDIR/14a_TEST : STNMAS by ICAO ID                
-13  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/14b_TEST $SYS1 $SYS2   : $INDIR/14b_TEST : STNMAS by WMO block                
-14  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUN1a $SYS1 $SYS2   : $INDIR/RUN1a : OPS style 6-hour period BUFR types                
-15  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUN1b $SYS1 $SYS2   : $INDIR/RUN1b : OPS style 6 hour period TAC types                
-16  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUN2 $SYS1 $SYS2   : $INDIR/RUN2 : Large amount of data, different types
-17  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET1 $SYS1 $SYS2   : $INDIR/RUNRET1 : Satellite data         
-18  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET10a $SYS1 $SYS2   : $INDIR/RUNRET10a : LNDSYN and METARS                
-19  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET10b $SYS1 $SYS2   : $INDIR/RUNRET10b : LNDSYN and METARS                
-20  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET2 $SYS1 $SYS2   : $INDIR/RUNRET2 : AIRQAL,AIREPS,AMDARS   
-21  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET3 $SYS1 $SYS2   : $INDIR/RUNRET3 : Satellite winds        
-22  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET4 $SYS1 $SYS2   : $INDIR/RUNRET4 : TEMP,TESAC,TAMDAR,TRACKOB
-23  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET5 $SYS1 $SYS2   : $INDIR/RUNRET5 : Random mixture of data types using different retrieval modules
-24  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET6 $SYS1 $SYS2   : $INDIR/RUNRET6 : DROPSONDE,OZONPRF/SAT,TRACKOB,TRYAXIS etc.
-25  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SREW_24 $SYS1 $SYS2   : $INDIR/SREW_24 : SREW all data for 1 hour
-26  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET8 $SYS1 $SYS2   : $INDIR/RUNRET8 : LIDAR                  
-27  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRET9 $SYS1 $SYS2   : $INDIR/RUNRET9 : BOGUS,METARS,TEMP      
-28  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRETA $SYS1 $SYS2   : $INDIR/RUNRETA : AIRQALEU               
-29  : $SCRIPTS/diff_gribrtvl.sh $INDIR/08_TEST $SYS1 $SYS2   : $INDIR/08_TEST : GRIB retrieval from old style datasets                
-30  : $SCRIPTS/diff_retbrtvl.sh $INDIR/RETBUFR $SYS1 $SYS2   : $INDIR/RETBUFR : ARGO data in BUFR format                              
-31  : $SCRIPTS/diff_retbrtvl.sh $INDIR/RETBUFR1 $SYS1 $SYS2   : $INDIR/RETBUFR1 : SSMIS in BUFR format with PLATFORM and SELECT         
-32  : $SCRIPTS/diff_retbrtvl.sh $INDIR/RETBUFR3 $SYS1 $SYS2   : $INDIR/RETBUFR3 : ASCAT in BUFR, multiple PLATFORM values at end of request
-33  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRETC $SYS1 $SYS2   : $INDIR/RUNRETC : New for July 2016 OMPSTC, BUOYB, MWRI                    
-34  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRETB1 $SYS1 $SYS2   : $INDIR/RUNRETB1 : Unusual keyword ordering, short requests or invalid               
-35  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRETB2 $SYS1 $SYS2   : $INDIR/RUNRETB2 : Merged data (counts only)                
-36  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/RUNRETB3 $SYS1 $SYS2   : $INDIR/RUNRETB3 : BOGUS all versions, CLIMAT and NCM                          
-37  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_buoy $SYS1 $SYS2   : $INDIR/SSPA_buoy : Typical SSPA requests (BUOY)
-38  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_lndsyn $SYS1 $SYS2   : $INDIR/SSPA_lndsyn : Typical SSPA requests (LNDSYN)
-39  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_ncm $SYS1 $SYS2   : $INDIR/SSPA_ncm : Typical SSPA requests (NCM)
-40  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_openrnwy $SYS1 $SYS2   : $INDIR/SSPA_openrnwy : Typical SSPA requests (OPENRNWY - not yet in MetDB so no data retrieved)
-41  : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_openroad $SYS1 $SYS2   : $INDIR/SSPA_openroad : Typical SSPA requests (OPENROAD - totals may be different)
-42  : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_shpsyn $SYS1 $SYS2   : $INDIR/SSPA_shpsyn : Typical SSPA requests (SHPSYN - totals may be different)
-43  : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/SSPA_srew $SYS1 $SYS2   : $INDIR/SSPA_srew : Typical SSPA requests (SREW - ToRs likely to be different)
-44  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/AVHRRRAD $SYS1 $SYS2   : $INDIR/AVHRRRAD : No data expected
-45  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SHPSYN $SYS1 $SYS2   : $INDIR/SHPSYN : SHPSYN (may be totals differences)
-46  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/TROPCYCL $SYS1 $SYS2   : $INDIR/TROPCYCL : TROPCYCL
-47  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/WAVENET $SYS1 $SYS2   : $INDIR/WAVENET : WAVENET 
-48  : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/WOW $SYS1 $SYS2   : $INDIR/WOW  : WOW 1 hour (can expect slightly different totals)                               
-49  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/OPENROAD $SYS1 $SYS2   :$INDIR/OPENROAD : OPENROAD 1 hour (can expect slightly different totals)
-50  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/METAR_raw $SYS1 $SYS2   :$INDIR/METAR_raw : METAR raw report text, 1 hour EG only (expect different ToRs)
-51  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/TROPCYCL_24 $SYS1 $SYS2   :$INDIR/TROPCYCL_24 : TROPCYCL 24 hours
-52  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/SHPSYN_area $SYS1 $SYS2   : $INDIR/SHPSYN_area : SHPSYN in UKV area (can expect small differences in totals)
-53  : # $SCRIPTS/diff_mdbrtvl.sh $INDIR/LNDSYB1 $SYS1 $SYS2   : $INDIR/LNDSYB1 : BUFR Synop full elements list to check elements index - will usually fail on ToR minute
-54  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/BUOYB_1 $SYS1 $SYS2   : $INDIR/BUOYB_1 : BUFR BUOY single ID from release 4.31.0 onwards      
-55  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/LIDAR1 $SYS1 $SYS2   : $INDIR/LIDAR1 : NetCDF LIDAR atomic access      
-56  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/OCEANFB $SYS1 $SYS2   : $INDIR/OCEANFB : NetCDF Copernicus data      
-57  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/OCEANRE $SYS1 $SYS2   : $INDIR/OCEANRE : NetCDF Copernicus data      
-58  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/OCEANTS $SYS1 $SYS2   : $INDIR/OCEANTS : NetCDF Copernicus data      
-59  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/RADREFR $SYS1 $SYS2   : $INDIR/RADREFR : HDF5 Radar refractivity      
-60  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/RADRFRQI $SYS1 $SYS2   : $INDIR/RADRFRQI : HDF5 Radar QC      
-61  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/SHIPAWS $SYS1 $SYS2   : $INDIR/SHIPAWS : NetCDF Ship/Buoy AWS      
-62  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/SNOWH5 $SYS1 $SYS2   : $INDIR/SNOWH5 : HDF5 MSG snow cover      
-63  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/SUNPHOTO $SYS1 $SYS2   : $INDIR/SUNPHOTO : NetCDF Sun photometer      
-64  : $SCRIPTS/diff_ncdfrtvl.sh $INDIR/VA_LIDAR $SYS1 $SYS2   : $INDIR/VA_LIDAR : NetCDF Volcanic Ash Lidar data      
-65  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/LNDSYNUK $SYS1 $SYS2   : $INDIR/LNDSYNUK : Block 03 and 99 11Z LNDSYN  
-66  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/ARGOB $SYS1 $SYS2   : $INDIR/ARGOB : ARGOB data                  
-67  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/LNDSYNRAD $SYS1 $SYS2   : $INDIR/LNDSYNRAD : LNDSYN radiation groups                  
-68  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/AMV1 $SYS1 $SYS2   : $INDIR/AMV1 : AMV general request                      
-69  : $SCRIPTS/diff_mdbrtvl.sh $INDIR/OLCI1 $SYS1 $SYS2   : $INDIR/OLCI1 : OLCI all elements                      
+1   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0002     : $INDIR/mdb0002 :Collection of 32 simple satellite retrievals (totals only)
+2   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0003     : $INDIR/mdb0003 :Collection of 8 simple satellite retrievals
+3   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0001     : $INDIR/mdb0001 :ESAWS complete elements list                  
+4   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0004     : $INDIR/mdb0004 :GPSRO select 0 (data from centres apart from EUMETSAT)
+5   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0005     : $INDIR/mdb0005 :GPSRO select 1 (data from EUMETSAT)
+6   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0006     : $INDIR/mdb0006 :MSGWINDS select 5
+7   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0007     : $INDIR/mdb0007 :High vol satellite retrievals with large array
+8   : $SCRIPTS/diff_runs.sh -m $INDIR/mdb0008     : $INDIR/mdb0008 :High vol satellite retrievals sampled with small array
+9   : $SCRIPTS/diff_runs.sh -m $INDIR/04_TEST     : $INDIR/04_TEST : AIREPS,AMDARS,OPENROAD,WOW (expect differences in totals)
+10  : $SCRIPTS/diff_runs.sh -m $INDIR/09a_TEST     : $INDIR/09a_TEST : Archive data AIREPS
+11  : $SCRIPTS/diff_runs.sh -m $INDIR/10_TEST     : $INDIR/10_TEST : 'Recent' data types    
+12  : $SCRIPTS/diff_runs.sh -m $INDIR/14a_TEST     : $INDIR/14a_TEST : STNMAS by ICAO ID                
+13  : $SCRIPTS/diff_runs.sh -m $INDIR/14b_TEST     : $INDIR/14b_TEST : STNMAS by WMO block                
+14  : $SCRIPTS/diff_runs.sh -m $INDIR/RUN1a     : $INDIR/RUN1a : OPS style 6-hour period BUFR types                
+15  : $SCRIPTS/diff_runs.sh -m $INDIR/RUN1b     : $INDIR/RUN1b : OPS style 6 hour period TAC types                
+16  : $SCRIPTS/diff_runs.sh -m $INDIR/RUN2     : $INDIR/RUN2 : Large amount of data, different types
+17  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET1     : $INDIR/RUNRET1 : Satellite data         
+18  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET10a     : $INDIR/RUNRET10a : LNDSYN and METARS                
+19  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET10b     : $INDIR/RUNRET10b : LNDSYN and METARS                
+20  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET2     : $INDIR/RUNRET2 : AIRQAL,AIREPS,AMDARS   
+21  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET3     : $INDIR/RUNRET3 : Satellite winds        
+22  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET4     : $INDIR/RUNRET4 : TEMP,TESAC,TAMDAR,TRACKOB
+23  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET5     : $INDIR/RUNRET5 : Random mixture of data types using different retrieval modules
+24  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET6     : $INDIR/RUNRET6 : DROPSONDE,OZONPRF/SAT,TRACKOB,TRYAXIS etc.
+25  : $SCRIPTS/diff_runs.sh -m $INDIR/SREW_24     : $INDIR/SREW_24 : SREW all data for 1 hour
+26  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET8     : $INDIR/RUNRET8 : LIDAR                  
+27  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRET9     : $INDIR/RUNRET9 : BOGUS,METARS,TEMP      
+28  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRETA     : $INDIR/RUNRETA : AIRQALEU               
+29  : $SCRIPTS/diff_runs.sh -g $INDIR/08_TEST     : $INDIR/08_TEST : GRIB retrieval from old style datasets                
+30  : $SCRIPTS/diff_runs.sh -r $INDIR/RETBUFR     : $INDIR/RETBUFR : ARGO data in BUFR format                              
+31  : $SCRIPTS/diff_runs.sh -r $INDIR/RETBUFR1     : $INDIR/RETBUFR1 : SSMIS in BUFR format with PLATFORM and SELECT         
+32  : $SCRIPTS/diff_runs.sh -r $INDIR/RETBUFR3     : $INDIR/RETBUFR3 : ASCAT in BUFR, multiple PLATFORM values at end of request
+33  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRETC     : $INDIR/RUNRETC : New for July 2016 OMPSTC, BUOYB, MWRI                    
+34  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRETB1     : $INDIR/RUNRETB1 : Unusual keyword ordering, short requests or invalid               
+35  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRETB2     : $INDIR/RUNRETB2 : Merged data (counts only)                
+36  : $SCRIPTS/diff_runs.sh -m $INDIR/RUNRETB3     : $INDIR/RUNRETB3 : BOGUS all versions, CLIMAT and NCM                          
+37  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_buoy     : $INDIR/SSPA_buoy : Typical SSPA requests (BUOY)
+38  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_lndsyn     : $INDIR/SSPA_lndsyn : Typical SSPA requests (LNDSYN)
+39  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_ncm     : $INDIR/SSPA_ncm : Typical SSPA requests (NCM)
+40  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_openrnwy     : $INDIR/SSPA_openrnwy : Typical SSPA requests (OPENRNWY - not yet in MetDB so no data retrieved)
+41  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_openroad     : $INDIR/SSPA_openroad : Typical SSPA requests (OPENROAD - totals may be different)
+42  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_shpsyn     : $INDIR/SSPA_shpsyn : Typical SSPA requests (SHPSYN - totals may be different)
+43  : $SCRIPTS/diff_runs.sh -m $INDIR/SSPA_srew     : $INDIR/SSPA_srew : Typical SSPA requests (SREW - ToRs likely to be different)
+44  : $SCRIPTS/diff_runs.sh -m $INDIR/AVHRRRAD     : $INDIR/AVHRRRAD : No data expected
+45  : $SCRIPTS/diff_runs.sh -m $INDIR/SHPSYN     : $INDIR/SHPSYN : SHPSYN (may be totals differences)
+46  : $SCRIPTS/diff_runs.sh -m $INDIR/TROPCYCL     : $INDIR/TROPCYCL : TROPCYCL
+47  : $SCRIPTS/diff_runs.sh -m $INDIR/WAVENET     : $INDIR/WAVENET : WAVENET 
+48  : $SCRIPTS/diff_runs.sh -m $INDIR/WOW     : $INDIR/WOW  : WOW 1 hour (can expect slightly different totals)                               
+49  : $SCRIPTS/diff_runs.sh -m $INDIR/OPENROAD     :$INDIR/OPENROAD : OPENROAD 1 hour (can expect slightly different totals)
+50  : $SCRIPTS/diff_runs.sh -m $INDIR/METAR_raw     :$INDIR/METAR_raw : METAR raw report text, 1 hour EG only (expect different ToRs)
+51  : $SCRIPTS/diff_runs.sh -m $INDIR/TROPCYCL_24     :$INDIR/TROPCYCL_24 : TROPCYCL 24 hours
+52  : $SCRIPTS/diff_runs.sh -m $INDIR/SHPSYN_area     : $INDIR/SHPSYN_area : SHPSYN in UKV area (can expect small differences in totals)
+53  : $SCRIPTS/diff_runs.sh -m $INDIR/LNDSYB1     : $INDIR/LNDSYB1 : BUFR Synop full elements list to check elements index - will usually fail on ToR minute
+54  : $SCRIPTS/diff_runs.sh -m $INDIR/BUOYB_1     : $INDIR/BUOYB_1 : BUFR BUOY single ID from release 4.31.0 onwards      
+55  : $SCRIPTS/diff_runs.sh -n $INDIR/LIDAR1     : $INDIR/LIDAR1 : NetCDF LIDAR atomic access      
+56  : $SCRIPTS/diff_runs.sh -n $INDIR/OCEANFB     : $INDIR/OCEANFB : NetCDF Copernicus data      
+57  : $SCRIPTS/diff_runs.sh -n $INDIR/OCEANRE     : $INDIR/OCEANRE : NetCDF Copernicus data      
+58  : $SCRIPTS/diff_runs.sh -n $INDIR/OCEANTS     : $INDIR/OCEANTS : NetCDF Copernicus data      
+59  : $SCRIPTS/diff_runs.sh -n $INDIR/RADREFR     : $INDIR/RADREFR : HDF5 Radar refractivity      
+60  : $SCRIPTS/diff_runs.sh -n $INDIR/RADRFRQI     : $INDIR/RADRFRQI : HDF5 Radar QC      
+61  : $SCRIPTS/diff_runs.sh -n $INDIR/SHIPAWS     : $INDIR/SHIPAWS : NetCDF Ship/Buoy AWS      
+62  : $SCRIPTS/diff_runs.sh -n $INDIR/SNOWH5     : $INDIR/SNOWH5 : HDF5 MSG snow cover      
+63  : $SCRIPTS/diff_runs.sh -n $INDIR/SUNPHOTO     : $INDIR/SUNPHOTO : NetCDF Sun photometer      
+64  : $SCRIPTS/diff_runs.sh -n $INDIR/VA_LIDAR     : $INDIR/VA_LIDAR : NetCDF Volcanic Ash Lidar data      
+65  : $SCRIPTS/diff_runs.sh -m $INDIR/LNDSYNUK     : $INDIR/LNDSYNUK : Block 03 and 99 11Z LNDSYN  
+66  : $SCRIPTS/diff_runs.sh -m $INDIR/ARGOB     : $INDIR/ARGOB : ARGOB data                  
+67  : $SCRIPTS/diff_runs.sh -m $INDIR/LNDSYNRAD     : $INDIR/LNDSYNRAD : LNDSYN radiation groups                  
+68  : $SCRIPTS/diff_runs.sh -m $INDIR/AMV1     : $INDIR/AMV1 : AMV general request                      
+69  : $SCRIPTS/diff_runs.sh -m $INDIR/OLCI1     : $INDIR/OLCI1 : OLCI all elements                      
+70  : $SCRIPTS/diff_runs.sh -m $INDIR/ABICSR     : $INDIR/ABICSR : ABICSR 2 requests                      
+71  : $SCRIPTS/diff_runs.sh -n $INDIR/SENTALT     : $INDIR/SENTALT : NetCDF Sentinel-3 Sig wave heights
+72  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test1_webapi.py  : $SCRIPTS/test1_webapi.py : Web API Check for 503 HTTP return code if server not found
+73  : $SCRIPTS/diff_runs.sh -m $INDIR/09b_TEST     : $INDIR/09b_TEST : Archive data AMDARS
+74  : $SCRIPTS/diff_runs.sh -m $INDIR/09c_TEST     : $INDIR/09c_TEST : Archive data BOGUS 
+75  : $SCRIPTS/diff_runs.sh -m $INDIR/09d_TEST     : $INDIR/09d_TEST : Archive data TROPADV
+76  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test2_webapi.py  : $SCRIPTS/test2_webapi.py : Web API Check for 404 if procedure not found
+77  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test3_webapi.py  : $SCRIPTS/test3_webapi.py : Web API Check for invalid subtype
+78  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test4_webapi.py  : $SCRIPTS/test4_webapi.py : Web API Check for invalid request string
+79  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test5_webapi.py  : $SCRIPTS/test5_webapi.py : Web API Test valid SUNPHOTO request
+80  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test6_webapi.py  : $SCRIPTS/test6_webapi.py : Web API Test valid VA_LIDAR request
+81  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test7_webapi.py  : $SCRIPTS/test7_webapi.py : Web API Test valid LIDAR request with parms
+82  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test8_webapi.py  : $SCRIPTS/test8_webapi.py : Web API Test valid LIDAR request with REQUEST string
+83  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test9_webapi.py  : $SCRIPTS/test9_webapi.py : Web API Test LIDAR keyword order
+84  : $SCRIPTS/diff_runs.sh -p $SCRIPTS/test10_webapi.py  : $SCRIPTS/test10_webapi.py : Web API Test LIDAR platform with underscore
+85  : $SCRIPTS/diff_runs.sh -m $INDIR/TROPCYCB : $INDIR/TROPCYCB : BUFR Tropcycl in Apr 2020 release                      
+86  : $SCRIPTS/diff_runs.sh -m $INDIR/TAMDAR : $INDIR/TAMDAR : TAMDAR FLYHT data Apr 2020 release to preprod          
+87  : $SCRIPTS/diff_runs.sh -m $INDIR/ALADIN : $INDIR/ALADIN : ALADIN Aeolus in Apr 2020 release
+88  : $SCRIPTS/diff_runs.sh -m $INDIR/CLIMATB : $INDIR/CLIMATB : BUFR CLIMAT data block 03 for May 2020 in Jun 2020 release
+89  : $SCRIPTS/diff_runs.sh -m $INDIR/LNDSYBW : $INDIR/LNDSYBW : BUFR SYNOPS with WIGOS identifiers Jun 2020 release
+90  : $SCRIPTS/diff_runs.sh -m $INDIR/EMADDC : $INDIR/EMADDC : European MODE-S Jul 2020 release                     
+91  : $SCRIPTS/diff_runs.sh -m $INDIR/SHPSYB : $INDIR/SHPSYB : BUFR SHIP synops Sep 2020 release                    

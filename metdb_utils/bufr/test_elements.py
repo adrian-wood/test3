@@ -1,7 +1,7 @@
 import elements
 import unittest
 import re
-import os
+import os  
 from io import StringIO
 from unittest.mock import patch
 
@@ -85,6 +85,9 @@ class Test_elements(unittest.TestCase):
         self.assertEqual(table.sequences[1][0].nseq, len(sequence))
 
         lines = out.getvalue().split('\n')
+
+        # check spacing of descriptor section
+        self.assertEqual(lines[4][12:].strip(), text[0:55])
 
         self.assertIn(summary, lines[10])
         self.assertIn(map1, lines[12])

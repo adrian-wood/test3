@@ -1,0 +1,7 @@
+1..4
+# START Tue 27 Aug @ 18:35:39Z
+not ok 1 STNMAS by WMO block
+not ok 2 LNDSYN and METARS
+not ok 3 AIRQAL,AIREPS,AMDARS
+not ok 4 GRIB retrieval from old style datasets
+# END Tue 27 Aug @ 18:35:39Z

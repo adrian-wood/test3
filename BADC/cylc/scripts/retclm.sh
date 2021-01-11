@@ -9,7 +9,7 @@ RUNTIME=`date "+%Y%m%d_%H%M%S"`
 export METDB_SERVER_NUMBER=33556618
 export METDB_FREEPN_NUMBER=33556619
 export METDB_SERVER_IPNAME=mdbapop-prod
-export METDB_CLIENT_CONTACT=metdb@metoffice.gov.uk
+export METDB_CLIENT_CONTACT=metdb_badc@metoffice.gov.uk
 
 # Optional environment variables
 export METDB_RPC_TIMEOUT=5400

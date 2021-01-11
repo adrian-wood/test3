@@ -27,14 +27,15 @@ import re
 def read_localseq(filename):
     """Read a MetDB format local_seq file to get one or more sequences.
 
-    Argument:
-    filename - string - name of file containing sequences.
+    args:
+      * filename (str) - name of file containing sequences.
 
-    Returns:
-    Dictionary - (local sequence number as str: list of strings comprising the
-    sequence)
-    e.g. {'312231': ['001007', '002019', '001096', ...],
-          '312045': ['001007', '002019', '001096', ...] }
+    returns:
+      * local_seqs (Dictionary)  - key is local sequence number as str:
+        value is list of strings comprising the sequence
+
+        e.g. {'312231': ['001007', '002019', '001096', ...],
+        '312045': ['001007', '002019', '001096', ...] }
 
     Example input file - bufr_localseq/aatsr
 
@@ -55,13 +56,13 @@ def read_localseq(filename):
         lines = inp.readlines()
         inp.close()
     except IOError as e:
-        print(f'Error reading {filename} - {e}')
+        print(f"Error reading {filename} - {e}")
         sys.exit(1)
 
     found = False  # set true when we find the start of a sequence
 
     # regex to find groups of digits delimited by commas or spaces
-    pattern = re.compile(r'(\d+)[, ]')
+    pattern = re.compile(r"(\d+)[, \n]")
 
     # loop over lines
     for line in lines:
@@ -79,7 +80,7 @@ def read_localseq(filename):
         # else if the line is blank and we have built up a sequence, then this
         # is the end of a sequence so save it in the dictionary and reset the
         # indicator to show we are not working on a sequence now
-        elif line.strip() == '' and len(seq) > 0:
+        elif line.strip() == "" and len(seq) > 0:
             # print(f'End of sequence with length {len(seq)}')
             local_seqs[descr] = seq
             found = False
@@ -89,7 +90,14 @@ def read_localseq(filename):
         # sequence.
         else:
             # e.g. 001007, 002019  SATELLITE IDENTIFIER, SATELLITE INSTRUMENTS
-            items = re.findall(pattern, line)
+            # descriptor string delimited by a space before text
+
+            delimit = re.search(r"[a-zA-Z]", line)
+            if delimit:
+                delimit = delimit.start()
+            else:
+                delimit = len(line)
+            items = re.findall(pattern, line[:delimit])
             for i in items:
                 if bufr.is_a_descriptor(i):
                     seq.append(i)

@@ -1,0 +1,11 @@
+1..8 
+# START Tue 27 Aug @ 08:30:05Z
+not ok 1 Collection of 32 simple satellite retrievals (totals only)
+ok 2 Collection of 8 simple satellite retrievals
+ok 3 ESAWS complete elements list
+ok 4 GPSRO select 0 (data from centres apart from EUMETSAT)
+ok 5 GPSRO select 1 (data from EUMETSAT)
+ok 6 MSGWINDS select 5
+ok 7 High vol satellite retrievals with large array
+ok 8 High vol satellite retrievals sampled with small array
+# END Tue 27 Aug @ 08:55:05Z

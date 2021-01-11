@@ -9,7 +9,7 @@ echo "$0: starting at `date`"
 SRC_DIR=/var/moods/logs
 BASE_ARCH_DIR=/var/www/html/mdb_activity/data_access_logs
 INCOMING=/var/moods/mdb_activity/data/data_access_logs/incoming
-SERVERS="mdbapus-prod mdbapop-prod mdbdb-prod"
+SERVERS="mdbapus-prod mdbapop-prod mdbdb-prod mdb-test"
 FILE=data_access.log-`date +%Y%m%d`
 
 for SERVER in $SERVERS; do

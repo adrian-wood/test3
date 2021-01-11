@@ -15,6 +15,7 @@
 #
 # Revision:
 # MB-1908  Initial Version                                      Andy Moorhouse
+# MB-2138  Added 60-sec sleep so runs OK after patching.        Andy Moorhouse
 # ----------------------------------------------------------------------------
 
 PATH=/data/local/fcm/bin:$PATH
@@ -25,11 +26,14 @@ rc=0
 
 echo "`date "+%Y/%m/%d %H:%M:%S"`: $0 running... "
 
+echo "Sleeping for 60 seconds..."
+sleep 60
+
 if [ -f $running_suites ]; then
     while read SUITE; do
         [ "${SUITE:0:1}" = "#" ] && continue  # ignore comment lines...
         echo "Restarting suite $SUITE ..."
-        echo cylc restart $SUITE
+        cylc restart $SUITE
     done < $running_suites
 else
     echo "ERROR: $running_suites file not found"

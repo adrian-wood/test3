@@ -30,6 +30,9 @@ def main():
     A MetDB retrieval_table file is read to determine what are "valid"
     datatypes; this must be specified by the $RETRIEVAL_TABLE environment
     variable.
+    A target for the resulting web page can be specified by the $HTML_PAGE
+    environment variable; if not specified then it will be created
+    in the default webpage archive location, and a symlink re-created to it.
 
     Args:
         year: the year (2016 onwards).
@@ -57,15 +60,14 @@ def main():
             raise ValueError('$RETRIEVAL_TABLE must be specified')
         else:
             # Get a set of all datatypes in the retrieval table
-            with open(rt_file) as f:
-                rt = RT.RetrievalTable(f)
+            rt = RT.RetrievalTable(rt_file)
             rt_datatypes = set(rt.list_datatypes())
 
         # Obtain the year (YYYY) and month (MM) supplied as arguments.
         # Formats match directory structure of stored data_access.log files.
         if len(sys.argv) == 3:
             year = int(sys.argv[1])
-            if not 2015 < year < dt.date.today().year:
+            if not 2015 < year <= dt.date.today().year:
                 raise ValueError('Invalid year (must be 2016 - now): %s'
                                  % year)
             month = int(sys.argv[2])
@@ -92,8 +94,7 @@ def main():
     now = dt.datetime.now()
     datestr = now.strftime("%H:%M %d-%m-%Y")
     procDate = dt.datetime(year=year, month=month, day=1)
-    lastMonth = procDate - dt.timedelta(days=1)
-    lastMonthsPage = lastMonth.strftime("/%Y/%b.html")
+    lastMonthsPage = procDate.strftime("%Y/%b.html")
     warning = False
 
     # master dictionary with server as key, and values of a further
@@ -187,7 +188,7 @@ def main():
     templateVars = {"year": year,
                     "month": calendar.month_name[month],
                     "servers": servers,
-                    "by_datatype": by_datatype,
+                    "by_datatype": dict(sorted(by_datatype.items(), key=lambda x: x[0])),
                     "overall_totals": overall_totals,
                     "not_requested": not_requested,
                     "invalid_count": invalid_count,
@@ -201,10 +202,14 @@ def main():
 
     # Render the HTML from template, create a page and archive it
     htmlout = jinja_render(template_dir, template_name, **templateVars)
-    # with open(html_file, "w") as outp:
-    #     outp.write(htmlout)
-    monthly_archive("/var/www/html/mdb_activity/monthly_datatype_retrievals.html",
-                    archive_base, htmlout)
+
+    htmlPage = os.environ.get('HTML_PAGE')
+    if htmlPage is None:
+        monthly_archive('/var/www/html/mdb_activity/monthly_datatype_retrievals.html',
+                        archive_base, htmlout)
+    else:
+        with open(htmlPage, "w") as outp:
+            outp.write(htmlout)
 
     print('... finished', sys.argv[0])
 

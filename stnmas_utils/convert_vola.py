@@ -7,6 +7,7 @@
     AUTHOR        : Sheila Needham
 
     REVISION INFO :
+    MB-2075a: Jul 2020 Additional affiliations for upper-air sites
     MB-1952: Apr 2019 update to Python 3
     MB-1683: June 2018 Original
 
@@ -48,7 +49,9 @@ def convert_to_type(row):
     else:
         if remarks.find('GOS') > -1:
             stn_type = 'SURF'
-        if remarks.find('GUAN') > -1:
+        if remarks.find('GUAN') > -1 or \
+           remarks.find('RBSN(ST)') > -1 or \
+           remarks.find('ANTON') > -1:
             if len(stn_type) > 0:
                 stn_type += ' & U/AIR'
             else:

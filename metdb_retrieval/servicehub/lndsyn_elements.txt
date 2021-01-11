@@ -1,5 +1,6 @@
 1 : wmo_station_id                                                :       :  package.convert.wmo_id(WMO_BLCK_NMBR,WMO_STTN_NMBR)
 2 : wmo_region_number                                             :       :  WMO_REGN_NMBR
+  : wmo_station_name                                              :       :  WMO_STTN_NAME
 3 : bulletin_id                                                   :       :  BLTN_IDNY
 4 : collecting_centre                                             :       :  COLTN_CNTR
 5 : correction_number                                             :       :  CORTN_NMBR

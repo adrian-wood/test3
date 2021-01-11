@@ -40,7 +40,7 @@ export ECCODES=/var/moods/eccodes
 # defined by get_data and send_data
 export CYLC_SUITE_NAME=WOW         
 export CYLC_TASK_ID=$0  
-export CONTACT=metdb@metoffice.gov.uk
+export CONTACT=metdb_wow@metoffice.gov.uk
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <full_path_to_config_file>"
