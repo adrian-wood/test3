@@ -10,7 +10,7 @@ import DataAccessLog as DA
 class Test_Storage_Datasets(unittest.TestCase):
     def setUp(self):
         with open("test_data/storage_datasets") as f:
-            self.rt = SD.StorageDatasets(f)
+            self.sd = SD.StorageDatasets(f)
 
     # add appropriate unit tests here...
 
