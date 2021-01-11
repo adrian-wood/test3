@@ -1,4 +1,6 @@
 import unittest
+import tempfile
+import filecmp
 from collections import defaultdict
 import StorageDatasets as SD
 import RetrievalTable as RT
@@ -15,8 +17,7 @@ class Test_Storage_Datasets(unittest.TestCase):
 
 class Test_Retrieval_Table(unittest.TestCase):
     def setUp(self):
-        with open("test_data/retrieval_table") as f:
-            self.rt = RT.RetrievalTable(f)
+        self.rt = RT.RetrievalTable("test_data/retrieval_table")
 
     def test_count_datatypes(self):
         self.assertEqual(len(self.rt.list_datatypes()), 11)
