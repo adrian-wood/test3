@@ -3,7 +3,16 @@ import tempfile
 import filecmp
 from collections import defaultdict
 import RetrievalTable as RT
+import ArchiveLookup as AL
 import DataAccessLog as DA
+
+
+class Test_Archive_Lookup(unittest.TestCase):
+    def setUp(self):
+        with open("test_data/archive_lookup") as f:
+            self.al = AL.ArchiveLookup(f)
+
+    # add appropriate unit tests here...
 
 
 class Test_Retrieval_Table(unittest.TestCase):

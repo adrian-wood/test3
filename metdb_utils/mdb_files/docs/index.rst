@@ -20,6 +20,11 @@ Interface to retrieval_table File
 
 .. automodule:: RetrievalTable
 
+Interface to archive_lookup File
+================================
+
+.. automodule:: ArchiveLookup
+
 Indices and tables
 ==================
 
