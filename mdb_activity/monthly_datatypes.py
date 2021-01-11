@@ -60,8 +60,7 @@ def main():
             raise ValueError('$RETRIEVAL_TABLE must be specified')
         else:
             # Get a set of all datatypes in the retrieval table
-            with open(rt_file) as f:
-                rt = RT.RetrievalTable(f)
+            rt = RT.RetrievalTable(rt_file)
             rt_datatypes = set(rt.list_datatypes())
 
         # Obtain the year (YYYY) and month (MM) supplied as arguments.

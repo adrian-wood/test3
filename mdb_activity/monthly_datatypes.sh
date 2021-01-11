@@ -12,7 +12,7 @@
 #             can be set to <cloned_repo> during development. 
 #           DATA_ACCESS_LOG_DIR (optional): location of data_access log files.
 #             Useful for creating historical reports from old data. Defaults to
-#             /var/www/html/mdb_activity/monthly_datatype_retrievals_archive.
+#             /var/www/html/mdb_activity/data_access_logs.
 #           HTML_PAGE (optional): location of resulting web page. If omitted,
 #             page <YYYY>/<Mon>.html will be created in directory 
 #             /var/www/html/mdb_activity/monthly_datatype_retrievals_archive
