@@ -47,25 +47,6 @@ class StorageDataset:
     dataset_name: str  # the name of the dataset.
     comment: str  # optional comment
 
-    def __post_init__(self):
-        """
-        Validation of the parameters passed at object creation. This function
-        ensures that StorageDataset objects are only created if valid parameters have
-        been supplied.
-        Check the supplied arguments and raise a ValueError or TypeError if invalid.
-
-        Args:
-            self (StorageDataset): this object.
-
-        Raises:
-            ValueError: if direct not T or F.
-            ValueError: if formatted not T or F.
-            ValueError: if record_length not between 0 and 50000.
-            ValueError: if dataset_name not a valid dataset name.
-            TypeError: if comment not a String.
-        """
-        pass
-
     def __str__(self):
         """
         Provide a string representation of a StorageDataset.
@@ -84,7 +65,9 @@ class StorageDatasets:
     and the **"other"** datasets in the file.
 
     Attributes:
-    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        datatypes (dict): key: datatype name, value: StorageDataset object
+        headers (list): list of strings for the headers in a file.
+        footers (list): list of strings for the footer in a file.
     """
 
     def __init__(self, sd_file=None):
@@ -108,13 +91,13 @@ class StorageDatasets:
         For each "datatype" line in the file:
         
         #. call the ``_unpack_line`` function to obtain a datatype name and ``StorageDataset`` object for the line.
-        #. call the ``add_dataset`` function with this datatype name and ``StorageDataset`` object.
+        #. add a new key:value pair to the ``datatypes`` dictionary of this datatype name and ``StorageDataset`` object.
 
         Args:
             sd_file (str): a file name.
 
         Raises:
-            OSError: if any OS errors reading the file.
+            ValueError: if no filename supplied.
         """
         pass
 
