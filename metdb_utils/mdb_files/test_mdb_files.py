@@ -54,6 +54,18 @@ class Test_Retrieval_Table(unittest.TestCase):
         self.assertEqual(self.rt.dataset_count("TEMP"), 12)
         self.assertEqual(self.rt.dataset_count("VA_LIDAR"), 1)
 
+    def test_output(self):
+        # test the output file is identical in format
+        temp = tempfile.NamedTemporaryFile()
+        try:
+            self.rt.write_RT(temp.name)
+            self.assertTrue(
+                filecmp.cmp(temp.name, "test_data/retrieval_table", shallow=False)
+            )
+        finally:
+            # Automatically cleans up the file
+            temp.close()
+
 
 class Test_Data_Access_Log(unittest.TestCase):
     def setUp(self):
