@@ -70,9 +70,6 @@ class StorageDataset:
         """
         Provide a string representation of a StorageDataset.
 
-        Args:
-            self (StorageDataset): this object.
-
         Returns:
             str: A string representation of a StorageDataset object in the format
             expected by MetDB in a storage_datasets file.
@@ -85,6 +82,9 @@ class StorageDatasets:
     Represents a complete ``storage_datasets`` file, including the header and footer
     sections, plus details of every datatype (that is currently being stored in MetDB)
     and the **"other"** datasets in the file.
+
+    Attributes:
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     """
 
     def __init__(self, sd_file=None):
@@ -111,7 +111,6 @@ class StorageDatasets:
         #. call the ``add_dataset`` function with this datatype name and ``StorageDataset`` object.
 
         Args:
-            self (StorageDatasets): this object.
             sd_file (str): a file name.
 
         Raises:
@@ -131,7 +130,6 @@ class StorageDatasets:
         StorageDataset(__str__) function.
 
         Args:
-            self (StorageDatasets): this object.
             sd_file (str): a file name.
 
         Raises:
@@ -143,9 +141,6 @@ class StorageDatasets:
         """
         List all the datatypes currently contained in this ``StorageDatasets`` object.
         
-        Args:
-            self (StorageDatasets): this object.
-
         Returns:
             list: a list of the dataypes currently held.
         """
