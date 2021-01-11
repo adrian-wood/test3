@@ -175,7 +175,7 @@ class RetrievalTable:
             rt_file (str): a file name.
 
         Raises:
-            OSError: if any OS errors reading the file.
+            ValueError: if no filename supplied.
         """
         if rt_file is None:
             raise ValueError("Filename must be supplied")
