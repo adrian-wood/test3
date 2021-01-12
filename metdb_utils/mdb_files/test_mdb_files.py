@@ -4,6 +4,15 @@ import filecmp
 from collections import defaultdict
 import RetrievalTable as RT
 import DataAccessLog as DA
+import StatsDatasets as StatsD
+
+
+class Test_Stats_Datasets(unittest.TestCase):
+    def setUp(self):
+        with open("test_data/stats_dataset") as f:
+            self.sd = StatsD.StatsDatasets(f)
+
+    # add appropriate unit tests here...
 
 
 class Test_Retrieval_Table(unittest.TestCase):

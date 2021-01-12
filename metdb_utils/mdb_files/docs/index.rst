@@ -20,6 +20,11 @@ Interface to retrieval_table File
 
 .. automodule:: RetrievalTable
 
+Interface to stats_datasets File
+================================
+
+.. automodule:: StatsDatasets
+
 Indices and tables
 ==================
 
