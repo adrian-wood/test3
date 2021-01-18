@@ -156,8 +156,28 @@ class RetrievalTable:
             rt_file: A file name (optional).
         """
         self.datatypes = {}
-        self.headers = []
-        self.footers = []
+        self.headers = "\n".join(
+            [
+                "                                               MET.D.B. RETRIEVAL TABLE",
+                "                                               ------------------------",
+                " (T2,A8,I3,1X,A1,2(I5,4(1X,I2)),I2,I3,2(1X,A8),I6,I5,I6,I7,L2,1X,A3,1X,A60)              Format for reading table below",
+                "",
+                "  DATA    MO R    START TIME        END TIME     S LI ELEMENTS ELEMENTS  RTN. INDX INDEX RECORD S MAS",
+                "  TYPE    DL M YYYY/MM/DD HH:MM YYYY/MM/DD HH:MM M ST   LIST    INDEX    DAYS RECS  MINS LENGTH F STM DATA SET NAME",
+                "-------- -- - ---------------- ---------------- - -- -------- -------- ----- ---- ----- ------ - --- -----------------------------------------------",
+            ]
+        )
+        self.footers = "\n".join(
+            [
+                "\n",
+                " (Blank line above indicates end of table entries)",
+                "",
+                " (Blank line above indicates end of path variable definitions)",
+                "",
+                "For details of the format of this table see 'MetDB Technote 4: A Guide To MetDB Data Retrieval Management'.",
+                "\n",
+            ]
+        )
         if rt_file:
             self.read_RT(rt_file)
 
