@@ -66,7 +66,7 @@ class Dataset:
         return " ".join(
             [
                 f"{self.model:>2}",
-                self.raw_merged,
+                f"{self.raw_merged}" if self.raw_merged is not None else " ",
                 f"{self.start_date:%Y/%m/%d}"
                 if self.start_date is not None
                 else "    /  /  ",
@@ -77,8 +77,12 @@ class Dataset:
                 f"{self.end_time:%H:%M}" if self.end_time is not None else "  :  ",
                 f"{self.storage_medium}",
                 f"{self.list_code:>2}" if self.list_code is not None else "  ",
-                f"{self.elements_list:<8}",
-                f"{self.elements_index:<8}",
+                f"{self.elements_list:<8}"
+                if self.elements_list is not None
+                else "        ",
+                f"{self.elements_index:<8}"
+                if self.elements_index is not None
+                else "        ",
                 f"{self.retention_period_days:>5}"
                 if self.retention_period_days is not None
                 else "     ",
@@ -90,7 +94,7 @@ class Dataset:
                 else "     ",
                 f"{self.record_length:>6}",
                 self.skeleton_flag,
-                self.mass_stream,
+                f"{self.mass_stream}" if self.mass_stream is not None else "   ",
                 self.dataset_name,
             ]
         )
@@ -164,7 +168,7 @@ class RetrievalTable:
                 "",
                 "  DATA    MO R    START TIME        END TIME     S LI ELEMENTS ELEMENTS  RTN. INDX INDEX RECORD S MAS",
                 "  TYPE    DL M YYYY/MM/DD HH:MM YYYY/MM/DD HH:MM M ST   LIST    INDEX    DAYS RECS  MINS LENGTH F STM DATA SET NAME",
-                "-------- -- - ---------------- ---------------- - -- -------- -------- ----- ---- ----- ------ - --- -----------------------------------------------",
+                " -------- -- - ---------------- ---------------- - -- -------- -------- ----- ---- ----- ------ - --- -----------------------------------------------\n",
             ]
         )
         self.footers = "\n".join(
