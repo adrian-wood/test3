@@ -36,23 +36,23 @@ class Dataset:
     This class effectively represents a single line of a MetDB ``retrieval_table``.
     """
 
-    model: int  # Model or area of coverage.
-    raw_merged: str  # R for Raw, M for Merged.
-    start_date: date  # start date of storage period, blank if on-line dataset.
-    start_time: time  # start time of storage period, can be blank.
-    end_date: date  # end date of storage period, blank if on-line dataset.
-    end_time: time  # end time of storage period, can be blank.
-    storage_medium: int  # 1=disk, 2=tape
-    list_code: int  # Associated data code number.
-    elements_list: str  # Number of ELEMENTS library.
-    elements_index: str  # name of relevant element_index file.
-    retention_period_days: int  # retention period in days.
-    index_records: int  # index records per dataset.
-    index_minutes: int  # index period in minutes.
-    record_length: int  # record length of dataset.
-    skeleton_flag: str  # T if dataset name is a MASS skeleton, else F.
-    mass_stream: str  # Archive MASS stream.
-    dataset_name: str  # Name of dataset.
+    model: int  # MANDATORY: model or area of coverage.
+    storage_medium: int  # MANDATORY: 1=disk, 2=tape
+    record_length: int  # MANDATORY: record length of dataset.
+    skeleton_flag: str  # MANDATORY: T if dataset name is a MASS skeleton, else F.
+    dataset_name: str  # MANDATORY: Name of dataset.
+    raw_merged: str = None  # R for Raw, M for Merged.
+    start_date: date = None  # start date of storage period, blank if on-line dataset.
+    start_time: time = None  # start time of storage period, can be blank.
+    end_date: date = None  # end date of storage period, blank if on-line dataset.
+    end_time: time = None  # end time of storage period, can be blank.
+    list_code: int = None  # Associated data code number.
+    elements_list: str = None  # Number of ELEMENTS library.
+    elements_index: str = None  # name of relevant element_index file.
+    retention_period_days: int = None  # retention period in days.
+    index_records: int = None  # index records per dataset.
+    index_minutes: int = None  # index period in minutes.
+    mass_stream: str = None  # Archive MASS stream.
 
     def __str__(self):
         """
@@ -298,22 +298,22 @@ class RetrievalTable:
 
         _a_set = Dataset(
             int(_model),
+            int(_storage_medium),
+            int(_record_length),
+            _skeleton_flag,
+            _dataset_name.rstrip("\n"),  # keeps trailing spaces
             _raw_merged_flag,
             _start_date,
             _start_time,
             _end_date,
             _end_time,
-            int(_storage_medium),
             _list_code_number,
             _elements_list.strip(),
             _elements_index.strip(),
             _retention_period_days,
             _index_records_per_dataset,
             _index_period_minutes,
-            int(_record_length),
-            _skeleton_flag,
             _mass_stream,
-            _dataset_name.rstrip("\n"),  # keeps trailing spaces
         )
 
         return _datatype.strip(), _a_set
