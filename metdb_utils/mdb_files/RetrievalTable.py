@@ -374,7 +374,7 @@ class RetrievalTable:
         try:
             with open(rt_file, "w") as f:
                 f.writelines(self.headers)
-                for datatype, datasets in self.datatypes.items():
+                for datatype, datasets in sorted(self.datatypes.items()):
                     for line in str(datasets).splitlines():
                         f.write(f" {datatype:<9}" + line + "\n")
                 f.writelines(self.footers)
