@@ -27,7 +27,7 @@ Usage:
     >>> rtobj.write_RT(‘new_rt_file’)    # write a new retrieval_table file – should be identical to the file read in
 """
 from dataclasses import dataclass
-from datetime import date, time
+from datetime import datetime
 
 
 @dataclass
@@ -42,10 +42,8 @@ class Dataset:
     skeleton_flag: str  # MANDATORY: T if dataset name is a MASS skeleton, else F.
     dataset_name: str  # MANDATORY: Name of dataset.
     raw_merged: str = None  # R for Raw, M for Merged.
-    start_date: date = None  # start date of storage period, blank if on-line dataset.
-    start_time: time = None  # start time of storage period, can be blank.
-    end_date: date = None  # end date of storage period, blank if on-line dataset.
-    end_time: time = None  # end time of storage period, can be blank.
+    start_d_t: datetime = None  # start date/time of storage period, blank if on-line dataset.
+    end_d_t: datetime = None  # end date/time of storage period, blank if on-line dataset.
     list_code: int = None  # Associated data code number.
     elements_list: str = None  # Number of ELEMENTS library.
     elements_index: str = None  # name of relevant element_index file.
@@ -67,14 +65,12 @@ class Dataset:
             [
                 f"{self.model:>2}",
                 f"{self.raw_merged}" if self.raw_merged is not None else " ",
-                f"{self.start_date:%Y/%m/%d}"
-                if self.start_date is not None
-                else "    /  /  ",
-                f"{self.start_time:%H:%M}" if self.start_time is not None else "  :  ",
-                f"{self.end_date:%Y/%m/%d}"
-                if self.end_date is not None
-                else "    /  /  ",
-                f"{self.end_time:%H:%M}" if self.end_time is not None else "  :  ",
+                f"{self.start_d_t:%Y/%m/%d %H:%M}"
+                if self.start_d_t is not None
+                else "    /  /     :  ",
+                f"{self.end_d_t:%Y/%m/%d %H:%M}"
+                if self.end_d_t is not None
+                else "    /  /     :  ",
                 f"{self.storage_medium}",
                 f"{self.list_code:>2}" if self.list_code is not None else "  ",
                 f"{self.elements_list:<8}"
@@ -260,24 +256,22 @@ class RetrievalTable:
         _dataset_name = line[102:]
 
         if _start_yyyy.isspace():
-            _start_date = None
+            _start_d_t = None
         else:
-            _start_date = date(int(_start_yyyy), int(_start_mm), int(_start_dd))
-
-        if _start_hh.isspace():
-            _start_time = None
-        else:
-            _start_time = time(int(_start_hh), int(_start_min))
+            _start_d_t = datetime(
+                int(_start_yyyy),
+                int(_start_mm),
+                int(_start_dd),
+                int(_start_hh),
+                int(_start_min),
+            )
 
         if _end_yyyy.isspace():
-            _end_date = None
+            _end_d_t = None
         else:
-            _end_date = date(int(_end_yyyy), int(_end_mm), int(_end_dd))
-
-        if _end_hh.isspace():
-            _end_time = None
-        else:
-            _end_time = time(int(_end_hh), int(_end_min))
+            _end_d_t = datetime(
+                int(_end_yyyy), int(_end_mm), int(_end_dd), int(_end_hh), int(_end_min)
+            )
 
         if _retention_period_days.isspace():
             _retention_period_days = None
@@ -303,10 +297,8 @@ class RetrievalTable:
             _skeleton_flag,
             _dataset_name.rstrip("\n"),  # keeps trailing spaces
             _raw_merged_flag,
-            _start_date,
-            _start_time,
-            _end_date,
-            _end_time,
+            _start_d_t,
+            _end_d_t,
             _list_code_number,
             _elements_list.strip(),
             _elements_index.strip(),
